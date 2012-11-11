@@ -24,13 +24,13 @@ namespace JeayeSON
   class Map
   {
     public:
-#pragma mark - ctors and dtor
+//#pragma mark - ctors and dtor
       Map()
       { }
       virtual ~Map()
       { }
 
-#pragma mark - accessors
+//#pragma mark - accessors
       template <typename T>
       inline T get(char const * const key, T const &fallback)
       { return (hasKey(key) ? m_values[key].as<T>() : fallback); }
@@ -45,7 +45,7 @@ namespace JeayeSON
       inline bool isEmpty() const
       { return m_values.empty(); }
 
-#pragma mark - mutators
+//#pragma mark - mutators
       template <typename T>
       inline void set(char const * const key, T value)
       { m_values[key] = value; }
@@ -68,7 +68,7 @@ namespace JeayeSON
       { m_values.insert(map.m_values.begin(), map.m_values.end()); }
 
     private:
-#pragma mark - members
+//#pragma mark - members
       std::map<std::string, Value> m_values;
 
   }; /* Class Map */

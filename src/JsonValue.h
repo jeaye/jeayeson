@@ -29,7 +29,7 @@ namespace JeayeSON
   class Value
   {
     public:
-#pragma mark - ctors and dtor
+////#pragma mark - ctors and dtor
       Value()
       { }
       virtual ~Value()
@@ -39,7 +39,7 @@ namespace JeayeSON
       explicit Value(T &value) : m_value(value)
       { }
 
-#pragma mark - accessors
+//#pragma mark - accessors
       template <typename T>
       inline T& getValue()
       { return boost::any_cast<T&>(m_value); }
@@ -48,7 +48,7 @@ namespace JeayeSON
       inline T& as()
       { return boost::any_cast<T&>(m_value); }
 
-#pragma mark - mutators
+//#pragma mark - mutators
       template <typename T>
       inline void setValue(T const &value)
       { m_value = value; }
@@ -68,7 +68,7 @@ namespace JeayeSON
       { return (m_value = std::string(value)); }
 
     private:
-#pragma mark - members
+//#pragma mark - members
       boost::any m_value;
 
   }; /* Class JsonValue */
