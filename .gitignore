@@ -6,7 +6,15 @@
 # Compiled Dynamic libraries
 *.so
 
+# Vim files
+*.swp
+tags
+
+# Output directory
+bin/
+
 # Compiled Static libraries
 *.lai
 *.la
 *.a
+
