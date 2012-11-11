@@ -20,4 +20,4 @@ Once built, you can run the test(s) by executing the produced binary:
 
   $ ./bin/jeayeson
   
-The test(s) should show how to use JeayeSON (it's very simple). Enjoy!
+The test(s) should show (in main.cpp) how to use JeayeSON. Enjoy!
