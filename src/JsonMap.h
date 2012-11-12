@@ -27,6 +27,8 @@ namespace JeayeSON
 //#pragma mark - ctors and dtor
       Map()
       { }
+      Map(std::string const &json)
+      { if(load(json) == false) throw "Failed to load json!"; }
       virtual ~Map()
       { }
 
@@ -37,8 +39,6 @@ namespace JeayeSON
       inline std::string get(char const * const key, char const * const fallback)
       { return (hasKey(key) ? m_values[key].as<std::string>() : fallback); }
 
-      inline bool hasKey(char const * const key) const
-      { return (m_values.find(key) != m_values.end()); }
       inline bool hasKey(std::string const &key) const
       { return (m_values.find(key) != m_values.end()); }
 
@@ -58,14 +58,17 @@ namespace JeayeSON
       { m_values.clear(); }
 
       /* Completely removes the specified key and destroys its data. */
-      inline void erase(char const * const key)
-      { m_values.erase(key); }
       inline void erase(std::string const &key)
       { m_values.erase(key); }
 
       /* Adds the specified map into this map. */
       inline void merge(Map const &map)
       { m_values.insert(map.m_values.begin(), map.m_values.end()); }
+
+      /* Parses the specified Json string into a map. */
+      bool load(std::string const &json);
+      bool loadFile(std::string const &jsonFile);
+
 
     private:
 //#pragma mark - members

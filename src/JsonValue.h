@@ -56,8 +56,6 @@ namespace JeayeSON
       /* Treat string literals as standard strings. */
       inline void setValue(char const * const value)
       { m_value = std::string(value); }
-      inline void setValue(boost::any const &value)
-      { m_value = value; }
 
       template <typename T>
       inline boost::any& operator =(T const &value)
