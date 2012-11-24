@@ -11,7 +11,7 @@
 #include <stdint.h>
 #include <string>
 
-#include "JsonMap.h"
+#include "JsonValue.h"
 
 int32_t main()
 {
@@ -33,7 +33,7 @@ int32_t main()
   if(jm.hasKey("foo"))
    std::cout << jm.get("foo", "NOPE") << std::endl; 
   std::cout << jm.get("fourPointFive", 0.0f) << std::endl;
-
+  
   std::cout << "Done\n";
   return 0;
 }

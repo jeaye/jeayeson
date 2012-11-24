@@ -10,9 +10,12 @@
 #ifndef JEAYESON_JSONMAP_H
 #define JEAYESON_JSONMAP_H 
 
-#include <map>
-
-#include "JsonValue.h"
+#if JEAYESON_STDMAP
+  #include <map>
+#else
+  #include <boost/unordered_map.hpp>
+#endif
+#include <string>
 
 namespace JeayeSON
 {
@@ -21,9 +24,12 @@ namespace JeayeSON
    * could be anything (including more
    * JsonMaps!).
    */
+  template <typename Value>
   class Map
   {
     public:
+      typedef char const * const cstr_t;
+
 //#pragma mark - ctors and dtor
       Map()
       { }
@@ -34,10 +40,10 @@ namespace JeayeSON
 
 //#pragma mark - accessors
       template <typename T>
-      inline T get(char const * const key, T const &fallback)
-      { return (hasKey(key) ? m_values[key].as<T>() : fallback); }
-      inline std::string get(char const * const key, char const * const fallback)
-      { return (hasKey(key) ? m_values[key].as<std::string>() : fallback); }
+      inline T get(cstr_t key, T const &fallback)
+      { return (hasKey(key) ? m_values[key].template as<T>() : fallback); }
+      inline std::string get(cstr_t key, cstr_t fallback)
+      { return (hasKey(key) ? m_values[key].template as<std::string>() : fallback);  }
 
       inline bool hasKey(std::string const &key) const
       { return (m_values.find(key) != m_values.end()); }
@@ -47,7 +53,7 @@ namespace JeayeSON
 
 //#pragma mark - mutators
       template <typename T>
-      inline void set(char const * const key, T value)
+      inline void set(cstr_t key, T value)
       { m_values[key] = value; }
       template <typename T>
       inline void set(std::string const &key, T value)
@@ -72,12 +78,14 @@ namespace JeayeSON
 
     private:
 //#pragma mark - members
+#if JEAYESON_STDMAP
       std::map<std::string, Value> m_values;
+#else
+      boost::unordered_map<std::string, Value> m_values;
+#endif
 
   }; /* Class Map */
 } /* Namespace JeayeSON */
-
-typedef JeayeSON::Map JsonMap;
 
 #endif /* JEAYESON_JSONMAP_H */
 

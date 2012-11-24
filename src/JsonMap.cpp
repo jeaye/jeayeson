@@ -15,7 +15,7 @@ namespace JeayeSON
     return false;
   }
 
-  bool loadFile(std::string const &jsonFile)
+  bool Map::loadFile(std::string const &jsonFile)
   {
     return false;
   }
