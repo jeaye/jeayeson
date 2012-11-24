@@ -33,16 +33,16 @@ namespace JeayeSON
 //#pragma mark - ctors and dtor
       Map()
       { }
-      Map(std::string const &json)
+      explicit Map(std::string const &json)
       { if(load(json) == false) throw "Failed to load json!"; }
       virtual ~Map()
       { }
 
 //#pragma mark - accessors
       template <typename T>
-      inline T get(cstr_t key, T const &fallback)
+      inline T get(std::string const &key, T const &fallback)
       { return (hasKey(key) ? m_values[key].template as<T>() : fallback); }
-      inline std::string get(cstr_t key, cstr_t fallback)
+      inline std::string get(std::string const &key, cstr_t fallback)
       { return (hasKey(key) ? m_values[key].template as<std::string>() : fallback);  }
 
       inline bool hasKey(std::string const &key) const
