@@ -38,13 +38,6 @@ namespace JeayeSON
       inline T get(index_t index)
       { return m_values[index].template as<T>(); }
 
-      /* Note fallback is only here for compatibility. */
-      template <typename T>
-      inline T get(index_t index, T const &fallback)
-      { return m_values[index].template as<T>(); }
-      inline std::string get(index_t index, cstr_t fallback)
-      { return m_values[index].template as<std::string>(); }
-
       inline void size() const
       { return m_values.size(); }
       inline bool isEmpty() const
