@@ -8,7 +8,7 @@
 */
 
 #ifndef JEAYESON_JSONMAP_H
-#define JEAYESON_JSONMAP_H 
+#define JEAYESON_JSONMAP_H
 
 #if JEAYESON_STDMAP
   #include <map>
@@ -16,6 +16,8 @@
   #include <boost/unordered_map.hpp>
 #endif
 #include <string>
+
+#include "JsonParser.h"
 
 namespace JeayeSON
 {
@@ -35,7 +37,7 @@ namespace JeayeSON
       { }
       explicit Map(std::string const &json)
       { if(load(json) == false) throw "Failed to load json!"; }
-      virtual ~Map()
+      ~Map()
       { }
 
 //#pragma mark - accessors
@@ -72,13 +74,19 @@ namespace JeayeSON
       { m_values.insert(map.m_values.begin(), map.m_values.end()); }
 
       /* Parses the specified Json string into a map. */
-      bool load(std::string const &json);
-      bool loadFile(std::string const &jsonFile);
+      bool load(std::string const &json)
+      { return false; }
+      bool loadFile(std::string const &jsonFile)
+      {
+        (*this) = Parser::loadFile<Map<Value> >(jsonFile);
+
+        return false;
+      }
 
 
     private:
 //#pragma mark - members
-#if JEAYESON_STDMAP
+#if JEAYESON_STD_MAP
       std::map<std::string, Value> m_values;
 #else
       boost::unordered_map<std::string, Value> m_values;

@@ -1,0 +1,6 @@
+Optimizations:
+  [X] Bypass OS for reading
+  [ ] Compact data (less to parse through -- like whitespace)
+  [ ] Binary JSON
+  [ ] Multi-threading
+

@@ -26,7 +26,11 @@ The test(s) should show (in main.cpp) how to use JeayeSON. Enjoy!
   Customization
 /***************/
 
-#define JEAYESON_STDMAP 1
-  Use std::map instead of boost::unordered_map (decrease in performance on large data sets)
+NOTE: These are all easily changed in src/Defines.h
 
+#define JEAYESON_STD_MAP [0-1] (default 0)
+  Use std::map instead of boost::unordered_map (decrease in performance on large data sets).
+
+#define JEAYESON_STD_FSTREAM_LOAD [0-1] (default 1)
+  Use std::ifstream instead of boost's memory mapping for normal (not streaming) file reading.
 

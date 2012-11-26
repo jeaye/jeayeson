@@ -13,7 +13,7 @@
 
 #include "JsonValue.h"
 
-int32_t main()
+int32_t main(int32_t argc, char **argv)
 {
   std::cout << "Starting\n";
 
@@ -31,9 +31,9 @@ int32_t main()
   jm.set("foo", "bar");
   jm.set("fourPointFive", 4.5f);
   if(jm.hasKey("foo"))
-   std::cout << jm.get("foo", "NOPE") << std::endl; 
+   std::cout << jm.get("foo", "NOPE") << std::endl;
   std::cout << jm.get("fourPointFive", 0.0f) << std::endl;
-  
+
   std::cout << "Done\n";
   return 0;
 }

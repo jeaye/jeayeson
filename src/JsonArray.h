@@ -59,7 +59,7 @@ namespace JeayeSON
 
       /* Erases _amount_ number of objects from the starting
        * point _index_. This does no bounds checking. */
-      inline void erase(index_t index, size_t amount)
+      inline void erase(index_t index, std::size_t amount)
       { m_values.erase(m_values.begin() + index, m_values.begin() + index + amount); }
 
       template <typename T>
