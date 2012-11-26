@@ -1,3 +1,12 @@
+/*
+  Copyright © 2012 Jesse 'Jeaye' Wilkerson
+  See licensing at:
+    http://opensource.org/licenses/BSD-3-Clause
+
+  File: Defines.h
+  Author: Jesse 'Jeaye' Wilkerson
+*/
+
 #ifndef DEFINES_H
 #define DEFINES_H
 
