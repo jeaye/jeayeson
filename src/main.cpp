@@ -34,6 +34,10 @@ int32_t main(int32_t argc, char **argv)
    std::cout << jm.get("foo", "NOPE") << std::endl;
   std::cout << jm.get("fourPointFive", 0.0f) << std::endl;
 
+  jm.loadFile("NOTES");
+  JsonArray ja;
+  ja.loadFile("NOTES");
+
   std::cout << "Done\n";
   return 0;
 }

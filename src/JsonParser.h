@@ -21,11 +21,12 @@
 
 namespace JeayeSON
 {
-  class Parser
+  class IParseable
   {
     public:
-      template <typename T>
-      static T loadFile(std::string const &jsonFile)
+
+      template <typename Container>
+      bool parseFile(std::string const &jsonFile)
       {
         std::string json;
 
@@ -35,7 +36,7 @@ namespace JeayeSON
 
         /* Ensure the file was opened. */
         if(file.is_open() == false)
-          return T();
+          return false;
 
         /* Determine the file length. */
         file.seekg(0, std::ios_base::end);
@@ -62,16 +63,18 @@ namespace JeayeSON
         json.assign(str, elements);
 #endif
 
-        /* Load the file normally. */
-        return load<T>(json);
+        /* Parse the file normally. */
+        return parse<Container>(json);
       }
 
-      template <typename T>
-      static T load(std::string const &jsonString)
+      template <typename Container>
+      bool parse(std::string const &jsonString)
       {
-        return T();
+        std::cout << "Type's delim is " << Container::delimOpen << " " << Container::delimClose << std::endl;
+        return false;
       }
-  };
+
+  }; /* Class IParseable */
 } /* Namespace JeayeSON */
 
 #endif /* JSONPARSER_H */

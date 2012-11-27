@@ -15,15 +15,19 @@
 #include <stdint.h>
 #include <algorithm>
 
+#include "JsonParser.h"
+
 namespace JeayeSON
 {
   template <typename Value>
-  class Array
+  class Array : private IParseable
   {
     public:
       typedef uint32_t index_t;
       static index_t const npos;
       typedef char const * const cstr_t;
+      static char const delimOpen = '[';
+      static char const delimClose = ']';
 
 ////#pragma mark - ctors and dtor
       Array()
@@ -77,9 +81,17 @@ namespace JeayeSON
         return npos;
       }
 
-      /* Parses the specified Json string into a map. */
-      bool load(std::string const &json);
-      bool loadFile(std::string const &jsonFile);
+      /* Loads the specified JSON string. */
+      inline bool load(std::string const &json)
+      { return parse<Array<Value> >(json); }
+      static inline Array<Value> loadNew(std::string const &json)
+      { Array<Value> ar; ar.parse<Array<Value> >(json); return ar; }
+
+      /* Loads the specified JSON file. */
+      inline bool loadFile(std::string const &jsonFile)
+      { return parseFile<Array<Value> >(jsonFile); }
+      static inline Array<Value> loadFileNew(std::string const &jsonFile)
+      { Array<Value> ar; ar.parseFile<Array<Value> >(jsonFile); return ar; }
 
     private:
 //#pragma mark - members
