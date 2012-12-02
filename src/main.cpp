@@ -37,8 +37,21 @@ int32_t main(int32_t argc, char **argv)
   jm.loadFile("NOTES");
   JsonArray ja;
   ja.loadFile("NOTES");
+  ja.add("foo");
+  ja.add("bar");
+  ja.add("spam");
+  ja.add("jove");
+  ja.add("tots");
 
-  std::cout << "Done\n";
+  JsonMap inner;
+  inner.set("in foo", "in bar");
+  inner.set("in bar", true);
+  inner.set("names", ja);
+  jm.set("in", inner);
+
+  std::cout << jm.jsonString();
+
+  std::cout << "\n\n\nDone\n";
   return 0;
 }
 

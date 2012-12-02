@@ -24,8 +24,9 @@ namespace JeayeSON
   {
     public:
       typedef uint32_t index_t;
-      static index_t const npos;
       typedef char const * const cstr_t;
+      typedef std::vector<Value> array_t;
+      static index_t const npos;
       static char const delimOpen = '[';
       static char const delimClose = ']';
 
@@ -68,7 +69,7 @@ namespace JeayeSON
 
       template <typename T>
       inline void add(T const &t)
-      { m_values.push_back(t); }
+      { m_values.push_back(Value(t)); }
 
       /* Finds the specified value and returns the index of it.
        * If the value is not found, Array::npos is returned. */
@@ -93,11 +94,29 @@ namespace JeayeSON
       static inline Array<Value> loadFileNew(std::string const &jsonFile)
       { Array<Value> ar; ar.parseFile<Array<Value> >(jsonFile); return ar; }
 
+      template <typename T>
+      friend std::ostream& operator <<(std::ostream &stream, Array<T> const &arr);
+
     private:
 //#pragma mark - members
-      std::vector<Value> m_values;
+      array_t m_values;
 
   }; /* Class Array */
+
+  template <typename Value>
+  std::ostream& operator <<(std::ostream &stream, Array<Value> const &arr)
+  {
+    stream << arr.delimOpen;
+    for(typename Array<Value>::array_t::const_iterator i = arr.m_values.begin(); i != arr.m_values.end(); ++i, stream.put(','))
+      stream << *i;
+
+    /* Replace the last comma with the object's close delim. */
+    stream.seekp(-1, std::ios_base::end);
+    stream.put(arr.delimClose);
+
+    return stream;
+  }
+
 } /* Namespace JeayeSON */
 
 #endif /* JEAYESON_JSONARRAY_H */

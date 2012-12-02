@@ -10,6 +10,8 @@
 #ifndef JSONPARSER_H
 #define JSONPARSER_H
 
+#include <string>
+#include <sstream>
 #include <fstream>
 
 #if !JEAYESON_STD_FSTREAM_LOAD
@@ -72,6 +74,14 @@ namespace JeayeSON
       {
         std::cout << "Type's delim is " << Container::delimOpen << " " << Container::delimClose << std::endl;
         return false;
+      }
+
+      template <typename Container>
+      std::string save(Container const &container)
+      {
+        std::stringstream output;
+        output << container;
+        return output.str();
       }
 
   }; /* Class IParseable */

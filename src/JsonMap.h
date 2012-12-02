@@ -31,6 +31,11 @@ namespace JeayeSON
   {
     public:
       typedef char const * const cstr_t;
+#if JEAYESON_STD_MAP
+      typedef std::map<std::string, Value> map_t;
+#else
+      typedef boost::unordered_map<std::string, Value> map_t;
+#endif
       static char const delimOpen = '{';
       static char const delimClose = '}';
 
@@ -87,15 +92,33 @@ namespace JeayeSON
       static Map<Value> loadFileNew(std::string const &jsonFile)
       { Map<Value> m; m.parseFile<Map<Value> >(jsonFile); return m; }
 
+      /* Writes the JSON data to string form. */
+      inline std::string jsonString()
+      { return save<Map<Value> >(*this); }
+
+      template <typename T>
+      friend std::ostream& operator <<(std::ostream &stream, Map<T> const &map);
+
     private:
 //#pragma mark - members
-#if JEAYESON_STD_MAP
-      std::map<std::string, Value> m_values;
-#else
-      boost::unordered_map<std::string, Value> m_values;
-#endif
+      map_t m_values;
 
   }; /* Class Map */
+
+  template <typename Value>
+  std::ostream& operator <<(std::ostream &stream, Map<Value> const &map)
+  {
+    stream << map.delimOpen;
+    for(typename Map<Value>::map_t::const_iterator i = map.m_values.begin(); i != map.m_values.end(); ++i, stream.put(','))
+      stream << "\"" << i->first << "\":" << i->second;
+
+    /* Replace the last comma with the object's close delim. */
+    stream.seekp(-1, std::ios_base::end);
+    stream.put(map.delimClose);
+
+    return stream;
+  }
+
 } /* Namespace JeayeSON */
 
 #endif /* JEAYESON_JSONMAP_H */
