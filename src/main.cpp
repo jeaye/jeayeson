@@ -22,7 +22,7 @@ int32_t main(int32_t argc, char **argv)
   std::cout << jv.as<float>() << std::endl;
 
   jv = "Foo";
-  jv.setValue("Jimbo");
+  jv.set("Jimbo");
   jv.as<std::string>() = "Nice";
 
   std::cout << jv.as<std::string>() << std::endl;

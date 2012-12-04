@@ -82,9 +82,9 @@ namespace JeayeSON
 
       /* Loads the specified JSON string. */
       bool load(std::string const &json)
-      { return parse<Map<Value> >(json); }
+      { return parse(json); }
       static Map<Value> loadNew(std::string const &json)
-      { Map<Value> m; m.parse<Map<Value> >(json); return m; }
+      { Map<Value> m; m.parse(json); return m; }
 
       /* Loads the specified JSON file. */
       bool loadFile(std::string const &jsonFile)

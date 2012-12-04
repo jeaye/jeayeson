@@ -8,6 +8,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb -Wall --pedantic")
 
 set(jeayeson_SRCS 
 	src/main.cpp
+  src/JsonParser.cpp
 )
 
 find_package(Boost COMPONENTS system REQUIRED)

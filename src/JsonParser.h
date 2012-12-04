@@ -7,8 +7,8 @@
   Author: Jesse 'Jeaye' Wilkerson
 */
 
-#ifndef JSONPARSER_H
-#define JSONPARSER_H
+#ifndef JEAYESON_JSONPARSER_H
+#define JEAYESON_JSONPARSER_H
 
 #include <string>
 #include <sstream>
@@ -20,6 +20,12 @@
 #endif
 
 #include "Defines.h"
+
+#if __cplusplus >= 201103L
+#define MOVE(x) std::move((x))
+#else
+#define MOVE(x) (x)
+#endif
 
 namespace JeayeSON
 {
@@ -66,18 +72,13 @@ namespace JeayeSON
 #endif
 
         /* Parse the file normally. */
-        return parse<Container>(json);
+        return parse(json);
       }
 
-      template <typename Container>
-      bool parse(std::string const &jsonString)
-      {
-        std::cout << "Type's delim is " << Container::delimOpen << " " << Container::delimClose << std::endl;
-        return false;
-      }
+      bool parse(std::string const &jsonString);
 
       template <typename Container>
-      std::string save(Container const &container)
+      inline std::string save(Container const &container)
       {
         std::stringstream output;
         output << container;
@@ -87,5 +88,5 @@ namespace JeayeSON
   }; /* Class IParseable */
 } /* Namespace JeayeSON */
 
-#endif /* JSONPARSER_H */
+#endif /* JEAYESON_JSONPARSER_H */
 
