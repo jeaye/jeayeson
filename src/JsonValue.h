@@ -14,14 +14,16 @@
 
 #include "JsonMap.h"
 #include "JsonArray.h"
+#include "JsonParser.h"
 
 namespace JeayeSON
 {
   class Value
   {
     private:
-      struct Null
-      { };
+      typedef Map<Value, Parser> map_t;
+      typedef Array<Value, Parser> array_t;
+      typedef struct{ } null_t;
 
     public:
       enum Type
@@ -39,17 +41,17 @@ namespace JeayeSON
         Type_Array
       };
       typedef boost::variant<
-        Null,                                   /* Null (empty) type. */
+        null_t,                                 /* Null (empty) type. */
         uint32_t, int32_t, uint64_t, int64_t,   /* Integral types. */
         float, double,                          /* Floating point types. */
         bool,                                   /* Boolean types. */
         std::string,                            /* String types. */
-        Map<Value>,                             /* Map types. */
-        Array<Value>                            /* Array types. */
+        map_t,                                  /* Map types. */
+        array_t                                 /* Array types. */
                             > variant_t;
       typedef char const * const cstr_t;
 
-      Value() : m_value(Null())
+      Value() : m_value(null_t())
       { }
       template <typename T>
       Value(T &value) : m_value(value)
@@ -96,12 +98,12 @@ namespace JeayeSON
       /* Shortcut add for arrays. */
       template <typename T>
       inline void add(T const &value)
-      { as<Array<Value> >().add(value); }
+      { as< array_t >().add(value); }
 
       /* Shortcut add for maps. */
       template <typename T>
       inline void add(std::string const &key, T const &value)
-      { as<Map<Value> >().set(key, value); }
+      { as< map_t >().set(key, value); }
 
       template <typename T>
       inline variant_t& operator =(T const &value)
@@ -115,11 +117,24 @@ namespace JeayeSON
       variant_t m_value;
 
   }; /* Class JsonValue */
+
+  std::ostream& operator <<(std::ostream &stream, Value const &value)
+  {
+    switch(value.m_value.which())
+    {
+      case Value::Type_String:
+        return (stream << "\"" << value.m_value << "\"");
+      case Value::Type_Bool:
+        return (stream << (value.as<bool>() ? "true" : "false"));
+      default:
+        return (stream << value.m_value);
+    }
+  }
 } /* Namespace JeayeSON */
 
 typedef JeayeSON::Value JsonValue;
-typedef JeayeSON::Map<JsonValue> JsonMap;
-typedef JeayeSON::Array<JsonValue> JsonArray;
+typedef JeayeSON::Map<JsonValue, JeayeSON::Parser> JsonMap;
+typedef JeayeSON::Array<JsonValue, JeayeSON::Parser> JsonArray;
 
 #endif /* JEAYESON_JSONVALUE_H */
 

@@ -17,8 +17,6 @@
 #endif
 #include <string>
 
-#include "JsonParser.h"
-
 namespace JeayeSON
 {
   /* JsonMaps provide a wrapper for
@@ -26,10 +24,13 @@ namespace JeayeSON
    * could be anything (including more
    * JsonMaps!).
    */
-  template <typename Value>
-  class Map : public IParseable
+  template <typename Value, typename Parser>
+  class Map
   {
     public:
+      typedef Map<Value, Parser> this_t;
+      typedef Value value_t;
+      typedef Parser parser_t;
       typedef char const * const cstr_t;
 #if JEAYESON_STD_MAP
       typedef std::map<std::string, Value> map_t;
@@ -43,8 +44,6 @@ namespace JeayeSON
       { }
       explicit Map(std::string const &json)
       { if(load(json) == false) throw "Failed to load json!"; }
-      ~Map()
-      { }
 
       template <typename T>
       inline T get(std::string const &key, T const &fallback)
@@ -78,34 +77,35 @@ namespace JeayeSON
       { m_values.insert(map.m_values.begin(), map.m_values.end()); }
 
       /* Loads the specified JSON string. */
-      bool load(std::string const &json)
-      { return parse(json); }
-      static Map<Value> loadNew(std::string const &json)
-      { Map<Value> m; m.parse(json); return m; }
+      void load(std::string const &json)
+      { *this = Parser::template parse< this_t >(json); }
+      static this_t loadNew(std::string const &json)
+      { return Parser::template parse< this_t >(json); }
 
       /* Loads the specified JSON file. */
-      bool loadFile(std::string const &jsonFile)
-      { return parseFile<Map<Value> >(jsonFile); }
-      static Map<Value> loadFileNew(std::string const &jsonFile)
-      { Map<Value> m; m.parseFile<Map<Value> >(jsonFile); return m; }
+      void loadFile(std::string const &jsonFile)
+      { *this = Parser::template parseFile< this_t >(jsonFile); }
+      static this_t loadFileNew(std::string const &jsonFile)
+      { return Parser::template parseFile< this_t >(jsonFile); }
 
       /* Writes the JSON data to string form. */
       inline std::string jsonString()
-      { return save<Map<Value> >(*this); }
+      { return Parser::template save< this_t >(*this); }
 
-      template <typename T>
-      friend std::ostream& operator <<(std::ostream &stream, Map<T> const &map);
+      template <typename ValueT, typename ParserT>
+      friend std::ostream& operator <<(std::ostream &stream, Map<ValueT, ParserT> const &map);
 
     private:
       map_t m_values;
 
   }; /* Class Map */
 
-  template <typename Value>
-  std::ostream& operator <<(std::ostream &stream, Map<Value> const &map)
+  template <typename Value, typename Parser>
+  std::ostream& operator <<(std::ostream &stream, Map<Value, Parser> const &map)
   {
     stream << map.delimOpen;
-    for(typename Map<Value>::map_t::const_iterator i = map.m_values.begin(); i != map.m_values.end(); ++i, stream.put(','))
+    for(typename Map<Value, Parser>::map_t::const_iterator i = map.m_values.begin();
+        i != map.m_values.end(); ++i, stream.put(','))
       stream << "\"" << i->first << "\":" << i->second;
 
     /* Replace the last comma with the object's close delim. */

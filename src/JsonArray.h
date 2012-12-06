@@ -15,30 +15,28 @@
 #include <stdint.h>
 #include <algorithm>
 
-#include "JsonParser.h"
-
 namespace JeayeSON
 {
-  template <typename Value>
-  class Array : private IParseable
+  template <typename Value, typename Parser>
+  class Array
   {
     public:
+      typedef Array<Value, Parser> this_t;
+      typedef Value value_t;
+      typedef Parser parser_t;
       typedef uint32_t index_t;
       typedef char const * const cstr_t;
       typedef std::vector<Value> array_t;
+
       static index_t const npos;
       static char const delimOpen = '[';
       static char const delimClose = ']';
 
-////#pragma mark - ctors and dtor
       Array()
       { }
       explicit Array(std::string const &json)
       { if(load(json) == false) throw "Failed to load json!"; }
-      virtual ~Array()
-      { }
 
-//#pragma mark - accessors
       template <typename T>
       inline T get(index_t index)
       { return m_values[index].template as<T>(); }
@@ -48,8 +46,6 @@ namespace JeayeSON
       inline bool isEmpty() const
       { return m_values.empty(); }
 
-
-//#pragma mark - mutators
       /* Stores the specified value at the specified index.
        * The specified index should already exist. */
       template <typename T>
@@ -83,31 +79,35 @@ namespace JeayeSON
       }
 
       /* Loads the specified JSON string. */
-      inline bool load(std::string const &json)
-      { return parse(json); }
-      static inline Array<Value> loadNew(std::string const &json)
-      { Array<Value> ar; ar.parse(json); return ar; }
+      inline void load(std::string const &json)
+      { *this = Parser::template parse< this_t >(json); }
+      static inline this_t loadNew(std::string const &json)
+      { return Parser::template parse< this_t >(json); }
 
       /* Loads the specified JSON file. */
-      inline bool loadFile(std::string const &jsonFile)
-      { return parseFile<Array<Value> >(jsonFile); }
-      static inline Array<Value> loadFileNew(std::string const &jsonFile)
-      { Array<Value> ar; ar.parseFile<Array<Value> >(jsonFile); return ar; }
+      inline void loadFile(std::string const &jsonFile)
+      { *this = Parser::template parseFile< this_t >(jsonFile); }
+      static inline this_t loadNewFile(std::string const &jsonFile)
+      { return Parser::template parseFile< this_t >(jsonFile); }
 
-      template <typename T>
-      friend std::ostream& operator <<(std::ostream &stream, Array<T> const &arr);
+      /* Writes the JSON data to string form. */
+      inline std::string jsonString()
+      { return Parser::template save< this_t >(*this); }
+
+      template <typename ValueT, typename ParserT>
+      friend std::ostream& operator <<(std::ostream &stream, Array<ValueT, ParserT> const &arr);
 
     private:
-//#pragma mark - members
       array_t m_values;
 
   }; /* Class Array */
 
-  template <typename Value>
-  std::ostream& operator <<(std::ostream &stream, Array<Value> const &arr)
+  template <typename Value, typename Parser>
+  std::ostream& operator <<(std::ostream &stream, Array<Value, Parser> const &arr)
   {
     stream << arr.delimOpen;
-    for(typename Array<Value>::array_t::const_iterator i = arr.m_values.begin(); i != arr.m_values.end(); ++i, stream.put(','))
+    for(typename Array<Value, Parser>::array_t::const_iterator i = arr.m_values.begin();
+        i != arr.m_values.end(); ++i, stream.put(','))
       stream << *i;
 
     /* Replace the last comma with the object's close delim. */

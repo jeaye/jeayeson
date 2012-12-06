@@ -20,6 +20,8 @@
 #endif
 
 #include "Defines.h"
+#include "JsonMap.h"
+#include "JsonArray.h"
 
 #if __cplusplus >= 201103L
 #warning Compiling with C++11 support!
@@ -31,12 +33,15 @@
 
 namespace JeayeSON
 {
-  class IParseable
+  class Parser
   {
+    private:
+      typedef std::string::const_iterator str_citer;
+
     public:
 
       template <typename Container>
-      bool parseFile(std::string const &jsonFile)
+      static Container parseFile(std::string const &jsonFile)
       {
         std::string json;
 
@@ -46,7 +51,7 @@ namespace JeayeSON
 
         /* Ensure the file was opened. */
         if(file.is_open() == false)
-          return false;
+          throw "Failed to parse non-existent file.";
 
         /* Determine the file length. */
         file.seekg(0, std::ios_base::end);
@@ -74,13 +79,48 @@ namespace JeayeSON
 #endif
 
         /* Parse the file normally. */
-        return parse(json);
+        return parse<Container>(json);
       }
 
-      bool parse(std::string const &jsonString);
+      template <typename Container>
+      static Container parse(std::string const &jsonString)
+      {
+        typedef Map<typename Container::value_t, typename Container::parser_t> JsonMap;
+        typedef Array<typename Container::value_t, typename Container::parser_t> JsonArray;
+
+        str_citer it = jsonString.begin();
+
+        while(*it)
+        {
+          switch(*it)
+          {
+            /* Start of a new map/array. */
+            case JsonMap::delimOpen:
+              {
+                ++it;
+
+              } break;
+
+            case JsonArray::delimOpen:
+              {
+                ++it;
+
+              } break;
+
+              /* Whitespace. */
+            default:
+              {
+                std::cout << *it;
+                ++it;
+              } break;
+          }
+        }
+
+        return Container();
+      }
 
       template <typename Container>
-      inline std::string save(Container const &container)
+      static inline std::string save(Container const &container)
       {
         std::stringstream output;
         output << container;
