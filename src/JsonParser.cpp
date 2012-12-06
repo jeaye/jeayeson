@@ -12,12 +12,22 @@
 
 namespace JeayeSON
 {
+  typedef std::string::const_iterator str_citer;
+
+  static void parseMap(JsonMap &root, str_citer &it)
+  {
+
+  }
+
+  static void parseArray(JsonArray &root, str_citer &it)
+  {
+
+  }
+
   bool IParseable::parse(std::string const &jsonString)
   {
-    std::string::const_iterator it = jsonString.begin();
-    std::string name;
+    str_citer it = jsonString.begin();
     Value root;
-    root.set(0xDEADBEEF); /* Uninitialized value */
 
     while(*it)
     {
@@ -26,39 +36,29 @@ namespace JeayeSON
         /* Start of a new map/array. */
         case JsonMap::delimOpen:
         {
-          /* Check if root has been created. */
-          if(root.getType() != Value::Type_Map && root.getType() != Value::Type_Array)
-              root.set(JsonMap());
-
           ++it;
+
+          root.set(JsonMap());
+          parseMap(root.as<JsonMap>(), it);
         } break;
+
         case JsonArray::delimOpen:
         {
-          /* Check if root has been created. */
-          if(root.getType() != Value::Type_Map && root.getType() != Value::Type_Array)
-              root.set(JsonArray());
-
           ++it;
-        } break;
 
-        /* End of existing map/array. */
-        case JsonMap::delimClose:
-        case JsonArray::delimClose:
-        {
-
-          ++it;
+          root.set(JsonArray());
+          parseArray(root.as<JsonArray>(), it);
         } break;
 
         /* Whitespace. */
         default:
         {
-          std::cout << *it;
           ++it;
         } break;
       }
     }
 
-    return false;
+    return true;
   }
 
   std::ostream& operator <<(std::ostream &stream, Value const &value)

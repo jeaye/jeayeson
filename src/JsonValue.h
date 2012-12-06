@@ -19,22 +19,29 @@ namespace JeayeSON
 {
   class Value
   {
+    private:
+      struct Null
+      { };
+
     public:
       enum Type
       {
+        Type_Null,
         Type_UInt32,
         Type_Int32,
         Type_UInt64,
         Type_Int64,
         Type_Float,
+        Type_Double,
         Type_Bool,
         Type_String,
         Type_Map,
         Type_Array
       };
       typedef boost::variant<
+        Null,                                   /* Null (empty) type. */
         uint32_t, int32_t, uint64_t, int64_t,   /* Integral types. */
-        float,                                  /* Floating point types. */
+        float, double,                          /* Floating point types. */
         bool,                                   /* Boolean types. */
         std::string,                            /* String types. */
         Map<Value>,                             /* Map types. */
@@ -42,19 +49,14 @@ namespace JeayeSON
                             > variant_t;
       typedef char const * const cstr_t;
 
-////#pragma mark - ctors and dtor
-      Value()
+      Value() : m_value(Null())
       { }
-      virtual ~Value()
-      { }
-
       template <typename T>
       Value(T &value) : m_value(value)
       { }
       Value(cstr_t str) : m_value(std::string(str))
       { }
 
-//#pragma mark - accessors
       template <typename T>
       inline T& get()
       { return boost::get<T&>(m_value); }
@@ -71,6 +73,8 @@ namespace JeayeSON
 
       inline Type getType() const
       { return static_cast<Type>(m_value.which()); }
+      inline bool isNull() const
+      { return m_value.which() == Type_Null; }
 
       template <typename T>
       inline bool operator ==(T const &value) const
@@ -81,7 +85,6 @@ namespace JeayeSON
       /* In JsonParser.cpp */
       friend std::ostream& operator <<(std::ostream &stream, Value const &value);
 
-//#pragma mark - mutators
       template <typename T>
       inline void set(T const &value)
       { m_value = value; }
@@ -93,22 +96,12 @@ namespace JeayeSON
       /* Shortcut add for arrays. */
       template <typename T>
       inline void add(T const &value)
-      {
-        if(m_value.which() == Type_Array)
-          as<JsonArray>().add(value);
-        else
-          throw "Invalid add to JsonValue; value is not an array!";
-      }
+      { as<Array<Value> >().add(value); }
 
       /* Shortcut add for maps. */
       template <typename T>
       inline void add(std::string const &key, T const &value)
-      {
-        if(m_value.which() == Type_Map)
-          as<JsonMap>().set(key, value);
-        else
-          throw "Invalid add to JsonValue; value is not a map!";
-      }
+      { as<Map<Value> >().set(key, value); }
 
       template <typename T>
       inline variant_t& operator =(T const &value)
@@ -119,7 +112,6 @@ namespace JeayeSON
       { return (m_value = std::string(value)); }
 
     private:
-//#pragma mark - members
       variant_t m_value;
 
   }; /* Class JsonValue */
