@@ -1,0 +1,11 @@
+{
+  "Jeaye": "Wilkerson"
+  "NULL": null,
+  "inner": {
+    "inner float": 42.1,
+    "inner int": 43,
+    "inner string": "woohoo!",
+    "inner string2": "meh meh meh",
+  }
+}
+

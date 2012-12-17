@@ -13,6 +13,7 @@
 #include <string>
 #include <sstream>
 #include <fstream>
+#include <cstdlib>
 
 #if !JEAYESON_STD_FSTREAM_LOAD
 #include <boost/interprocess/file_mapping.hpp>
@@ -37,6 +38,126 @@ namespace JeayeSON
   {
     private:
       typedef std::string::const_iterator str_citer;
+
+      enum State { Parse_Name, Parse_Value };
+
+      template <typename Map>
+      static void parseMap(Map &map, str_citer &it)
+      {
+        typedef Map JsonMap;
+        typedef Array<typename Map::value_t, typename Map::parser_t> JsonArray;
+
+        std::string name;
+        name.reserve(128);
+        std::string value;
+        value.reserve(128);
+
+        State state(Parse_Name);
+
+        while(*it)
+        {
+          switch(*it)
+          {
+            case JsonMap::delimOpen:
+            {
+              ++it;
+
+              map.set(name, JsonMap());
+              parseMap(map.getMap(name), it);
+
+              state = Parse_Name;
+            } break;
+
+            case JsonArray::delimOpen:
+            {
+
+            } break;
+
+            /* Start of a value (the key). */
+            case '"':
+            {
+              ++it;
+
+              if(state == Parse_Value)
+              {
+                value.clear();
+                for( ; *it != '"'; ++it)
+                  value += *it;
+
+                map.set(name, value);
+                state = Parse_Name;
+              }
+              else
+              {
+                name.clear();
+                for( ; *it != '"'; ++it)
+                  name += *it;
+
+                state = Parse_Value;
+              }
+
+              ++it;
+            } break;
+
+            /* Start of an int or float. */
+            case '-':
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7':
+            case '8':
+            case '9':
+            case '0':
+            {
+              str_citer isInt(it);
+              while(*isInt == '-' || (*isInt >= '0' && *isInt <= '9'))
+                ++isInt;
+              if(*isInt == '.' || *isInt == 'e' || *isInt == 'E')
+                map.set(name, std::atof(&*it));
+              else
+                map.set(name, std::atoi(&*it));
+
+              while(*it == '-' || *it == '.' || (*it >= '0' && *it <= '9'))
+                ++it;
+              ++it;
+
+              state = Parse_Name;
+            } break;
+
+            /* Start of null, true, or false. */
+            case 'n':
+            case 't':
+            case 'f':
+            {
+              if(*it == 'n' && *(it + 1) == 'u' && *(it + 2) == 'l' && *(it + 3) == 'l')
+                map.set(name, typename Map::value_t());
+              else if(*it == 't' && *(it + 1) == 'r' && *(it + 2) == 'u' && *(it + 3) == 'e')
+                map.set(name, true);
+              else
+                map.set(name, false);
+
+              while(*it != ',' && *it != JsonMap::delimClose)
+                ++it;
+              ++it;
+
+              state = Parse_Name;
+            } break;
+
+            default:
+              ++it;
+              break;
+          }
+        }
+      }
+
+      template <typename Array>
+      static void parseArray(Array &arr, str_citer &it)
+      {
+
+      }
 
     public:
 
@@ -94,25 +215,24 @@ namespace JeayeSON
         {
           switch(*it)
           {
-            /* Start of a new map/array. */
-            case JsonMap::delimOpen:
-              {
-                ++it;
+            case Container::delimOpen:
+            {
+              ++it;
 
-              } break;
+              Container c;
+              if(Container::delimOpen == JsonMap::delimOpen)
+                parseMap(c, it);
+              else
+                parseArray(c, it);
+              return c;
 
-            case JsonArray::delimOpen:
-              {
-                ++it;
-
-              } break;
+            } break;
 
               /* Whitespace. */
             default:
-              {
-                std::cout << *it;
-                ++it;
-              } break;
+            {
+              ++it;
+            } break;
           }
         }
 

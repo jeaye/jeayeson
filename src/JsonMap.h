@@ -48,8 +48,10 @@ namespace JeayeSON
       template <typename T>
       inline T get(std::string const &key, T const &fallback)
       { return (hasKey(key) ? m_values[key].template as<T>() : fallback); }
-      inline std::string get(std::string const &key, cstr_t fallback)
+      inline std::string& get(std::string const &key, cstr_t fallback)
       { return (hasKey(key) ? m_values[key].template as<std::string>() : fallback);  }
+      inline Map<Value, Parser>& getMap(std::string const &key)
+      { return m_values[key].template as<Map<Value, Parser> >(); }
 
       inline bool hasKey(std::string const &key) const
       { return (m_values.find(key) != m_values.end()); }

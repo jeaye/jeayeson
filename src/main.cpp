@@ -18,21 +18,7 @@ int32_t main(int32_t argc, char **argv)
   std::cout << "Starting\n";
 
   JsonMap jm;
-  jm.loadFile("NOTES");
-
-  JsonArray ja;
-  ja.loadFile("NOTES");
-  ja.add("foo");
-  ja.add("bar");
-  ja.add("spam");
-  ja.add("jove");
-  ja.add("tots");
-
-  JsonMap inner;
-  inner.set("in foo", "in bar");
-  inner.set("in bar", true);
-  inner.set("names", ja);
-  jm.set("in", inner);
+  jm.loadFile("test.json");
 
   std::cout << jm.jsonString();
 
