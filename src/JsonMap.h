@@ -10,12 +10,37 @@
 #ifndef JEAYESON_JSONMAP_H
 #define JEAYESON_JSONMAP_H
 
-#if JEAYESON_STDMAP
-  #include <map>
-#else
-  #include <boost/unordered_map.hpp>
-#endif
+#include "Defines.h"
 #include <string>
+
+/* Decide underlying map type */
+#undef JEAYESON_MAP_T
+
+#ifdef JEAYESON_USE_STD_MAP
+  #include <map>
+  #define JEAYESON_MAP_T std::map
+
+#elif defined JEAYESON_USE_STD_UNORD
+  #include <map>
+  #define JEAYESON_MAP_T std::unordered_map
+
+#elif defined JEAYESON_USE_BOOST_UNORD
+  #include <boost/unordered_map.hpp>
+  #define JEAYESON_MAP_T boost::unordered_map
+
+#elif defined JEAYESON_USE_OTHER_MAP
+  /* Client is responsible for appropriate includes */
+  #ifndef JEAYESON_OTHER_MAP
+    #error JEAYESON_USE_OTHER_MAP specified but JEAYSON_OTHER_MAP is undefined.
+  #else
+    #define JEAYESON_MAP_T JEAYESON_OTHER_MAP
+  #endif // defined(JEAYESON_OTHER_MAP)
+
+#else
+  #error No JEAYESON_USE_[map type] is defined. See Defines.h.
+
+#endif
+
 
 namespace JeayeSON
 {
@@ -32,11 +57,8 @@ namespace JeayeSON
       typedef Value value_t;
       typedef Parser parser_t;
       typedef char const * const cstr_t;
-#if JEAYESON_STD_MAP
-      typedef std::map<std::string, Value> map_t;
-#else
-      typedef boost::unordered_map<std::string, Value> map_t;
-#endif
+      typedef JEAYESON_MAP_T<std::string, Value> map_t;
+
       static char const delimOpen = '{';
       static char const delimClose = '}';
 
