@@ -121,22 +121,6 @@ namespace JeayeSON
       map_t m_values;
 
   }; /* Class Map */
-
-  template <typename Value, typename Parser>
-  std::ostream& operator <<(std::ostream &stream, Map<Value, Parser> const &map)
-  {
-    stream << map.delimOpen;
-    for(typename Map<Value, Parser>::map_t::const_iterator i = map.m_values.begin();
-        i != map.m_values.end(); ++i, stream.put(','))
-      stream << "\"" << i->first << "\":" << i->second;
-
-    /* Replace the last comma with the object's close delim. */
-    stream.seekp(-1, std::ios_base::end);
-    stream.put(map.delimClose);
-
-    return stream;
-  }
-
 } /* Namespace JeayeSON */
 
 #endif /* JEAYESON_JSONMAP_H */
