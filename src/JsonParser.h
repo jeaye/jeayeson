@@ -41,37 +41,83 @@ namespace JeayeSON
 
       enum State { Parse_Name, Parse_Value };
 
-      template <typename Map>
-      static void parseMap(Map &map, str_citer &it)
+/********************* Helper Accessors *********************/
+      template <typename Value, typename Parser, typename T>
+      static inline State add(Map<Value, Parser> &map, std::string const &key, T const &t)
       {
-        typedef Map JsonMap;
-        typedef Array<typename Map::value_t, typename Map::parser_t> JsonArray;
+        map.set(key, t);
+        return Parse_Name;
+      }
+
+      template <typename Value, typename Parser, typename T>
+      static inline State add(Array<Value, Parser> &arr, std::string const &notUsed, T const &t)
+      {
+        arr.add(t);
+        return Parse_Value;
+      }
+
+      template <typename Value, typename Parser>
+      static inline Map<Value, Parser>& getMap(Map<Value, Parser> &map, std::string const &key,
+                                              typename Array<Value, Parser>::index_t notUsed)
+      { return map.getMap(key); }
+
+      template <typename Value, typename Parser>
+      static inline Map<Value, Parser>& getMap(Array<Value, Parser> &arr, std::string const &notUsed,
+                                              typename Array<Value, Parser>::index_t index)
+      { return arr.getMap(index); }
+
+      template <typename Value, typename Parser>
+      static inline Array<Value, Parser>& getArray(Map<Value, Parser> &map, std::string const &key,
+                                                  typename Array<Value, Parser>::index_t notUsed)
+      { return map.getArray(key); }
+
+      template <typename Value, typename Parser>
+      static inline Array<Value, Parser>& getArray(Array<Value, Parser> &arr, std::string const &notUsed,
+                                                  typename Array<Value, Parser>::index_t index)
+      { return arr.getArray(index); }
+/********************* Helper Accessors *********************/
+
+      template <typename Container>
+      static void parse(Container &container, str_citer &it)
+      {
+        typedef Map<typename Container::value_t, typename Container::parser_t> JsonMap;
+        typedef Array<typename Container::value_t, typename Container::parser_t> JsonArray;
 
         std::string name;
         name.reserve(128);
         std::string value;
         value.reserve(128);
 
-        State state(Parse_Name);
+        /* Maps start out parsing keys, arrays just want values. */
+        State state(container.delimOpen == JsonMap::delimOpen ? Parse_Name : Parse_Value);
 
         while(*it)
         {
           switch(*it)
           {
+            /* Start of a new map. */
             case JsonMap::delimOpen:
             {
               ++it;
 
-              map.set(name, JsonMap());
-              parseMap(map.getMap(name), it);
-
-              state = Parse_Name;
+              state = add(container, name, JsonMap());
+              parse(getMap(container, name, container.getSize() - 1), it);
             } break;
 
+            /* Start of a new array. */
             case JsonArray::delimOpen:
             {
+              ++it;
 
+              state = add(container, name, JsonArray());
+              parse(getArray(container, name, container.getSize() - 1), it);
             } break;
+
+            /* End of the current node. */
+            case JsonMap::delimClose:
+            case JsonArray::delimClose:
+              ++it;
+              return;
 
             /* Start of a value (the key). */
             case '"':
@@ -84,10 +130,9 @@ namespace JeayeSON
                 for( ; *it != '"'; ++it)
                   value += *it;
 
-                map.set(name, value);
-                state = Parse_Name;
+                state = add(container, name, value);
               }
-              else
+              else // Parsing a key/name
               {
                 name.clear();
                 for( ; *it != '"'; ++it)
@@ -112,19 +157,19 @@ namespace JeayeSON
             case '9':
             case '0':
             {
+              /* Determine if the value is integral or floating point. */
               str_citer isInt(it);
               while(*isInt == '-' || (*isInt >= '0' && *isInt <= '9'))
                 ++isInt;
               if(*isInt == '.' || *isInt == 'e' || *isInt == 'E')
-                map.set(name, std::atof(&*it));
+                state = add(container, name, std::atof(&*it));
               else
-                map.set(name, std::atoi(&*it));
+                state = add(container, name, std::atoi(&*it));
 
+              /* Progress to the next element. */
               while(*it == '-' || *it == '.' || (*it >= '0' && *it <= '9'))
                 ++it;
               ++it;
-
-              state = Parse_Name;
             } break;
 
             /* Start of null, true, or false. */
@@ -133,30 +178,24 @@ namespace JeayeSON
             case 'f':
             {
               if(*it == 'n' && *(it + 1) == 'u' && *(it + 2) == 'l' && *(it + 3) == 'l')
-                map.set(name, typename Map::value_t());
+                state = add(container, name, typename Container::value_t());
               else if(*it == 't' && *(it + 1) == 'r' && *(it + 2) == 'u' && *(it + 3) == 'e')
-                map.set(name, true);
+                state = add(container, name, true);
               else
-                map.set(name, false);
+                state = add(container, name, false);
 
+              /* Progress to the next element. */
               while(*it != ',' && *it != JsonMap::delimClose)
                 ++it;
               ++it;
-
-              state = Parse_Name;
             } break;
 
+            /* Whitespace or unimportant characters. */
             default:
               ++it;
               break;
           }
         }
-      }
-
-      template <typename Array>
-      static void parseArray(Array &arr, str_citer &it)
-      {
-
       }
 
     public:
@@ -219,11 +258,9 @@ namespace JeayeSON
             {
               ++it;
 
+              /* Recursively parse the object. */
               Container c;
-              if(Container::delimOpen == JsonMap::delimOpen)
-                parseMap(c, it);
-              else
-                parseArray(c, it);
+              parse(c, it);
               return c;
 
             } break;

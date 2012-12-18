@@ -63,6 +63,8 @@ namespace JeayeSON
 
       inline bool isEmpty() const
       { return m_values.empty(); }
+      inline size_t getSize() const
+      { return m_values.size(); }
 
       template <typename T>
       inline void set(cstr_t key, T value)

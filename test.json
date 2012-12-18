@@ -1,11 +1,20 @@
 {
-  "Jeaye": "Wilkerson"
-  "NULL": null,
+  "outer": null,
   "inner": {
     "inner float": 42.1,
     "inner int": 43,
-    "inner string": "woohoo!",
-    "inner string2": "meh meh meh",
   }
+  "arr": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    "six",
+    "seven",
+    8.1,
+    9.2,
+    null
+    ]
 }
 
