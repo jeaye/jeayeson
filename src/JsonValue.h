@@ -125,6 +125,8 @@ namespace JeayeSON
   {
     switch(value.m_value.which())
     {
+      case Value::Type_Null:
+        return (stream << "null");
       case Value::Type_String:
         return (stream << "\"" << value.m_value << "\"");
       case Value::Type_Bool:

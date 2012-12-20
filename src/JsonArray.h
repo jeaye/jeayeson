@@ -18,6 +18,9 @@
 namespace JeayeSON
 {
   template <typename Value, typename Parser>
+  class Map;
+
+  template <typename Value, typename Parser>
   class Array
   {
     public:
@@ -40,8 +43,12 @@ namespace JeayeSON
       template <typename T>
       inline T get(index_t index)
       { return m_values[index].template as<T>(); }
+      inline this_t& getArray(index_t index)
+      { return m_values[index].template as<this_t >(); }
+      inline Map<value_t, parser_t>& getMap(index_t index)
+      { return m_values[index].template as<Map<value_t, parser_t> >(); }
 
-      inline void size() const
+      inline size_t getSize() const
       { return m_values.size(); }
       inline bool isEmpty() const
       { return m_values.empty(); }

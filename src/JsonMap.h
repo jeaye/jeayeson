@@ -44,6 +44,9 @@
 
 namespace JeayeSON
 {
+  template <typename Value, typename Parser>
+  class Array;
+
   /* JsonMaps provide a wrapper for
    * string-indexed JsonValues, which
    * could be anything (including more
@@ -70,14 +73,20 @@ namespace JeayeSON
       template <typename T>
       inline T get(std::string const &key, T const &fallback)
       { return (hasKey(key) ? m_values[key].template as<T>() : fallback); }
-      inline std::string get(std::string const &key, cstr_t fallback)
+      inline std::string& get(std::string const &key, cstr_t fallback)
       { return (hasKey(key) ? m_values[key].template as<std::string>() : fallback);  }
+      inline this_t& getMap(std::string const &key)
+      { return m_values[key].template as<this_t >(); }
+      inline Array<value_t, parser_t>& getArray(std::string const &key)
+      { return m_values[key].template as<Array<value_t, parser_t> >(); }
 
       inline bool hasKey(std::string const &key) const
       { return (m_values.find(key) != m_values.end()); }
 
       inline bool isEmpty() const
       { return m_values.empty(); }
+      inline size_t getSize() const
+      { return m_values.size(); }
 
       template <typename T>
       inline void set(cstr_t key, T value)
