@@ -38,7 +38,7 @@ namespace JeayeSON
       Array()
       { }
       explicit Array(std::string const &json)
-      { if(load(json) == false) throw "Failed to load json!"; }
+      { load(json); }
 
       template <typename T>
       inline T get(index_t index)

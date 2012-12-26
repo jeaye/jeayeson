@@ -46,7 +46,7 @@ namespace JeayeSON
       Map()
       { }
       explicit Map(std::string const &json)
-      { if(load(json) == false) throw "Failed to load json!"; }
+      { load(json); }
 
       template <typename T>
       inline T get(std::string const &key, T const &fallback)
