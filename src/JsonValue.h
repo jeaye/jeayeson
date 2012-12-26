@@ -53,6 +53,10 @@ namespace JeayeSON
 
       Value() : m_value(null_t())
       { }
+      Value(Value const &copy) : m_value(copy.m_value)
+      { }
+      Value(Value &copy) : m_value(copy.m_value)
+      { }
       template <typename T>
       Value(T &value) : m_value(value)
       { }

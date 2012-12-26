@@ -4,7 +4,7 @@ project(JeayeSON)
 cmake_minimum_required(VERSION 2.6)
 
 # Compiler flags
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb -Wall --pedantic")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb -Wall --pedantic -std=c++11")
 
 set(jeayeson_SRCS 
 	src/main.cpp
