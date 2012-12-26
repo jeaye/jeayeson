@@ -25,7 +25,6 @@
 #include "JsonArray.h"
 
 #if __cplusplus >= 201103L
-#warning Compiling with C++11 support!
 #define JEAYESON_CPP11
 #define MOVE(x) std::move((x))
 #else
