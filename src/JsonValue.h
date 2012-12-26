@@ -122,6 +122,9 @@ namespace JeayeSON
 
   }; /* Class JsonValue */
 
+  typedef Map<Value, Parser> MapT;
+  typedef Array<Value, Parser> ArrayT;
+
   std::ostream& operator <<(std::ostream &stream, Value const &value)
   {
     switch(value.m_value.which())
@@ -136,11 +139,43 @@ namespace JeayeSON
         return (stream << value.m_value);
     }
   }
+
+  template <typename Iter>
+  void streamjoin(Iter begin, Iter end, std::ostream &stream, std::string const &sep = ",")
+  {
+    if (begin != end)
+      stream << *begin++;
+    while (begin != end)
+      stream << sep << *begin++;
+  }
+
+  template<>
+  std::ostream& operator <<(std::ostream &stream, ArrayT const &arr)
+  {
+    stream << arr.delimOpen;
+    streamjoin(arr.m_values.begin(), arr.m_values.end(), stream);
+    stream << arr.delimClose;
+    return stream;
+  }
+
+  std::ostream& operator <<(std::ostream &stream, MapT::map_t::value_type const &p)
+  {
+    return (stream << "\"" << p.first << "\":" << p.second);
+  }
+
+  template<>
+  std::ostream& operator <<(std::ostream &stream, MapT const &map)
+  {
+    stream << map.delimOpen;
+    streamjoin(map.m_values.begin(), map.m_values.end(), stream);
+    stream << map.delimClose;
+    return stream;
+  }
 } /* Namespace JeayeSON */
 
 typedef JeayeSON::Value JsonValue;
-typedef JeayeSON::Map<JsonValue, JeayeSON::Parser> JsonMap;
-typedef JeayeSON::Array<JsonValue, JeayeSON::Parser> JsonArray;
+typedef JeayeSON::MapT JsonMap;
+typedef JeayeSON::ArrayT JsonArray;
 
 #endif /* JEAYESON_JSONVALUE_H */
 
