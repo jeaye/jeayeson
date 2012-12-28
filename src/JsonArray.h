@@ -30,6 +30,8 @@ namespace JeayeSON
       typedef uint32_t index_t;
       typedef char const * const cstr_t;
       typedef std::vector<Value> array_t;
+      typedef typename array_t::iterator iterator;
+      typedef typename array_t::const_iterator const_iterator;
 
       static index_t const npos;
       static char const delimOpen = '[';
@@ -43,14 +45,27 @@ namespace JeayeSON
       template <typename T>
       inline T get(index_t index)
       { return m_values[index].template as<T>(); }
+      template <typename T>
+      inline T get(index_t index, T const &)
+      { return m_values[index].template as<T>(); }
       inline this_t& getArray(index_t index)
       { return m_values[index].template as<this_t >(); }
       inline Map<value_t, parser_t>& getMap(index_t index)
       { return m_values[index].template as<Map<value_t, parser_t> >(); }
 
-      inline size_t getSize() const
+      inline iterator begin()
+      { return m_values.begin(); }
+      inline const_iterator cbegin() const
+      { return m_values.cbegin(); }
+
+      inline iterator end()
+      { return m_values.end(); }
+      inline const_iterator cend() const
+      { return m_values.cend(); }
+
+      inline size_t size() const
       { return m_values.size(); }
-      inline bool isEmpty() const
+      inline bool empty() const
       { return m_values.empty(); }
 
       /* Stores the specified value at the specified index.

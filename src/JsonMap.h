@@ -40,6 +40,8 @@ namespace JeayeSON
 #else
       typedef boost::unordered_map<std::string, Value> map_t;
 #endif
+      typedef typename map_t::iterator iterator;
+      typedef typename map_t::const_iterator const_iterator;
       static char const delimOpen = '{';
       static char const delimClose = '}';
 
@@ -51,19 +53,29 @@ namespace JeayeSON
       template <typename T>
       inline T get(std::string const &key, T const &fallback)
       { return (hasKey(key) ? m_values[key].template as<T>() : fallback); }
-      inline std::string& get(std::string const &key, cstr_t fallback)
+      inline std::string get(std::string const &key, cstr_t fallback)
       { return (hasKey(key) ? m_values[key].template as<std::string>() : fallback);  }
       inline this_t& getMap(std::string const &key)
       { return m_values[key].template as<this_t >(); }
       inline Array<value_t, parser_t>& getArray(std::string const &key)
       { return m_values[key].template as<Array<value_t, parser_t> >(); }
 
+      inline iterator begin()
+      { return m_values.begin(); }
+      inline const_iterator cbegin() const
+      { return m_values.cbegin(); }
+
+      inline iterator end()
+      { return m_values.end(); }
+      inline const_iterator cend() const
+      { return m_values.cend(); }
+
       inline bool hasKey(std::string const &key) const
       { return (m_values.find(key) != m_values.end()); }
 
-      inline bool isEmpty() const
+      inline bool empty() const
       { return m_values.empty(); }
-      inline size_t getSize() const
+      inline size_t size() const
       { return m_values.size(); }
 
       template <typename T>

@@ -100,7 +100,7 @@ namespace JeayeSON
               ++it;
 
               state = add(container, name, JsonMap());
-              parse(getMap(container, name, container.getSize() - 1), it);
+              parse(getMap(container, name, container.size() - 1), it);
             } break;
 
             /* Start of a new array. */
@@ -109,7 +109,7 @@ namespace JeayeSON
               ++it;
 
               state = add(container, name, JsonArray());
-              parse(getArray(container, name, container.getSize() - 1), it);
+              parse(getArray(container, name, container.size() - 1), it);
             } break;
 
             /* End of the current node. */

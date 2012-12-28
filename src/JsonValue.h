@@ -88,7 +88,6 @@ namespace JeayeSON
       inline bool operator ==(cstr_t value) const
       { return as<std::string>() == value; }
 
-      /* In JsonParser.cpp */
       friend std::ostream& operator <<(std::ostream &stream, Value const &value);
 
       template <typename T>
@@ -122,7 +121,7 @@ namespace JeayeSON
 
   }; /* Class JsonValue */
 
-  std::ostream& operator <<(std::ostream &stream, Value const &value)
+  inline std::ostream& operator <<(std::ostream &stream, Value const &value)
   {
     switch(value.m_value.which())
     {
