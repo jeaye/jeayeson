@@ -88,6 +88,7 @@ namespace JeayeSON
       inline bool operator ==(cstr_t value) const
       { return as<std::string>() == value; }
 
+      /* In JsonParser.cpp */
       friend std::ostream& operator <<(std::ostream &stream, Value const &value);
 
       template <typename T>
@@ -121,7 +122,10 @@ namespace JeayeSON
 
   }; /* Class JsonValue */
 
-  inline std::ostream& operator <<(std::ostream &stream, Value const &value)
+  typedef Map<Value, Parser> map_t;
+  typedef Array<Value, Parser> array_t;
+
+  std::ostream& operator <<(std::ostream &stream, Value const &value)
   {
     switch(value.m_value.which())
     {
@@ -135,11 +139,43 @@ namespace JeayeSON
         return (stream << value.m_value);
     }
   }
+
+  template <typename Iter>
+  void streamjoin(Iter begin, Iter end, std::ostream &stream, std::string const &sep = ",")
+  {
+    if (begin != end)
+      stream << *begin++;
+    while (begin != end)
+      stream << sep << *begin++;
+  }
+
+  template<>
+  std::ostream& operator <<(std::ostream &stream, array_t const &arr)
+  {
+    stream << arr.delimOpen;
+    streamjoin(arr.m_values.begin(), arr.m_values.end(), stream);
+    stream << arr.delimClose;
+    return stream;
+  }
+
+  std::ostream& operator <<(std::ostream &stream, map_t::map_t::value_type const &p)
+  {
+    return (stream << "\"" << p.first << "\":" << p.second);
+  }
+
+  template<>
+  std::ostream& operator <<(std::ostream &stream, map_t const &map)
+  {
+    stream << map.delimOpen;
+    streamjoin(map.m_values.begin(), map.m_values.end(), stream);
+    stream << map.delimClose;
+    return stream;
+  }
 } /* Namespace JeayeSON */
 
 typedef JeayeSON::Value JsonValue;
-typedef JeayeSON::Map<JsonValue, JeayeSON::Parser> JsonMap;
-typedef JeayeSON::Array<JsonValue, JeayeSON::Parser> JsonArray;
+typedef JeayeSON::map_t JsonMap;
+typedef JeayeSON::array_t JsonArray;
 
 #endif /* JEAYESON_JSONVALUE_H */
 

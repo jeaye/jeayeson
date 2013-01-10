@@ -123,22 +123,6 @@ namespace JeayeSON
       array_t m_values;
 
   }; /* Class Array */
-
-  template <typename Value, typename Parser>
-  std::ostream& operator <<(std::ostream &stream, Array<Value, Parser> const &arr)
-  {
-    stream << arr.delimOpen;
-    for(typename Array<Value, Parser>::array_t::const_iterator i = arr.m_values.begin();
-        i != arr.m_values.end(); ++i, stream.put(','))
-      stream << *i;
-
-    /* Replace the last comma with the object's close delim. */
-    stream.seekp(-1, std::ios_base::end);
-    stream.put(arr.delimClose);
-
-    return stream;
-  }
-
 } /* Namespace JeayeSON */
 
 #endif /* JEAYESON_JSONARRAY_H */
