@@ -15,16 +15,16 @@
 #include <stdint.h>
 #include <algorithm>
 
-namespace JeayeSON
+namespace jeayeson
 {
   template <typename Value, typename Parser>
-  class Map;
+  class map;
 
   template <typename Value, typename Parser>
-  class Array
+  class array
   {
     public:
-      typedef Array<Value, Parser> this_t;
+      typedef array<Value, Parser> this_t;
       typedef Value value_t;
       typedef Parser parser_t;
       typedef uint32_t index_t;
@@ -34,24 +34,24 @@ namespace JeayeSON
       typedef typename array_t::const_iterator const_iterator;
 
       static index_t const npos;
-      static char const delimOpen = '[';
-      static char const delimClose = ']';
+      static char const delim_open = '[';
+      static char const delim_close = ']';
 
-      Array()
+      array()
       { }
-      explicit Array(std::string const &json)
-      { load(json); }
+      explicit array(std::string const &_json)
+      { load(_json); }
 
       template <typename T>
-      inline T get(index_t index)
-      { return m_values[index].template as<T>(); }
+      inline T& get(index_t _index)
+      { return m_values[_index].template as<T>(); }
       template <typename T>
-      inline T get(index_t index, T const &)
-      { return m_values[index].template as<T>(); }
-      inline this_t& getArray(index_t index)
-      { return m_values[index].template as<this_t >(); }
-      inline Map<value_t, parser_t>& getMap(index_t index)
-      { return m_values[index].template as<Map<value_t, parser_t> >(); }
+      inline T& get(index_t _index, T const &)
+      { return m_values[_index].template as<T>(); }
+      inline this_t& get_array(index_t _index)
+      { return m_values[_index].template as<this_t >(); }
+      inline map<value_t, parser_t>& get_map(index_t _index)
+      { return m_values[_index].template as<map<value_t, parser_t> >(); }
 
       inline iterator begin()
       { return m_values.begin(); }
@@ -68,62 +68,67 @@ namespace JeayeSON
       inline bool empty() const
       { return m_values.empty(); }
 
+      inline void clear()
+      { m_values.clear(); }
+      inline void reset(std::string const &_json)
+      { *this = load(_json); }
+
       /* Stores the specified value at the specified index.
        * The specified index should already exist. */
       template <typename T>
-      inline void set(index_t index, T const &t)
-      { m_values[index] = t; }
-      inline void set(index_t index, cstr_t str)
-      { m_values[index] = std::string(str); }
+      inline void set(index_t _index, T const &_t)
+      { m_values[_index] = _t; }
+      inline void set(index_t _index, cstr_t _str)
+      { m_values[_index] = std::string(_str); }
 
       /* Erases ONE value, starting at position _index_. */
-      inline void erase(index_t index)
-      { m_values.erase(m_values.begin() + index); }
+      inline void erase(index_t _index)
+      { m_values.erase(m_values.begin() + _index); }
 
       /* Erases _amount_ number of objects from the starting
        * point _index_. This does no bounds checking. */
-      inline void erase(index_t index, std::size_t amount)
-      { m_values.erase(m_values.begin() + index, m_values.begin() + index + amount); }
+      inline void erase(index_t _index, std::size_t _amount)
+      { m_values.erase(m_values.begin() + _index, m_values.begin() + _index + _amount); }
 
       template <typename T>
-      inline void add(T const &t)
-      { m_values.push_back(Value(t)); }
+      inline void add(T const &_t)
+      { m_values.push_back(Value(_t)); }
 
       /* Finds the specified value and returns the index of it.
-       * If the value is not found, Array::npos is returned. */
+       * If the value is not found, array::npos is returned. */
       template <typename T>
-      index_t find(T const &val)
+      index_t find(T const &_val)
       {
         for(index_t i = 0; i < m_values.size(); ++i)
-          if(m_values == val)
+          if(m_values == _val)
             return i;
         return npos;
       }
 
       /* Loads the specified JSON string. */
-      inline void load(std::string const &json)
-      { *this = Parser::template parse< this_t >(json); }
-      static inline this_t loadNew(std::string const &json)
-      { return Parser::template parse< this_t >(json); }
+      inline void load(std::string const &_json)
+      { *this = Parser::template parse< this_t >(_json); }
+      static inline this_t load_new(std::string const &_json)
+      { return Parser::template parse< this_t >(_json); }
 
       /* Loads the specified JSON file. */
-      inline void loadFile(std::string const &jsonFile)
-      { *this = Parser::template parseFile< this_t >(jsonFile); }
-      static inline this_t loadNewFile(std::string const &jsonFile)
-      { return Parser::template parseFile< this_t >(jsonFile); }
+      inline void load_file(std::string const &_json_file)
+      { *this = Parser::template parse_file< this_t >(_json_file); }
+      static inline this_t load_new_file(std::string const &_json_file)
+      { return Parser::template parse_file< this_t >(_json_file); }
 
       /* Writes the JSON data to string form. */
-      inline std::string jsonString()
+      inline std::string to_string()
       { return Parser::template save< this_t >(*this); }
 
       template <typename ValueT, typename ParserT>
-      friend std::ostream& operator <<(std::ostream &stream, Array<ValueT, ParserT> const &arr);
+      friend std::ostream& operator <<(std::ostream &stream, array<ValueT, ParserT> const &_arr);
 
     private:
       array_t m_values;
 
-  }; /* Class Array */
-} /* Namespace JeayeSON */
+  }; /* Class array */
+} /* Namespace jeayeson */
 
 #endif /* JEAYESON_JSONARRAY_H */
 

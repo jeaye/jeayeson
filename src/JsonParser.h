@@ -31,56 +31,56 @@
 #define MOVE(x) (x)
 #endif
 
-namespace JeayeSON
+namespace jeayeson
 {
-  class Parser
+  class parser
   {
     private:
       typedef std::string::const_iterator str_citer;
 
-      enum State { Parse_Name, Parse_Value };
+      enum state_t { parse_name, parse_value };
 
 /********************* Helper Accessors *********************/
       template <typename Value, typename Parser, typename T>
-      static inline State add(Map<Value, Parser> &map, std::string const &key, T const &t)
+      static inline state_t add(map<Value, Parser> &_map, std::string const &_key, T const &_t)
       {
-        map.set(key, t);
-        return Parse_Name;
+        _map.set(_key, _t);
+        return parse_name;
       }
 
       template <typename Value, typename Parser, typename T>
-      static inline State add(Array<Value, Parser> &arr, std::string const &notUsed, T const &t)
+      static inline state_t add(array<Value, Parser> &_arr, std::string const &, T const &_t)
       {
-        arr.add(t);
-        return Parse_Value;
+        _arr.add(_t);
+        return parse_value;
       }
 
       template <typename Value, typename Parser>
-      static inline Map<Value, Parser>& getMap(Map<Value, Parser> &map, std::string const &key,
-                                              typename Array<Value, Parser>::index_t notUsed)
-      { return map.getMap(key); }
+      static inline map<Value, Parser>& get_map(map<Value, Parser> &_map, std::string const &_key,
+                                              typename array<Value, Parser>::index_t)
+      { return _map.get_map(_key); }
 
       template <typename Value, typename Parser>
-      static inline Map<Value, Parser>& getMap(Array<Value, Parser> &arr, std::string const &notUsed,
-                                              typename Array<Value, Parser>::index_t index)
-      { return arr.getMap(index); }
+      static inline map<Value, Parser>& get_map(array<Value, Parser> &_arr, std::string const &,
+                                              typename array<Value, Parser>::index_t _index)
+      { return _arr.get_map(_index); }
 
       template <typename Value, typename Parser>
-      static inline Array<Value, Parser>& getArray(Map<Value, Parser> &map, std::string const &key,
-                                                  typename Array<Value, Parser>::index_t notUsed)
-      { return map.getArray(key); }
+      static inline array<Value, Parser>& get_array(map<Value, Parser> &_map, std::string const &_key,
+                                                  typename array<Value, Parser>::index_t)
+      { return _map.get_array(_key); }
 
       template <typename Value, typename Parser>
-      static inline Array<Value, Parser>& getArray(Array<Value, Parser> &arr, std::string const &notUsed,
-                                                  typename Array<Value, Parser>::index_t index)
-      { return arr.getArray(index); }
+      static inline array<Value, Parser>& get_array(array<Value, Parser> &_arr, std::string const &,
+                                                  typename array<Value, Parser>::index_t _index)
+      { return _arr.get_array(_index); }
 /********************* Helper Accessors *********************/
 
       template <typename Container>
-      static void parse(Container &container, str_citer &it)
+      static void parse(Container &_container, str_citer &_it)
       {
-        typedef Map<typename Container::value_t, typename Container::parser_t> JsonMap;
-        typedef Array<typename Container::value_t, typename Container::parser_t> JsonArray;
+        typedef map<typename Container::value_t, typename Container::parser_t> json_map;
+        typedef array<typename Container::value_t, typename Container::parser_t> json_array;
 
         std::string name;
         name.reserve(128);
@@ -88,59 +88,59 @@ namespace JeayeSON
         value.reserve(128);
 
         /* Maps start out parsing keys, arrays just want values. */
-        State state(container.delimOpen == JsonMap::delimOpen ? Parse_Name : Parse_Value);
+        state_t state(_container.delim_open == json_map::delim_open ? parse_name : parse_value);
 
-        while(*it)
+        while(*_it)
         {
-          switch(*it)
+          switch(*_it)
           {
             /* Start of a new map. */
-            case JsonMap::delimOpen:
+            case json_map::delim_open:
             {
-              ++it;
+              ++_it;
 
-              state = add(container, name, JsonMap());
-              parse(getMap(container, name, container.size() - 1), it);
+              state = add(_container, name, json_map());
+              parse(get_map(_container, name, _container.size() - 1), _it);
             } break;
 
             /* Start of a new array. */
-            case JsonArray::delimOpen:
+            case json_array::delim_open:
             {
-              ++it;
+              ++_it;
 
-              state = add(container, name, JsonArray());
-              parse(getArray(container, name, container.size() - 1), it);
+              state = add(_container, name, json_array());
+              parse(get_array(_container, name, _container.size() - 1), _it);
             } break;
 
             /* End of the current node. */
-            case JsonMap::delimClose:
-            case JsonArray::delimClose:
-              ++it;
+            case json_map::delim_close:
+            case json_array::delim_close:
+              ++_it;
               return;
 
             /* Start of a value (the key). */
             case '"':
             {
-              ++it;
+              ++_it;
 
-              if(state == Parse_Value)
+              if(state == parse_value)
               {
                 value.clear();
-                for( ; *it != '"'; ++it)
-                  value += *it;
+                for( ; *_it != '"'; ++_it)
+                  value += *_it;
 
-                state = add(container, name, value);
+                state = add(_container, name, value);
               }
               else // Parsing a key/name
               {
                 name.clear();
-                for( ; *it != '"'; ++it)
-                  name += *it;
+                for( ; *_it != '"'; ++_it)
+                  name += *_it;
 
-                state = Parse_Value;
+                state = parse_value;
               }
 
-              ++it;
+              ++_it;
             } break;
 
             /* Start of an int or float. */
@@ -157,18 +157,18 @@ namespace JeayeSON
             case '0':
             {
               /* Determine if the value is integral or floating point. */
-              str_citer isInt(it);
-              while(*isInt == '-' || (*isInt >= '0' && *isInt <= '9'))
-                ++isInt;
-              if(*isInt == '.' || *isInt == 'e' || *isInt == 'E')
-                state = add(container, name, std::atof(&*it));
+              str_citer is_int(_it);
+              while(*is_int == '-' || (*is_int >= '0' && *is_int <= '9'))
+                ++is_int;
+              if(*is_int == '.' || *is_int == 'e' || *is_int == 'E')
+                state = add(_container, name, std::atof(&*_it));
               else
-                state = add(container, name, std::atoi(&*it));
+                state = add(_container, name, std::atoi(&*_it));
 
               /* Progress to the next element. */
-              while(*it == '-' || *it == '.' || (*it >= '0' && *it <= '9'))
-                ++it;
-              ++it;
+              while(*_it == '-' || *_it == '.' || (*_it >= '0' && *_it <= '9'))
+                ++_it;
+              ++_it;
             } break;
 
             /* Start of null, true, or false. */
@@ -176,22 +176,22 @@ namespace JeayeSON
             case 't':
             case 'f':
             {
-              if(*it == 'n' && *(it + 1) == 'u' && *(it + 2) == 'l' && *(it + 3) == 'l')
-                state = add(container, name, typename Container::value_t());
-              else if(*it == 't' && *(it + 1) == 'r' && *(it + 2) == 'u' && *(it + 3) == 'e')
-                state = add(container, name, true);
+              if(*_it == 'n' && *(_it + 1) == 'u' && *(_it + 2) == 'l' && *(_it + 3) == 'l')
+                state = add(_container, name, typename Container::value_t());
+              else if(*_it == 't' && *(_it + 1) == 'r' && *(_it + 2) == 'u' && *(_it + 3) == 'e')
+                state = add(_container, name, true);
               else
-                state = add(container, name, false);
+                state = add(_container, name, false);
 
               /* Progress to the next element. */
-              while(*it != ',' && *it != JsonMap::delimClose)
-                ++it;
-              ++it;
+              while(*_it != ',' && *_it != json_map::delim_close)
+                ++_it;
+              ++_it;
             } break;
 
             /* Whitespace or unimportant characters. */
             default:
-              ++it;
+              ++_it;
               break;
           }
         }
@@ -200,13 +200,13 @@ namespace JeayeSON
     public:
 
       template <typename Container>
-      static Container parseFile(std::string const &jsonFile)
+      static Container parse_file(std::string const &_json_file)
       {
         std::string json;
 
 #if JEAYESON_STD_FSTREAM_LOAD
-        std::ifstream file(jsonFile.c_str());
-        std::size_t fileSize = 0;
+        std::ifstream file(_json_file.c_str());
+        std::size_t file_size = 0;
 
         /* Ensure the file was opened. */
         if(file.is_open() == false)
@@ -214,17 +214,17 @@ namespace JeayeSON
 
         /* Determine the file length. */
         file.seekg(0, std::ios_base::end);
-        fileSize = file.tellg();
+        file_size = file.tellg();
         file.seekg(0, std::ios_base::beg);
 
         /* Reserve space in the string. */
-        json.reserve(fileSize);
+        json.reserve(file_size);
 
         /* Read the file. */
         std::getline(file, json, static_cast<char>(-1)); // EOF
         file.close();
 #else
-        boost::interprocess::file_mapping file(jsonFile.c_str(), boost::interprocess::read_only);
+        boost::interprocess::file_mapping file(json_file.c_str(), boost::interprocess::read_only);
         boost::interprocess::mapped_region region(file, boost::interprocess::read_only);
 
         char *str = static_cast<char*>(region.get_address());
@@ -242,18 +242,18 @@ namespace JeayeSON
       }
 
       template <typename Container>
-      static Container parse(std::string const &jsonString)
+      static Container parse(std::string const &_json_string)
       {
-        typedef Map<typename Container::value_t, typename Container::parser_t> JsonMap;
-        typedef Array<typename Container::value_t, typename Container::parser_t> JsonArray;
+        typedef map<typename Container::value_t, typename Container::parser_t> json_map;
+        typedef array<typename Container::value_t, typename Container::parser_t> json_array;
 
-        str_citer it = jsonString.begin();
+        str_citer it = _json_string.begin();
 
         while(*it)
         {
           switch(*it)
           {
-            case Container::delimOpen:
+            case Container::delim_open:
             {
               ++it;
 
@@ -276,15 +276,15 @@ namespace JeayeSON
       }
 
       template <typename Container>
-      static inline std::string save(Container const &container)
+      static inline std::string save(Container const &_container)
       {
         std::stringstream output;
-        output << container;
+        output << _container;
         return output.str();
       }
 
-  }; /* Class IParseable */
-} /* Namespace JeayeSON */
+  }; /* Class parser */
+} /* Namespace jeayeson */
 
 #endif /* JEAYESON_JSONPARSER_H */
 

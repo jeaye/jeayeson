@@ -16,29 +16,29 @@
 #include "JsonArray.h"
 #include "JsonParser.h"
 
-namespace JeayeSON
+namespace jeayeson
 {
-  class Value
+  class value
   {
     private:
-      typedef Map<Value, Parser> map_t;
-      typedef Array<Value, Parser> array_t;
+      typedef map<value, parser> map_t;
+      typedef array<value, parser> array_t;
       typedef struct{ } null_t;
 
     public:
-      enum Type
+      enum type_t
       {
-        Type_Null,
-        Type_UInt32,
-        Type_Int32,
-        Type_UInt64,
-        Type_Int64,
-        Type_Float,
-        Type_Double,
-        Type_Bool,
-        Type_String,
-        Type_Map,
-        Type_Array
+        type_null,
+        type_uint32,
+        type_int32,
+        type_uint64,
+        type_int64,
+        type_float,
+        type_double,
+        type_bool,
+        type_string,
+        type_map,
+        type_array
       };
       typedef boost::variant<
         null_t,                                 /* Null (empty) type. */
@@ -51,16 +51,16 @@ namespace JeayeSON
                             > variant_t;
       typedef char const * const cstr_t;
 
-      Value() : m_value(null_t())
+      value() : m_value(null_t())
       { }
-      Value(Value const &copy) : m_value(copy.m_value)
+      value(value const &_copy) : m_value(_copy.m_value)
       { }
-      Value(Value &copy) : m_value(copy.m_value)
+      value(value &_copy) : m_value(_copy.m_value)
       { }
       template <typename T>
-      Value(T &value) : m_value(value)
+      value(T &_value) : m_value(_value)
       { }
-      Value(cstr_t str) : m_value(std::string(str))
+      value(cstr_t _str) : m_value(std::string(_str))
       { }
 
       template <typename T>
@@ -77,105 +77,105 @@ namespace JeayeSON
       inline T const& as() const
       { return boost::get<T const&>(m_value); }
 
-      inline Type getType() const
-      { return static_cast<Type>(m_value.which()); }
-      inline bool isNull() const
-      { return m_value.which() == Type_Null; }
+      inline type_t get_type() const
+      { return static_cast<type_t>(m_value.which()); }
+      inline bool is_null() const
+      { return m_value.which() == type_null; }
 
       template <typename T>
-      inline bool operator ==(T const &value) const
-      { return as<T>() == value; }
-      inline bool operator ==(cstr_t value) const
-      { return as<std::string>() == value; }
+      inline bool operator ==(T const &_value) const
+      { return as<T>() == _value; }
+      inline bool operator ==(cstr_t _value) const
+      { return as<std::string>() == _value; }
 
       /* In JsonParser.cpp */
-      friend std::ostream& operator <<(std::ostream &stream, Value const &value);
+      friend std::ostream& operator <<(std::ostream &stream, value const &_value);
 
       template <typename T>
-      inline void set(T const &value)
-      { m_value = value; }
+      inline void set(T const &_value)
+      { m_value = _value; }
 
       /* Treat string literals as standard strings. */
-      inline void set(cstr_t value)
-      { m_value = std::string(value); }
+      inline void set(cstr_t _value)
+      { m_value = std::string(_value); }
 
       /* Shortcut add for arrays. */
       template <typename T>
-      inline void add(T const &value)
-      { as< array_t >().add(value); }
+      inline void add(T const &_value)
+      { as< array_t >().add(_value); }
 
       /* Shortcut add for maps. */
       template <typename T>
-      inline void add(std::string const &key, T const &value)
-      { as< map_t >().set(key, value); }
+      inline void add(std::string const &key, T const &_value)
+      { as< map_t >().set(key, _value); }
 
       template <typename T>
-      inline variant_t& operator =(T const &value)
-      { return (m_value = value); }
+      inline variant_t& operator =(T const &_value)
+      { return (m_value = _value); }
 
       /* Treat string literals as standard strings. */
-      inline variant_t& operator =(cstr_t value)
-      { return (m_value = std::string(value)); }
+      inline variant_t& operator =(cstr_t _value)
+      { return (m_value = std::string(_value)); }
 
     private:
       variant_t m_value;
 
-  }; /* Class JsonValue */
+  }; /* Class value */
 
-  typedef Map<Value, Parser> map_t;
-  typedef Array<Value, Parser> array_t;
+  typedef map<value, parser> map_t;
+  typedef array<value, parser> array_t;
 
-  std::ostream& operator <<(std::ostream &stream, Value const &value)
+  std::ostream& operator <<(std::ostream &stream, value const &_value)
   {
-    switch(value.m_value.which())
+    switch(_value.m_value.which())
     {
-      case Value::Type_Null:
+      case value::type_null:
         return (stream << "null");
-      case Value::Type_String:
-        return (stream << "\"" << value.m_value << "\"");
-      case Value::Type_Bool:
-        return (stream << (value.as<bool>() ? "true" : "false"));
+      case value::type_string:
+        return (stream << "\"" << _value.m_value << "\"");
+      case value::type_bool:
+        return (stream << (_value.as<bool>() ? "true" : "false"));
       default:
-        return (stream << value.m_value);
+        return (stream << _value.m_value);
     }
   }
 
   template <typename Iter>
-  void streamjoin(Iter begin, Iter end, std::ostream &stream, std::string const &sep = ",")
+  void streamjoin(Iter _begin, Iter _end, std::ostream &_stream, std::string const &_sep = ",")
   {
-    if (begin != end)
-      stream << *begin++;
-    while (begin != end)
-      stream << sep << *begin++;
+    if (_begin != _end)
+      _stream << *_begin++;
+    while (_begin != _end)
+      _stream << _sep << *_begin++;
   }
 
   template<>
-  std::ostream& operator <<(std::ostream &stream, array_t const &arr)
+  std::ostream& operator <<(std::ostream &_stream, array_t const &_arr)
   {
-    stream << arr.delimOpen;
-    streamjoin(arr.m_values.begin(), arr.m_values.end(), stream);
-    stream << arr.delimClose;
-    return stream;
+    _stream << _arr.delim_open;
+    streamjoin(_arr.m_values.begin(), _arr.m_values.end(), _stream);
+    _stream << _arr.delim_close;
+    return _stream;
   }
 
-  std::ostream& operator <<(std::ostream &stream, map_t::map_t::value_type const &p)
+  std::ostream& operator <<(std::ostream &_stream, map_t::map_t::value_type const &_p)
   {
-    return (stream << "\"" << p.first << "\":" << p.second);
+    return (_stream << "\"" << _p.first << "\":" << _p.second);
   }
 
   template<>
-  std::ostream& operator <<(std::ostream &stream, map_t const &map)
+  std::ostream& operator <<(std::ostream &_stream, map_t const &_map)
   {
-    stream << map.delimOpen;
-    streamjoin(map.m_values.begin(), map.m_values.end(), stream);
-    stream << map.delimClose;
-    return stream;
+    _stream << _map.delim_open;
+    streamjoin(_map.m_values.begin(), _map.m_values.end(), _stream);
+    _stream << _map.delim_close;
+    return _stream;
   }
-} /* Namespace JeayeSON */
+} /* Namespace jeayeson */
 
-typedef JeayeSON::Value JsonValue;
-typedef JeayeSON::map_t JsonMap;
-typedef JeayeSON::array_t JsonArray;
+typedef jeayeson::value json_value;
+typedef jeayeson::map_t json_map;
+typedef jeayeson::array_t json_array;
 
 #endif /* JEAYESON_JSONVALUE_H */
 

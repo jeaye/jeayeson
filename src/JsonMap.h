@@ -42,21 +42,20 @@
 #endif
 
 
-namespace JeayeSON
+namespace jeayeson
 {
   template <typename Value, typename Parser>
-  class Array;
+  class array;
 
-  /* JsonMaps provide a wrapper for
+  /* json_maps provide a wrapper for
    * string-indexed JsonValues, which
-   * could be anything (including more
-   * JsonMaps!).
+   * could be any valid JSON value.
    */
   template <typename Value, typename Parser>
-  class Map
+  class map
   {
     public:
-      typedef Map<Value, Parser> this_t;
+      typedef map<Value, Parser> this_t;
       typedef Value value_t;
       typedef Parser parser_t;
       typedef char const * const cstr_t;
@@ -64,23 +63,26 @@ namespace JeayeSON
       typedef typename map_t::iterator iterator;
       typedef typename map_t::const_iterator const_iterator;
 
-      static char const delimOpen = '{';
-      static char const delimClose = '}';
+      static char const delim_open = '{';
+      static char const delim_close = '}';
 
-      Map()
+      map()
       { }
-      explicit Map(std::string const &json)
+      explicit map(std::string const &json)
       { load(json); }
 
       template <typename T>
-      inline T get(std::string const &key, T const &fallback)
-      { return (hasKey(key) ? m_values[key].template as<T>() : fallback); }
-      inline std::string get(std::string const &key, cstr_t fallback)
-      { return (hasKey(key) ? m_values[key].template as<std::string>() : fallback);  }
-      inline this_t& getMap(std::string const &key)
-      { return m_values[key].template as<this_t >(); }
-      inline Array<value_t, parser_t>& getArray(std::string const &key)
-      { return m_values[key].template as<Array<value_t, parser_t> >(); }
+      inline T& get(std::string const &_key) // No fallback, but you get a reference
+      { return m_values[_key].template as<T>(); }
+      template <typename T>
+      inline T get(std::string const &_key, T const &_fallback)
+      { return (has_key(_key) ? m_values[_key].template as<T>() : _fallback); }
+      inline std::string get(std::string const &_key, cstr_t _fallback)
+      { return (has_key(_key) ? m_values[_key].template as<std::string>() : _fallback);  }
+      inline this_t& get_map(std::string const &_key)
+      { return m_values[_key].template as<this_t >(); }
+      inline array<value_t, parser_t>& get_array(std::string const &_key)
+      { return m_values[_key].template as<array<value_t, parser_t> >(); }
 
       inline iterator begin()
       { return m_values.begin(); }
@@ -92,8 +94,8 @@ namespace JeayeSON
       inline const_iterator cend() const
       { return m_values.cend(); }
 
-      inline bool hasKey(std::string const &key) const
-      { return (m_values.find(key) != m_values.end()); }
+      inline bool has_key(std::string const &_key) const
+      { return (m_values.find(_key) != m_values.end()); }
 
       inline bool empty() const
       { return m_values.empty(); }
@@ -101,48 +103,50 @@ namespace JeayeSON
       { return m_values.size(); }
 
       template <typename T>
-      inline void set(cstr_t key, T value)
-      { m_values[key] = value; }
+      inline void set(cstr_t _key, T _value)
+      { m_values[_key] = _value; }
       template <typename T>
-      inline void set(std::string const &key, T value)
-      { m_values[key] = value; }
+      inline void set(std::string const &_key, T _value)
+      { m_values[_key] = _value; }
 
       /* Completely wipes out all data in the map. */
       inline void clear()
       { m_values.clear(); }
+      inline void reset(std::string const &_json)
+      { *this = load(_json); }
 
       /* Completely removes the specified key and destroys its data. */
-      inline void erase(std::string const &key)
-      { m_values.erase(key); }
+      inline void erase(std::string const &_key)
+      { m_values.erase(_key); }
 
       /* Adds the specified map into this map. */
-      inline void merge(Map const &map)
-      { m_values.insert(map.m_values.begin(), map.m_values.end()); }
+      inline void merge(map const &_map)
+      { m_values.insert(_map.m_values.begin(), _map.m_values.end()); }
 
       /* Loads the specified JSON string. */
-      void load(std::string const &json)
-      { *this = Parser::template parse< this_t >(json); }
-      static this_t loadNew(std::string const &json)
-      { return Parser::template parse< this_t >(json); }
+      void load(std::string const &_json)
+      { *this = Parser::template parse< this_t >(_json); }
+      static this_t load_new(std::string const &_json)
+      { return Parser::template parse< this_t >(_json); }
 
       /* Loads the specified JSON file. */
-      void loadFile(std::string const &jsonFile)
-      { *this = Parser::template parseFile< this_t >(jsonFile); }
-      static this_t loadFileNew(std::string const &jsonFile)
-      { return Parser::template parseFile< this_t >(jsonFile); }
+      void load_file(std::string const &_json_file)
+      { *this = Parser::template parse_file< this_t >(_json_file); }
+      static this_t load_file_new(std::string const &_json_file)
+      { return Parser::template parse_file< this_t >(_json_file); }
 
       /* Writes the JSON data to string form. */
-      inline std::string jsonString()
+      inline std::string to_string()
       { return Parser::template save< this_t >(*this); }
 
       template <typename ValueT, typename ParserT>
-      friend std::ostream& operator <<(std::ostream &stream, Map<ValueT, ParserT> const &map);
+      friend std::ostream& operator <<(std::ostream &stream, map<ValueT, ParserT> const &_map);
 
     private:
       map_t m_values;
 
-  }; /* Class Map */
-} /* Namespace JeayeSON */
+  }; /* Class map */
+} /* Namespace jeayeson */
 
 #endif /* JEAYESON_JSONMAP_H */
 
