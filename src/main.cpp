@@ -34,8 +34,8 @@ int32_t main(int32_t argc, char **argv)
   /* Delving into maps using dot-notated paths works, too.
      The type can be explicitly specified, or implicit based on the provided fallback.
      */
-  //std::cout << map.get_for_path<std::string>("person.name") << " has " // No fallback
-    //<< map.get_for_path("person.inventory.coins", 0) << " coins"; // Fallback is 0
+  std::cout << map.get_for_path<std::string>("person.name") << " has " // No fallback
+    << map.get_for_path("person.inventory.coins", 0) << " coins\n"; // Fallback is 0
 
   /* Iterators work as expected, based on the C++ stdlib. (const and non-const) */
   //for(json_array::const_iterator it(arr.begin()); it != arr.end(); ++it)

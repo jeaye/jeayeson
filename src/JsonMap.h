@@ -12,6 +12,8 @@
 
 #include "Defines.h"
 #include <string>
+#include <vector>
+#include <boost/algorithm/string.hpp>
 
 /* Decide underlying map type */
 #undef JEAYESON_MAP_T
@@ -46,6 +48,7 @@ namespace jeayeson
 {
   template <typename Value, typename Parser>
   class array;
+  std::vector<std::string> tokenize(std::string const &_source, std::string const &_delim);
 
   /* json_maps provide a wrapper for
    * string-indexed JsonValues, which
@@ -83,6 +86,44 @@ namespace jeayeson
       { return m_values[_key].template as<this_t >(); }
       inline array<value_t, parser_t>& get_array(std::string const &_key)
       { return m_values[_key].template as<array<value_t, parser_t> >(); }
+      template <typename T>
+      T& get_for_path(std::string const &_path)
+      {
+        std::vector<std::string> tokens(tokenize(_path, "."));
+        std::size_t path_size(tokens.size() - 1);
+
+        this_t *sub_map(const_cast<this_t*>(this));
+        for(uint32_t i = 0; i < path_size; ++i)
+          sub_map = &sub_map->get<this_t>(tokens[i]);
+
+        return sub_map->get<T>(tokens[path_size]);
+      }
+      template <typename T>
+      T get_for_path(std::string const &_path, T const &_fallback)
+      {
+        std::vector<std::string> tokens(tokenize(_path, "."));
+        std::size_t path_size(tokens.size() - 1);
+
+        this_t *sub_map(const_cast<this_t*>(this));
+        for(uint32_t i = 0; i < path_size; ++i)
+        {
+          typename this_t::iterator it(sub_map->find(tokens[i]));
+          if(it == sub_map->end())
+            return _fallback;
+
+          sub_map = &((*it).second.template as<this_t>());
+        }
+
+        typename this_t::iterator it(sub_map->find(tokens[path_size]));
+        if(it == sub_map->end())
+          return _fallback;
+        return (*it).second.template as<T>();
+      }
+
+      inline iterator find(std::string const &_key)
+      { return m_values.find(_key); }
+      inline const_iterator find(std::string const &_key) const
+      { return m_values.find(_key); }
 
       inline iterator begin()
       { return m_values.begin(); }
@@ -146,6 +187,13 @@ namespace jeayeson
       map_t m_values;
 
   }; /* Class map */
+
+  inline std::vector<std::string> tokenize(std::string const &_source, std::string const &_delim)
+  {
+    std::vector<std::string> tokens;
+    boost::algorithm::split(tokens, _source, boost::is_any_of(_delim));
+    return tokens;
+  }
 } /* Namespace jeayeson */
 
 #endif /* JEAYESON_JSONMAP_H */
