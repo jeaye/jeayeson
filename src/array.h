@@ -20,6 +20,9 @@ namespace jeayeson
   template <typename Value, typename Parser>
   class map;
 
+  /* Arrays provide storage of
+   * arbitrarily-typed JSON objects
+   * in contiguous memory. */
   template <typename Value, typename Parser>
   class array
   {
@@ -33,7 +36,7 @@ namespace jeayeson
       typedef typename array_t::iterator iterator;
       typedef typename array_t::const_iterator const_iterator;
 
-      static index_t const npos;
+      static index_t const npos = 0xFFFFFFFF;
       static char const delim_open = '[';
       static char const delim_close = ']';
 
@@ -47,12 +50,13 @@ namespace jeayeson
       { return m_values[_index].template as<T>(); }
       template <typename T>
       inline T& get(index_t _index, T const &)
-      { return m_values[_index].template as<T>(); }
+      { return m_values[_index].template as<T>(); } /* TODO: Additional checking here? */
       inline this_t& get_array(index_t _index)
       { return m_values[_index].template as<this_t >(); }
       inline map<value_t, parser_t>& get_map(index_t _index)
       { return m_values[_index].template as<map<value_t, parser_t> >(); }
 
+      /* Searches for the specified value. */
       inline iterator find(value_t const &_val)
       {
         for(typename array_t::iterator it(m_values.begin()); it != m_values.end(); ++it)

@@ -50,19 +50,20 @@ namespace jeayeson
   class array;
   std::vector<std::string> tokenize(std::string const &_source, std::string const &_delim);
 
-  /* json_maps provide a wrapper for
-   * string-indexed JsonValues, which
-   * could be any valid JSON value.
+  /* Maps provide a wrapper for
+   * string-indexed values, which
+   * could be any valid JSON object.
    */
   template <typename Value, typename Parser>
   class map
   {
     public:
       typedef map<Value, Parser> this_t;
+      typedef std::string key_t;
       typedef Value value_t;
       typedef Parser parser_t;
       typedef char const * const cstr_t;
-      typedef JEAYESON_MAP_T<std::string, Value> map_t;
+      typedef JEAYESON_MAP_T<key_t, Value> map_t;
       typedef typename map_t::iterator iterator;
       typedef typename map_t::const_iterator const_iterator;
 
@@ -71,20 +72,20 @@ namespace jeayeson
 
       map()
       { }
-      explicit map(std::string const &json)
-      { load(json); }
+      explicit map(std::string const &_json)
+      { load(_json); }
 
       template <typename T>
-      inline T& get(std::string const &_key) // No fallback, but you get a reference
+      inline T& get(key_t const &_key) // No fallback, but you get a reference
       { return m_values[_key].template as<T>(); }
       template <typename T>
-      inline T get(std::string const &_key, T const &_fallback)
+      inline T get(key_t const &_key, T const &_fallback)
       { return (has_key(_key) ? m_values[_key].template as<T>() : _fallback); }
-      inline std::string get(std::string const &_key, cstr_t _fallback)
+      inline std::string get(key_t const &_key, cstr_t _fallback)
       { return (has_key(_key) ? m_values[_key].template as<std::string>() : _fallback);  }
-      inline this_t& get_map(std::string const &_key)
+      inline this_t& get_map(key_t const &_key)
       { return m_values[_key].template as<this_t >(); }
-      inline array<value_t, parser_t>& get_array(std::string const &_key)
+      inline array<value_t, parser_t>& get_array(key_t const &_key)
       { return m_values[_key].template as<array<value_t, parser_t> >(); }
       template <typename T>
       T& get_for_path(std::string const &_path)
@@ -120,9 +121,10 @@ namespace jeayeson
         return (*it).second.template as<T>();
       }
 
-      inline iterator find(std::string const &_key)
+      /* Searches for an entry with the specified key. */
+      inline iterator find(key_t const &_key)
       { return m_values.find(_key); }
-      inline const_iterator find(std::string const &_key) const
+      inline const_iterator find(key_t const &_key) const
       { return m_values.find(_key); }
 
       inline iterator begin()
@@ -135,7 +137,7 @@ namespace jeayeson
       inline const_iterator cend() const
       { return m_values.end(); }
 
-      inline bool has_key(std::string const &_key) const
+      inline bool has_key(key_t const &_key) const
       { return (m_values.find(_key) != m_values.end()); }
 
       inline bool empty() const
@@ -147,7 +149,7 @@ namespace jeayeson
       inline void set(cstr_t _key, T _value)
       { m_values[_key] = _value; }
       template <typename T>
-      inline void set(std::string const &_key, T _value)
+      inline void set(key_t const &_key, T _value)
       { m_values[_key] = _value; }
 
       /* Completely wipes out all data in the map. */
@@ -157,7 +159,7 @@ namespace jeayeson
       { *this = load(_json); }
 
       /* Completely removes the specified key and destroys its data. */
-      inline void erase(std::string const &_key)
+      inline void erase(key_t const &_key)
       { m_values.erase(_key); }
 
       /* Adds the specified map into this map. */
