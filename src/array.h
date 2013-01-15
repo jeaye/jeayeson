@@ -53,15 +53,30 @@ namespace jeayeson
       inline map<value_t, parser_t>& get_map(index_t _index)
       { return m_values[_index].template as<map<value_t, parser_t> >(); }
 
+      inline iterator find(value_t const &_val)
+      {
+        for(typename array_t::iterator it(m_values.begin()); it != m_values.end(); ++it)
+          if(*it == _val)
+            return it;
+        return end();
+      }
+      inline const_iterator find(value_t const &_val) const
+      {
+        for(typename array_t::const_iterator it(m_values.begin()); it != m_values.end(); ++it)
+          if(*it == _val)
+            return it;
+        return cend();
+      }
+
       inline iterator begin()
       { return m_values.begin(); }
       inline const_iterator cbegin() const
-      { return m_values.cbegin(); }
+      { return m_values.begin(); }
 
       inline iterator end()
       { return m_values.end(); }
       inline const_iterator cend() const
-      { return m_values.cend(); }
+      { return m_values.end(); }
 
       inline size_t size() const
       { return m_values.size(); }

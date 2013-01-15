@@ -128,12 +128,12 @@ namespace jeayeson
       inline iterator begin()
       { return m_values.begin(); }
       inline const_iterator cbegin() const
-      { return m_values.cbegin(); }
+      { return m_values.begin(); }
 
       inline iterator end()
       { return m_values.end(); }
       inline const_iterator cend() const
-      { return m_values.cend(); }
+      { return m_values.end(); }
 
       inline bool has_key(std::string const &_key) const
       { return (m_values.find(_key) != m_values.end()); }
