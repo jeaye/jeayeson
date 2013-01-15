@@ -20,9 +20,9 @@
 #include <boost/interprocess/mapped_region.hpp>
 #endif
 
-#include "Defines.h"
-#include "JsonMap.h"
-#include "JsonArray.h"
+#include "defines.h"
+#include "map.h"
+#include "array.h"
 
 #if __cplusplus >= 201103L
 #define JEAYESON_CPP11

@@ -10,7 +10,7 @@
 #ifndef DEFINES_H
 #define DEFINES_H
 
-/* 
+/*
   Defines the internal map type used by JsonMap. std::map is sufficient for most uses, and optimal
   for many. You can specify other map types if a need arises.
 */
@@ -24,8 +24,6 @@
   headers are included before instantiating a JsonMap. The custom map type must be compatible with std::map.
 */
 // #define JEAYESON_OTHER_MAP YourMapTypeHere
-
-
 
 /* Use std::ifstream instead of boost's memory mapping for normal (not streaming) file reading. */
 #define JEAYESON_STD_FSTREAM_LOAD 1

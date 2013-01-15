@@ -12,9 +12,9 @@
 
 #include <boost/variant.hpp>
 
-#include "JsonMap.h"
-#include "JsonArray.h"
-#include "JsonParser.h"
+#include "map.h"
+#include "array.h"
+#include "parser.h"
 
 namespace jeayeson
 {

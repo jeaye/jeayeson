@@ -10,7 +10,7 @@
 #ifndef JEAYESON_JSONMAP_H
 #define JEAYESON_JSONMAP_H
 
-#include "Defines.h"
+#include "defines.h"
 #include <string>
 #include <vector>
 #include <boost/algorithm/string.hpp>
