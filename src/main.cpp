@@ -38,7 +38,8 @@ int32_t main(int32_t argc, char **argv)
     << map.get_for_path("person.inventory.coins", 0) << " coins\n"; // Fallback is 0
 
   /* Iterators work as expected, based on the C++ stdlib. (const and non-const) */
-  //for(json_array::const_iterator it(arr.begin()); it != arr.end(); ++it)
-    //std::cout << (*it).as<double>() << " ";
+  for(json_array::const_iterator it(arr.cbegin()); it != arr.cend(); ++it)
+    std::cout << (*it).as<double>() << " ";
+  std::cout << std::endl;
 }
 
