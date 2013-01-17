@@ -29,7 +29,7 @@ The tests should show (in src/main.cpp) how to use JeayeSON. Enjoy!
 Customization
 ---
 
-NOTE: These are all easily changed in src/defines.h
+**NOTE**: These are all easily changed in src/defines.h
 
 `#define JEAYESON_USE_STD_MAP`  
   *Use std::map (ideal in most cases)*  
