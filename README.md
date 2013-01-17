@@ -8,8 +8,9 @@ can be written in a generic manner to provide the most consistent
 interface, no matter the type. JeayeSON is a non-validating JSON library;
 it expects valid JSON all of the time.
 
-JeayeSON is designed to handle like any C++ stdlib container would, so
-experienced C++ programmers should feel right at home.
+  * 100% JSON compliant
+  * Header only (easy to add to anything)
+  * Optional asynchronous parsing
 
 Building
 ---
