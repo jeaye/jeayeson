@@ -33,7 +33,7 @@ The tests should show (in src/main.cpp) how to use JeayeSON. Enjoy!
   Customization
 /***************/
 
-NOTE: These are all easily changed in src/Defines.h
+NOTE: These are all easily changed in src/defines.h
 
 #define JEAYESON_USE_STD_MAP
   Use std::map (ideal in most cases)
@@ -57,8 +57,9 @@ If you have questions, first check the JeayeSON wiki: https://github.com/Jeaye/J
 
 For any other bug reports, questions, comments, or suggestions, contact me directly, or at Github:
 
-  Email: jeaye@arrownext.com
-  Github: https://github.com/Jeaye/JeayeSON
+Email: jeaye (at) arrownext (dot) com
+Github: https://github.com/Jeaye/JeayeSON
+IRC: irc.freenode.net #arrownext
 
 /***************/
      Thanks
