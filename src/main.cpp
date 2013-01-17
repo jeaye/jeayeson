@@ -22,7 +22,9 @@ int32_t main(int32_t argc, char **argv)
   /* We can look at some specify top-level values with "get".
      Notice that "get" returns a reference to the object. */
   std::string &str(map.get<std::string>("str")); // Get "str" as a string reference
+  std::cout << "str = " << str << std::endl;
   json_array &arr(map.get_array("arr")); // get_array and get_map are convenience functions
+  (void)arr; // avoid warnings
 
   /* A fallback value can also be specified with "get". It does two things:
        1. Helps deduce the type so that an explicit invocation is not needed

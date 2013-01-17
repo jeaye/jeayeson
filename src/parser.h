@@ -127,7 +127,12 @@ namespace jeayeson
               {
                 value.clear();
                 for( ; *_it != '"'; ++_it)
-                  value += *_it;
+                {
+                  if(*_it == '\\' && *(_it + 1) == '"')
+                    value += *(++_it);
+                  else
+                    value += *_it;
+                }
 
                 state = add(_container, name, value);
               }
@@ -135,7 +140,12 @@ namespace jeayeson
               {
                 name.clear();
                 for( ; *_it != '"'; ++_it)
-                  name += *_it;
+                {
+                  if(*_it == '\\' && *(_it + 1) == '"')
+                    name += *(++_it);
+                  else
+                    name += *_it;
+                }
 
                 state = parse_value;
               }
