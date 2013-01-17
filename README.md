@@ -32,18 +32,18 @@ Customization
 NOTE: These are all easily changed in src/defines.h
 
 `#define JEAYESON_USE_STD_MAP`  
-  Use std::map (ideal in most cases)  
+  *Use std::map (ideal in most cases)*  
 `#define JEAYESON_USE_STD_UNORD`  
-  Use std::unordered_map  
+  *Use std::unordered_map*  
 `#define JEAYESON_USE_BOOST_UNORD`  
-  Use boost::unordered_map  
+  *Use boost::unordered_map*  
 `#define JEAYESON_USE_OTHER_MAP`  
-  Specify a custom map to use with JEAYESON_OTHER_MAP  
+  *Specify a custom map to use with JEAYESON_OTHER_MAP*  
 `#define JEAYESON_OTHER_MAP MyMapType`  
-  Use the specified map type -- must be used in conjunction with JEAYESON_USE_OTHER_MAP  
+  *Use the specified map type -- must be used in conjunction with JEAYESON_USE_OTHER_MAP*  
 
 `#define JEAYESON_STD_FSTREAM_LOAD {0-1} (default 1)`  
-  Use std::ifstream instead of boost's memory mapping for normal (not streaming) file reading.  
+  *Use std::ifstream instead of boost's memory mapping for normal (not streaming) file reading.*  
 
 Help/Contact
 ---
@@ -51,9 +51,9 @@ If you have questions, first check the JeayeSON wiki: https://github.com/Jeaye/J
 
 For any other bug reports, questions, comments, or suggestions, contact me directly, or at Github:
 
-Email: jeaye (at) arrownext (dot) com
-Github: https://github.com/Jeaye/JeayeSON
-IRC: irc.freenode.net #arrownext
+Email: jeaye (at) arrownext (dot) com  
+Github: https://github.com/Jeaye/JeayeSON  
+IRC: irc.freenode.net #arrownext  
 
 Thanks
 ---
