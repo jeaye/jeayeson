@@ -23,7 +23,7 @@
   #define JEAYESON_MAP_T std::map
 
 #elif defined JEAYESON_USE_STD_UNORD
-  #include <map>
+  #include <unordered_map>
   #define JEAYESON_MAP_T std::unordered_map
 
 #elif defined JEAYESON_USE_BOOST_UNORD
