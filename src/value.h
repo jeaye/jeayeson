@@ -125,7 +125,7 @@ namespace jeayeson
   typedef map<value, parser> map_t;
   typedef array<value, parser> array_t;
 
-  std::ostream& operator <<(std::ostream &stream, value const &_value)
+  inline std::ostream& operator <<(std::ostream &stream, value const &_value)
   {
     switch(_value.m_value.which())
     {
@@ -141,7 +141,7 @@ namespace jeayeson
   }
 
   template <typename Iter>
-  void streamjoin(Iter _begin, Iter _end, std::ostream &_stream, std::string const &_sep = ",")
+  inline void streamjoin(Iter _begin, Iter _end, std::ostream &_stream, std::string const &_sep = ",")
   {
     if (_begin != _end)
       _stream << *_begin++;
@@ -150,7 +150,7 @@ namespace jeayeson
   }
 
   template<>
-  std::ostream& operator <<(std::ostream &_stream, array_t const &_arr)
+  inline std::ostream& operator <<(std::ostream &_stream, array_t const &_arr)
   {
     _stream << _arr.delim_open;
     streamjoin(_arr.m_values.begin(), _arr.m_values.end(), _stream);
@@ -158,13 +158,13 @@ namespace jeayeson
     return _stream;
   }
 
-  std::ostream& operator <<(std::ostream &_stream, map_t::map_t::value_type const &_p)
+  inline std::ostream& operator <<(std::ostream &_stream, map_t::map_t::value_type const &_p)
   {
     return (_stream << "\"" << _p.first << "\":" << _p.second);
   }
 
   template<>
-  std::ostream& operator <<(std::ostream &_stream, map_t const &_map)
+  inline std::ostream& operator <<(std::ostream &_stream, map_t const &_map)
   {
     _stream << _map.delim_open;
     streamjoin(_map.m_values.begin(), _map.m_values.end(), _stream);
