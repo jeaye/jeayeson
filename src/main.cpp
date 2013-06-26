@@ -31,7 +31,7 @@ int32_t main(int32_t argc, char **argv)
        2. Provides a default fallback value, should anything go wrong while accessing
      Note that these functions do NOT return references, due to incompatibilities with the fallback.
      */
-  std::string str_copy(map.get("str", "Default boringness")); // Second param is the defaulted string
+  std::string str_copy(map.get("str", "Default awesomeness")); // Second param is the defaulted string
 
   /* Delving into maps using dot-notated paths works, too.
      The type can be explicitly specified, or implicit based on the provided fallback.
