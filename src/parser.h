@@ -3,7 +3,7 @@
   See licensing at:
     http://opensource.org/licenses/BSD-3-Clause
 
-  File: JsonParser.h
+  File: parser.h
   Author: Jesse 'Jeaye' Wilkerson
 */
 

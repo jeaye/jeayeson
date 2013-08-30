@@ -3,7 +3,7 @@
   See licensing at:
     http://opensource.org/licenses/BSD-3-Clause
 
-  File: JsonValue.h
+  File: value.h
   Author: Jesse 'Jeaye' Wilkerson
 */
 
@@ -79,8 +79,8 @@ namespace jeayeson
 
       inline type_t get_type() const
       { return static_cast<type_t>(m_value.which()); }
-      inline bool is_null() const
-      { return m_value.which() == type_null; }
+      inline bool is(type_t const &type) const
+      { return get_type() == type; }
 
       template <typename T>
       inline bool operator ==(T const &_value) const
@@ -88,7 +88,7 @@ namespace jeayeson
       inline bool operator ==(cstr_t _value) const
       { return as<std::string>() == _value; }
 
-      /* In JsonParser.cpp */
+      /* In parser.cpp */
       friend std::ostream& operator <<(std::ostream &stream, value const &_value);
 
       template <typename T>

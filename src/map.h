@@ -3,7 +3,7 @@
   See licensing at:
     http://opensource.org/licenses/BSD-3-Clause
 
-  File: JsonMap.h
+  File: map.h
   Author: Jesse 'Jeaye' Wilkerson
 */
 
