@@ -1,5 +1,5 @@
 /*
-  Copyright © 2012 Jesse 'Jeaye' Wilkerson
+  Copyright © 2013 Jesse 'Jeaye' Wilkerson
   See licensing at:
     http://opensource.org/licenses/BSD-3-Clause
 
@@ -23,13 +23,6 @@
 #include "defines.h"
 #include "map.h"
 #include "array.h"
-
-#if __cplusplus >= 201103L
-#define JEAYESON_CPP11
-#define MOVE(x) std::move((x))
-#else
-#define MOVE(x) (x)
-#endif
 
 namespace jeayeson
 {
@@ -167,7 +160,7 @@ namespace jeayeson
             case '0':
             {
               /* Determine if the value is integral or floating point. */
-              str_citer is_int(_it);
+              str_citer is_int{ _it };
               while(*is_int == '-' || (*is_int >= '0' && *is_int <= '9'))
                 ++is_int;
               if(*is_int == '.' || *is_int == 'e' || *is_int == 'E')
@@ -199,7 +192,7 @@ namespace jeayeson
               ++_it;
             } break;
 
-            /* Whitespace or unimportant characters. */
+            /* Whitespace or unimportant/unknown characters. */
             default:
               ++_it;
               break;
@@ -216,7 +209,7 @@ namespace jeayeson
 
 #if JEAYESON_STD_FSTREAM_LOAD
         std::ifstream file(_json_file.c_str());
-        std::size_t file_size = 0;
+        std::size_t file_size{ 0 };
 
         /* Ensure the file was opened. */
         if(file.is_open() == false)
@@ -237,8 +230,8 @@ namespace jeayeson
         boost::interprocess::file_mapping file(json_file.c_str(), boost::interprocess::read_only);
         boost::interprocess::mapped_region region(file, boost::interprocess::read_only);
 
-        char *str = static_cast<char*>(region.get_address());
-        std::size_t elements = region.get_size() / sizeof(char);
+        char * const str{ static_cast<char*>(region.get_address()) };
+        std::size_t const elements{ region.get_size() / sizeof(char) };
 
         /* Reserve space for the string. */
         json.reserve(elements);
@@ -257,7 +250,7 @@ namespace jeayeson
         typedef map<typename Container::value_t, typename Container::parser_t> json_map;
         typedef array<typename Container::value_t, typename Container::parser_t> json_array;
 
-        str_citer it = _json_string.begin();
+        str_citer it{ _json_string.begin() };
 
         while(*it)
         {

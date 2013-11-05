@@ -49,12 +49,12 @@ Customization
 
 Help/Contact
 ---
-If you have questions, first check the JeayeSON wiki: https://github.com/Jeaye/JeayeSON/wiki
+If you have questions, first check the JeayeSON wiki: https://github.com/jeaye/JeayeSON/wiki
 
 For any other bug reports, questions, comments, or suggestions, contact me directly, or at Github:
 
 Email: jeaye (at) arrownext (dot) com  
-Github: https://github.com/Jeaye/JeayeSON  
+Github: https://github.com/jeaye/JeayeSON  
 IRC: irc.freenode.net #arrownext  
 
 Thanks

@@ -1,6 +1,0 @@
-Optimizations:
-  [X] Bypass file IO as much as possible
-  [ ] Compact data (less to parse through -- like whitespace)
-  [ ] Binary JSON
-  [ ] Multi-threading
-

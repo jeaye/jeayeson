@@ -1,5 +1,5 @@
 /*
-  Copyright © 2012 Jesse 'Jeaye' Wilkerson
+  Copyright © 2013 Jesse 'Jeaye' Wilkerson
   See licensing at:
     http://opensource.org/licenses/BSD-3-Clause
 
@@ -20,30 +20,28 @@ namespace jeayeson
 {
   class value
   {
-    private:
-      typedef map<value, parser> map_t;
-      typedef array<value, parser> array_t;
-      typedef struct{ } null_t;
-
     public:
+#pragma mark - Types
+      /* Maps to the variant 1:1. */
       enum type_t
       {
         type_null,
-        type_uint32,
-        type_int32,
-        type_uint64,
         type_int64,
-        type_float,
         type_double,
         type_bool,
         type_string,
         type_map,
         type_array
       };
+
+      typedef map<value, parser> map_t;
+      typedef array<value, parser> array_t;
+      typedef struct{ } null_t;
+
       typedef boost::variant<
         null_t,                                 /* Null (empty) type. */
-        uint32_t, int32_t, uint64_t, int64_t,   /* Integral types. */
-        float, double,                          /* Floating point types. */
+        int64_t,                                /* Integral types. */
+        double,                                 /* Floating point types. */
         bool,                                   /* Boolean types. */
         std::string,                            /* String types. */
         map_t,                                  /* Map types. */
@@ -51,18 +49,21 @@ namespace jeayeson
                             > variant_t;
       typedef char const * const cstr_t;
 
-      value() : m_value(null_t())
+#pragma mark - Construction
+      /* TODO: Move semantics. */
+      inline value() : m_value(null_t())
       { }
-      value(value const &_copy) : m_value(_copy.m_value)
+      inline value(value const &_copy) : m_value(_copy.m_value)
       { }
-      value(value &_copy) : m_value(_copy.m_value)
+      inline value(value &_copy) : m_value(_copy.m_value)
       { }
       template <typename T>
-      value(T &_value) : m_value(_value)
-      { }
-      value(cstr_t _str) : m_value(std::string(_str))
+      inline value(T &_value) : m_value(null_t())
+      { set(_value); }
+      inline value(cstr_t _str) : m_value(std::string(_str))
       { }
 
+#pragma mark - Accessors
       template <typename T>
       inline T& get()
       { return boost::get<T&>(m_value); }
@@ -70,12 +71,40 @@ namespace jeayeson
       inline T const& get() const
       { return boost::get<T const&>(m_value); }
 
+#pragma mark - Type Checking / Conversion
       template <typename T>
       inline T& as()
       { return boost::get<T&>(m_value); }
       template <typename T>
       inline T const& as() const
       { return boost::get<T const&>(m_value); }
+
+      template <typename T>
+      inline operator T() 
+      { return as<T&>(); }
+      template <typename T>
+      inline operator T() const
+      { return as<T const&>(); }
+
+      inline operator int8_t() 
+      { return as<int64_t&>(); }
+      inline operator uint8_t() 
+      { return as<int64_t&>(); }
+      inline operator int16_t() 
+      { return as<int64_t&>(); }
+      inline operator uint16_t() 
+      { return as<int64_t&>(); }
+      inline operator int32_t() 
+      { return as<int64_t&>(); }
+      inline operator uint32_t() 
+      { return as<int64_t&>(); }
+      inline operator long() 
+      { return as<int64_t&>(); }
+      inline operator unsigned long() 
+      { return as<int64_t&>(); }
+
+      inline operator float() 
+      { return as<double&>(); }
 
       inline type_t get_type() const
       { return static_cast<type_t>(m_value.which()); }
@@ -91,33 +120,56 @@ namespace jeayeson
       /* In parser.cpp */
       friend std::ostream& operator <<(std::ostream &stream, value const &_value);
 
+#pragma mark - Mutators
       template <typename T>
       inline void set(T const &_value)
       { m_value = _value; }
 
+      /* Mutator specializations. */
+      inline void set(int8_t const _value)
+      { m_value = static_cast<int64_t>(_value); }
+      inline void set(uint8_t const _value)
+      { m_value = static_cast<int64_t>(_value); }
+      inline void set(int16_t const _value)
+      { m_value = static_cast<int64_t>(_value); }
+      inline void set(uint16_t const _value)
+      { m_value = static_cast<int64_t>(_value); }
+      inline void set(int32_t const _value)
+      { m_value = static_cast<int64_t>(_value); }
+      inline void set(uint32_t const _value)
+      { m_value = static_cast<int64_t>(_value); }
+      inline void set(long const _value)
+      { m_value = static_cast<int64_t>(_value); }
+      inline void set(unsigned long const _value)
+      { m_value = static_cast<int64_t>(_value); }
+
+      inline void set(float const _value)
+      { m_value = static_cast<double>(_value); }
+
       /* Treat string literals as standard strings. */
       inline void set(cstr_t _value)
-      { m_value = std::string(_value); }
+      { m_value = static_cast<std::string>(_value); }
 
       /* Shortcut add for arrays. */
       template <typename T>
       inline void add(T const &_value)
-      { as< array_t >().add(_value); }
+      { as<array_t>().add(_value); }
 
       /* Shortcut add for maps. */
       template <typename T>
       inline void add(std::string const &key, T const &_value)
-      { as< map_t >().set(key, _value); }
+      { as<map_t>().set(key, _value); }
 
       template <typename T>
       inline variant_t& operator =(T const &_value)
-      { return (m_value = _value); }
+      { set(_value); return m_value; }
 
       /* Treat string literals as standard strings. */
       inline variant_t& operator =(cstr_t _value)
       { return (m_value = std::string(_value)); }
 
     private:
+#pragma mark - Members
       variant_t m_value;
 
   }; /* Class value */
@@ -158,7 +210,7 @@ namespace jeayeson
     return _stream;
   }
 
-  inline std::ostream& operator <<(std::ostream &_stream, map_t::map_t::value_type const &_p)
+  inline std::ostream& operator <<(std::ostream &_stream, map_t::internal_map_t::value_type const &_p)
   {
     return (_stream << "\"" << _p.first << "\":" << _p.second);
   }

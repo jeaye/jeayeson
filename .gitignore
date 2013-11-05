@@ -13,9 +13,13 @@ tags
 
 # Output directory
 bin/
+jeayeson
 
 # Compiled Static libraries
 *.lai
 *.la
 *.a
+
+# Make
+.build_*
 
