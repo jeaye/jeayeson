@@ -11,11 +11,11 @@ TESTS_OBJ=$(TESTS_SRC:.cpp=.o)
 OUT_DIR=bin
 
 # C++
-CXX=c++
-CXX_WARN_FLAGS=-Wall -Wextra -pedantic
+CXX=g++
+CXX_WARN_FLAGS=-Wall -Wextra -pedantic -Wno-unknown-pragmas
 CXX_DEBUG_FLAGS=-ggdb
-CXX_INCLUDE_FLAGS=-Isrc/ -I../boost_1_53_0/
-CXX_FLAGS=-std=c++11 -stdlib=libc++ $(CXX_INCLUDE_FLAGS) $(CXX_WARN_FLAGS) $(CXX_DEBUG_FLAGS)
+CXX_INCLUDE_FLAGS=-Isrc/ 
+CXX_FLAGS=-std=c++11 $(CXX_INCLUDE_FLAGS) $(CXX_WARN_FLAGS) $(CXX_DEBUG_FLAGS)
 
 LD_FLAGS=
 
@@ -28,7 +28,7 @@ PREFIX=$(COLOR_GREEN)»»»$(COLOR_OFF)
 
 .PHONY: all clean
 
-all: .build_tests
+all: clean .build_tests
 	echo "${PREFIX} Finished \o/"
 	
 .build_tests: .build_setup_tests ${TESTS_SRC}

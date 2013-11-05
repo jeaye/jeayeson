@@ -247,9 +247,6 @@ namespace jeayeson
       template <typename Container>
       static Container parse(std::string const &_json_string)
       {
-        typedef map<typename Container::value_t, typename Container::parser_t> json_map;
-        typedef array<typename Container::value_t, typename Container::parser_t> json_array;
-
         str_citer it{ _json_string.begin() };
 
         while(*it)

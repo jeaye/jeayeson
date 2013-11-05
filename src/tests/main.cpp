@@ -35,7 +35,7 @@ int main(int, char **)
      The type can be explicitly specified, or implicit based on the provided fallback.
      */
   std::cout << map.get_for_path<std::string>("person.name") << " has " // No fallback
-    << map.get_for_path("person.inventory.coins", 0ll) << " coins\n"; // Fallback is 0
+    << map.get_for_path("person.inventory.coins", 0) << " coins\n"; // Fallback is 0
 
   /* Iterators work as expected, based on the C++ stdlib. (const and non-const) */
   for(auto const &it : arr)

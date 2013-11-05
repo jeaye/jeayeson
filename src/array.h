@@ -78,11 +78,16 @@ namespace jeayeson
       template <typename T>
       inline T& get(index_t _index, T const &) const /* TODO: Doesn't use fallback. */
       { return m_values[_index].template as<T>(); }
-      inline std::string& get_string(index_t _index) const
-      { return m_values[_index].template as<std::string>(); }
-      inline array_t& get_array(index_t _index) const 
+
+      /* Named specialization. */
+      inline array_t& get_array(index_t _index)
       { return m_values[_index].template as<array_t >(); }
-      inline map<value_t, parser_t>& get_map(index_t _index) const
+      inline array_t const & get_array(index_t _index) const 
+      { return m_values[_index].template as<array_t >(); }
+
+      inline map<value_t, parser_t>& get_map(index_t _index)
+      { return m_values[_index].template as<map<value_t, parser_t> >(); }
+      inline map<value_t, parser_t> const & get_map(index_t _index) const
       { return m_values[_index].template as<map<value_t, parser_t> >(); }
 
       /* Searches for the specified value. */
@@ -147,39 +152,8 @@ namespace jeayeson
       { m_values[_index] = _t; }
 
       /* Specialized mutators. */
-      inline void set(index_t const &_index, int8_t const _value)
-      { m_values[_index] = static_cast<int64_t>(_value); }
-      inline void set(index_t const &_index, uint8_t const _value)
-      { m_values[_index] = static_cast<int64_t>(_value); }
-      inline void set(index_t const &_index, int16_t const _value)
-      { m_values[_index] = static_cast<int64_t>(_value); }
-      inline void set(index_t const &_index, uint16_t const _value)
-      { m_values[_index] = static_cast<int64_t>(_value); }
-      inline void set(index_t const &_index, int32_t const _value)
-      { m_values[_index] = static_cast<int64_t>(_value); }
-      inline void set(index_t const &_index, uint32_t const _value)
-      { m_values[_index] = static_cast<int64_t>(_value); }
-      inline void set(index_t const &_index, long const _value)
-      { m_values[_index] = static_cast<int64_t>(_value); }
-      inline void set(index_t const &_index, unsigned long const _value)
-      { m_values[_index] = static_cast<int64_t>(_value); }
-      inline void set(index_t const &_index, int64_t const _value)
-      { m_values[_index] = _value; }
-      inline void set(index_t const &_index, uint64_t const _value)
-      { m_values[_index] = _value; }
-
-      inline void set(index_t const &_index, bool const _value)
-      { m_values[_index] = _value; }
-
-      inline void set(index_t const &_index, float const _value)
-      { m_values[_index] = static_cast<double>(_value); }
-      inline void set(index_t const &_index, double const _value)
-      { m_values[_index] = _value; }
-
       inline void set(index_t const &_index, cstr_t _value)
       { m_values[_index] = static_cast<std::string>(_value); }
-      inline void set(index_t const &_index, std::string const &_value)
-      { m_values[_index] = _value; }
 
       template <typename T>
       inline void add(T const &_t)

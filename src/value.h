@@ -26,7 +26,17 @@ namespace jeayeson
       enum type_t
       {
         type_null,
+        type_int8,
+        type_uint8,
+        type_int16,
+        type_uint16,
+        type_int32,
+        type_uint32,
         type_int64,
+        type_uint64,
+        type_int,
+        type_unsigned_int,
+        type_float,
         type_double,
         type_bool,
         type_string,
@@ -40,8 +50,10 @@ namespace jeayeson
 
       typedef boost::variant<
         null_t,                                 /* Null (empty) type. */
-        int64_t,                                /* Integral types. */
-        double,                                 /* Floating point types. */
+        int8_t, uint8_t, int16_t, uint16_t,     /* Integral types. */
+        int32_t, uint32_t, int64_t, uint64_t,
+        int, unsigned int, 
+        float, double,                          /* Floating point types. */
         bool,                                   /* Boolean types. */
         std::string,                            /* String types. */
         map_t,                                  /* Map types. */
@@ -86,26 +98,6 @@ namespace jeayeson
       inline operator T() const
       { return as<T const&>(); }
 
-      inline operator int8_t() 
-      { return as<int64_t&>(); }
-      inline operator uint8_t() 
-      { return as<int64_t&>(); }
-      inline operator int16_t() 
-      { return as<int64_t&>(); }
-      inline operator uint16_t() 
-      { return as<int64_t&>(); }
-      inline operator int32_t() 
-      { return as<int64_t&>(); }
-      inline operator uint32_t() 
-      { return as<int64_t&>(); }
-      inline operator long() 
-      { return as<int64_t&>(); }
-      inline operator unsigned long() 
-      { return as<int64_t&>(); }
-
-      inline operator float() 
-      { return as<double&>(); }
-
       inline type_t get_type() const
       { return static_cast<type_t>(m_value.which()); }
       inline bool is(type_t const &type) const
@@ -124,27 +116,6 @@ namespace jeayeson
       template <typename T>
       inline void set(T const &_value)
       { m_value = _value; }
-
-      /* Mutator specializations. */
-      inline void set(int8_t const _value)
-      { m_value = static_cast<int64_t>(_value); }
-      inline void set(uint8_t const _value)
-      { m_value = static_cast<int64_t>(_value); }
-      inline void set(int16_t const _value)
-      { m_value = static_cast<int64_t>(_value); }
-      inline void set(uint16_t const _value)
-      { m_value = static_cast<int64_t>(_value); }
-      inline void set(int32_t const _value)
-      { m_value = static_cast<int64_t>(_value); }
-      inline void set(uint32_t const _value)
-      { m_value = static_cast<int64_t>(_value); }
-      inline void set(long const _value)
-      { m_value = static_cast<int64_t>(_value); }
-      inline void set(unsigned long const _value)
-      { m_value = static_cast<int64_t>(_value); }
-
-      inline void set(float const _value)
-      { m_value = static_cast<double>(_value); }
 
       /* Treat string literals as standard strings. */
       inline void set(cstr_t _value)

@@ -116,26 +116,6 @@ namespace jeayeson
       inline std::string get(key_t const &_key, cstr_t _fallback) const
       { return (has_key(_key) ? m_values[_key].template as<std::string>() : _fallback);  }
 
-      inline int64_t get(key_t const &_key, int8_t const _fallback) const
-      { return (has_key(_key) ? m_values[_key].template as<int64_t>() : _fallback);  }
-      inline int64_t get(key_t const &_key, uint8_t const _fallback) const
-      { return (has_key(_key) ? m_values[_key].template as<int64_t>() : _fallback);  }
-      inline int64_t get(key_t const &_key, int16_t const _fallback) const
-      { return (has_key(_key) ? m_values[_key].template as<int64_t>() : _fallback);  }
-      inline int64_t get(key_t const &_key, uint16_t const _fallback) const
-      { return (has_key(_key) ? m_values[_key].template as<int64_t>() : _fallback);  }
-      inline int64_t get(key_t const &_key, int32_t const _fallback) const
-      { return (has_key(_key) ? m_values[_key].template as<int64_t>() : _fallback);  }
-      inline int64_t get(key_t const &_key, uint32_t const _fallback) const
-      { return (has_key(_key) ? m_values[_key].template as<int64_t>() : _fallback);  }
-      inline int64_t get(key_t const &_key, long const _fallback) const
-      { return (has_key(_key) ? m_values[_key].template as<int64_t>() : _fallback);  }
-      inline int64_t get(key_t const &_key, unsigned long const _fallback) const
-      { return (has_key(_key) ? m_values[_key].template as<int64_t>() : _fallback);  }
-
-      inline double get(key_t const &_key, float const _fallback) const
-      { return (has_key(_key) ? m_values[_key].template as<double>() : _fallback);  }
-
       /* Named specializations. */
       inline map_t& get_map(key_t const &_key)
       { return m_values[_key].template as<map_t >(); }
@@ -178,13 +158,13 @@ namespace jeayeson
           if(it == sub_map->end())
             return _fallback;
 
-          sub_map = &((*it).second.template as<map_t>());
+          sub_map = &(it->second.template as<map_t>());
         }
 
         typename map_t::iterator const it(sub_map->find(tokens[path_size]));
         if(it == sub_map->end())
           return _fallback;
-        return (*it).second.template as<T>();
+        return it->second.template as<T>();
       }
 
       inline std::vector<key_t> get_keys() const
@@ -235,40 +215,8 @@ namespace jeayeson
       { m_values[_key] = _value; }
 
       /* Specialized mutators. */
-      inline void set(key_t const &_key, int8_t const _value)
-      { m_values[_key] = static_cast<int64_t>(_value); }
-      inline void set(key_t const &_key, uint8_t const _value)
-      { m_values[_key] = static_cast<int64_t>(_value); }
-      inline void set(key_t const &_key, int16_t const _value)
-      { m_values[_key] = static_cast<int64_t>(_value); }
-      inline void set(key_t const &_key, uint16_t const _value)
-      { m_values[_key] = static_cast<int64_t>(_value); }
-      inline void set(key_t const &_key, int32_t const _value)
-      { m_values[_key] = static_cast<int64_t>(_value); }
-      inline void set(key_t const &_key, uint32_t const _value)
-      { m_values[_key] = static_cast<int64_t>(_value); }
-      inline void set(key_t const &_key, long const _value)
-      { m_values[_key] = static_cast<int64_t>(_value); }
-      inline void set(key_t const &_key, unsigned long const _value)
-      { m_values[_key] = static_cast<int64_t>(_value); }
-      inline void set(key_t const &_key, int64_t const _value)
-      { m_values[_key] = _value; }
-      inline void set(key_t const &_key, uint64_t const _value)
-      { m_values[_key] = _value; }
-
-      inline void set(key_t const &_key, bool const _value)
-      { m_values[_key] = _value; }
-
-      inline void set(key_t const &_key, float const _value)
-      { m_values[_key] = static_cast<double>(_value); }
-      inline void set(key_t const &_key, double const _value)
-      { m_values[_key] = _value; }
-
       inline void set(key_t const &_key, cstr_t _value)
       { m_values[_key] = static_cast<std::string>(_value); }
-      inline void set(key_t const &_key, std::string const&_value)
-      { m_values[_key] = _value; }
-
       template <typename T>
       inline void set(key_t const &_key, std::map<key_t, T> const &_data)
       { set(_key, map(_data)); }
