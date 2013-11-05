@@ -26,7 +26,7 @@ PREFIX=$(COLOR_GREEN)»»»$(COLOR_OFF)
 
 .SILENT:
 
-.PHONY: all clean
+.PHONY: all test clean
 
 all: clean .build_tests
 	echo "${PREFIX} Finished \o/"
@@ -42,6 +42,13 @@ all: clean .build_tests
 .build_setup_tests:
 	mkdir -p $(OUT_DIR)
 	touch .build_setup_tests
+
+test:
+	$(foreach file, ${TESTS_SRC}, \
+		echo "$(PREFIX) Running $(OUT_DIR)/$(basename $(notdir $(file)))" && \
+		$(OUT_DIR)/$(basename $(notdir $(file))) > /dev/null || exit 1 \
+	 )
+	echo "$(PREFIX) Success! \o/"
 
 clean:
 	find . -type f -name '.build_*' | xargs rm -f
