@@ -31,41 +31,41 @@ namespace jeayeson
     private:
       typedef std::string::const_iterator str_citer;
 
-      enum state_t { parse_name, parse_value };
+      enum class state_t { parse_name, parse_value };
 
 /********************* Helper Accessors *********************/
       template <typename Value, typename Parser, typename T>
       static inline state_t add(map<Value, Parser> &_map, std::string const &_key, T const &_t)
       {
         _map.set(_key, _t);
-        return parse_name;
+        return state_t::parse_name;
       }
 
       template <typename Value, typename Parser, typename T>
       static inline state_t add(array<Value, Parser> &_arr, std::string const &, T const &_t)
       {
         _arr.add(_t);
-        return parse_value;
+        return state_t::parse_value;
       }
 
       template <typename Value, typename Parser>
       static inline map<Value, Parser>& get_map(map<Value, Parser> &_map, std::string const &_key,
-                                              typename array<Value, Parser>::index_t)
+                                                typename array<Value, Parser>::index_t const)
       { return _map.get_map(_key); }
 
       template <typename Value, typename Parser>
       static inline map<Value, Parser>& get_map(array<Value, Parser> &_arr, std::string const &,
-                                              typename array<Value, Parser>::index_t _index)
+                                                typename array<Value, Parser>::index_t  const _index)
       { return _arr.get_map(_index); }
 
       template <typename Value, typename Parser>
       static inline array<Value, Parser>& get_array(map<Value, Parser> &_map, std::string const &_key,
-                                                  typename array<Value, Parser>::index_t)
+                                                    typename array<Value, Parser>::index_t const)
       { return _map.get_array(_key); }
 
       template <typename Value, typename Parser>
       static inline array<Value, Parser>& get_array(array<Value, Parser> &_arr, std::string const &,
-                                                  typename array<Value, Parser>::index_t _index)
+                                                    typename array<Value, Parser>::index_t  const _index)
       { return _arr.get_array(_index); }
 /********************* Helper Accessors *********************/
 
@@ -81,7 +81,7 @@ namespace jeayeson
         value.reserve(128);
 
         /* Maps start out parsing keys, arrays just want values. */
-        state_t state(_container.delim_open == json_map::delim_open ? parse_name : parse_value);
+        state_t state(_container.delim_open == json_map::delim_open ? state_t::parse_name : state_t::parse_value);
 
         while(*_it)
         {
@@ -116,15 +116,15 @@ namespace jeayeson
             {
               ++_it;
 
-              if(state == parse_value)
+              if(state == state_t::parse_value)
               {
                 value.clear();
                 for( ; *_it != '"'; ++_it)
                 {
                   if(*_it == '\\' && *(_it + 1) == '"')
-                    value += *(++_it);
+                  { value += *(++_it); }
                   else
-                    value += *_it;
+                  { value += *_it; }
                 }
 
                 state = add(_container, name, value);
@@ -135,12 +135,12 @@ namespace jeayeson
                 for( ; *_it != '"'; ++_it)
                 {
                   if(*_it == '\\' && *(_it + 1) == '"')
-                    name += *(++_it);
+                  { name += *(++_it); }
                   else
-                    name += *_it;
+                  { name += *_it; }
                 }
 
-                state = parse_value;
+                state = state_t::parse_value;
               }
 
               ++_it;
@@ -162,15 +162,15 @@ namespace jeayeson
               /* Determine if the value is integral or floating point. */
               str_citer is_int{ _it };
               while(*is_int == '-' || (*is_int >= '0' && *is_int <= '9'))
-                ++is_int;
+              { ++is_int; }
               if(*is_int == '.' || *is_int == 'e' || *is_int == 'E')
-                state = add(_container, name, std::atof(&*_it));
+              { state = add(_container, name, std::atof(&*_it)); }
               else
-                state = add(_container, name, std::atoi(&*_it));
+              { state = add(_container, name, std::atoi(&*_it)); }
 
               /* Progress to the next element. */
               while(*_it == '-' || *_it == '.' || (*_it >= '0' && *_it <= '9'))
-                ++_it;
+              { ++_it; }
               ++_it;
             } break;
 
@@ -180,15 +180,15 @@ namespace jeayeson
             case 'f':
             {
               if(*_it == 'n' && *(_it + 1) == 'u' && *(_it + 2) == 'l' && *(_it + 3) == 'l')
-                state = add(_container, name, typename Container::value_t());
+              { state = add(_container, name, typename Container::value_t()); }
               else if(*_it == 't' && *(_it + 1) == 'r' && *(_it + 2) == 'u' && *(_it + 3) == 'e')
-                state = add(_container, name, true);
+              { state = add(_container, name, true); }
               else
-                state = add(_container, name, false);
+              { state = add(_container, name, false); }
 
               /* Progress to the next element. */
               while(*_it != ',' && *_it != json_map::delim_close)
-                ++_it;
+              { ++_it; }
               ++_it;
             } break;
 
@@ -209,15 +209,14 @@ namespace jeayeson
 
 #if JEAYESON_STD_FSTREAM_LOAD
         std::ifstream file(_json_file.c_str());
-        std::size_t file_size{ 0 };
 
         /* Ensure the file was opened. */
         if(file.is_open() == false)
-          throw "Failed to parse non-existent file.";
+        { throw std::runtime_error("Failed to parse non-existent file."); }
 
         /* Determine the file length. */
         file.seekg(0, std::ios_base::end);
-        file_size = file.tellg();
+        int64_t const file_size{ file.tellg() };
         file.seekg(0, std::ios_base::beg);
 
         /* Reserve space in the string. */
@@ -231,7 +230,7 @@ namespace jeayeson
         boost::interprocess::mapped_region region(file, boost::interprocess::read_only);
 
         char * const str{ static_cast<char*>(region.get_address()) };
-        std::size_t const elements{ region.get_size() / sizeof(char) };
+        int64_t const elements{ region.get_size() / sizeof(char) };
 
         /* Reserve space for the string. */
         json.reserve(elements);
@@ -264,7 +263,7 @@ namespace jeayeson
 
             } break;
 
-              /* Whitespace. */
+            /* Whitespace. */
             default:
             {
               ++it;
@@ -282,9 +281,8 @@ namespace jeayeson
         output << _container;
         return output.str();
       }
+  };
+}
 
-  }; /* Class parser */
-} /* Namespace jeayeson */
-
-#endif /* JEAYESON_JSONPARSER_H */
+#endif
 

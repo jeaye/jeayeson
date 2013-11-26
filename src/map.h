@@ -73,8 +73,7 @@ namespace jeayeson
       static char const delim_close = '}';
 
 #pragma mark - Construction
-      inline map()
-      { }
+      inline map() = default;
       inline map(map const &_map) : m_values(_map.m_values)
       { }
       inline map(std::string const &_json)
@@ -82,15 +81,15 @@ namespace jeayeson
       inline map(value_t const &_val)
       {
         if(_val.get_type() == value_t::type_map)
-          *this = _val.template as<map_t>();
+        { *this = _val.template as<map_t>(); }
         else
-          throw std::runtime_error("Failed to construct map from non-map");
+        { throw std::runtime_error("Failed to construct map from non-map"); }
       }
       template <typename T>
       inline map(std::map<key_t, T> const &_container)
       {
         for(auto const &it : _container)
-          set(it.first, it.second);
+        { set(it.first, it.second); }
       }
 
 #pragma mark - Accessors
@@ -108,13 +107,19 @@ namespace jeayeson
       { return m_values[_key].template as<T>(); } 
 
       /* Access with a fallback. */
-      template <typename T> /* TODO: Will be slow. */
+      template <typename T>
       inline T get(key_t const &_key, T const &_fallback) const
-      { return (has_key(_key) ? m_values[_key].template as<T>() : _fallback); }
+      {
+        auto const it(m_values.find(_key));
+        if(it != m_values.end())
+        { return it->second.template as<T>(); }
+        else
+        { return _fallback; }
+      }
 
       /* Fallback specializations. */
       inline std::string get(key_t const &_key, cstr_t _fallback) const
-      { return (has_key(_key) ? m_values[_key].template as<std::string>() : _fallback);  }
+      { return get<std::string>(_key, _fallback); }
 
       /* Named specializations. */
       inline map_t& get_map(key_t const &_key)
@@ -136,11 +141,11 @@ namespace jeayeson
       inline T& get_for_path(std::string const &_path) const
       {
         std::vector<std::string> const tokens(tokenize(_path, "."));
-        std::size_t const path_size(tokens.size() - 1);
+        size_t const path_size(tokens.size() - 1);
 
         map_t *sub_map(const_cast<map_t*>(this));
-        for(std::size_t i = 0; i < path_size; ++i)
-          sub_map = &sub_map->get<map_t>(tokens[i]);
+        for(size_t i{}; i < path_size; ++i)
+        { sub_map = &sub_map->get<map_t>(tokens[i]); }
 
         return sub_map->get<T>(tokens[path_size]);
       }
@@ -149,21 +154,21 @@ namespace jeayeson
       inline T get_for_path(std::string const &_path, T const &_fallback) const
       {
         std::vector<std::string> const tokens(tokenize(_path, "."));
-        std::size_t const path_size(tokens.size() - 1);
+        size_t const path_size(tokens.size() - 1);
 
         map_t *sub_map(const_cast<map_t*>(this));
-        for(std::size_t i = 0; i < path_size; ++i)
+        for(size_t i{}; i < path_size; ++i)
         {
           typename map_t::iterator const it(sub_map->find(tokens[i]));
           if(it == sub_map->end())
-            return _fallback;
+          { return _fallback; }
 
           sub_map = &(it->second.template as<map_t>());
         }
 
         typename map_t::iterator const it(sub_map->find(tokens[path_size]));
         if(it == sub_map->end())
-          return _fallback;
+        { return _fallback; }
         return it->second.template as<T>();
       }
 
@@ -171,7 +176,7 @@ namespace jeayeson
       {
         std::vector<key_t> keys;
         for(auto const &it : m_values)
-          keys.push_back(it.first);
+        { keys.push_back(it.first); }
         return keys;
       }
 
@@ -179,7 +184,7 @@ namespace jeayeson
       {
         array_t arr;
         for(auto const &it : m_values)
-          arr.add(it.second);
+        { arr.add(it.second); }
         return arr;
       }
 
@@ -219,7 +224,7 @@ namespace jeayeson
       { m_values[_key] = static_cast<std::string>(_value); }
       template <typename T>
       inline void set(key_t const &_key, std::map<key_t, T> const &_data)
-      { set(_key, map(_data)); }
+      { set(_key, map{ _data }); }
 
       /* Completely wipes out all data in the map. */
       inline void clear()
@@ -244,13 +249,13 @@ namespace jeayeson
 
       /* Loads the specified JSON file. */
       inline void load_file(std::string const &_json_file)
-      { *this = Parser::template parse_file< map_t >(_json_file); }
+      { *this = Parser::template parse_file<map_t>(_json_file); }
       static inline map_t load_file_new(std::string const &_json_file)
-      { return Parser::template parse_file< map_t >(_json_file); }
+      { return Parser::template parse_file<map_t>(_json_file); }
 
       /* Writes the JSON data to string form. */
       inline std::string to_string() const
-      { return Parser::template save< map_t >(*this); }
+      { return Parser::template save<map_t>(*this); }
 
       template <typename Stream_Value, typename Stream_Parser>
       friend std::ostream& operator <<(std::ostream &stream, map<Stream_Value, Stream_Parser> const &_map);
@@ -259,7 +264,7 @@ namespace jeayeson
 #pragma mark - Members
       mutable internal_map_t m_values;
 
-  }; /* Class map */
+  };
 
   inline std::vector<std::string> tokenize(std::string const &_source, std::string const &_delim)
   {
@@ -267,7 +272,7 @@ namespace jeayeson
     boost::algorithm::split(tokens, _source, boost::is_any_of(_delim));
     return tokens;
   }
-} /* Namespace jeayeson */
+}
 
-#endif /* JEAYESON_JSONMAP_H */
+#endif 
 

@@ -44,8 +44,7 @@ namespace jeayeson
       static char const delim_close = ']';
 
 #pragma mark - Construction
-      inline array()
-      { }
+      inline array() = default;
       inline array(array const &_array) : m_values(_array.m_values)
       { }
       inline explicit array(std::string const &_json)
@@ -53,56 +52,60 @@ namespace jeayeson
       inline explicit array(value_t const &_val)
       {
         if(_val.get_type() == value_t::type_array)
-          *this = _val.template as<array_t>();
+        { *this = _val.template as<array_t>(); }
         else
-          throw std::runtime_error("Failed to construct array from non-array");
+        { throw std::runtime_error("Failed to construct array from non-array"); }
       }
       template <typename T>
       inline explicit array(T const &_container)
       {
         reserve(_container.size());
         for(auto const &it : _container)
-          add(it);
+        { add(it); }
       }
 
 #pragma mark - Accessors
       /* Access the internal variant type. */
-      inline value_t& get(index_t const &_index)
+      inline value_t& get(index_t const _index)
       { return m_values[_index]; }
-      inline value_t const& get(index_t const &_index) const
+      inline value_t const& get(index_t const _index) const
       { return m_values[_index]; }
 
       template <typename T>
-      inline T& get(index_t _index) const
+      inline T& get(index_t const _index) const
       { return m_values[_index].template as<T>(); }
       template <typename T>
-      inline T& get(index_t _index, T const &) const /* TODO: Doesn't use fallback. */
+      inline T& get(index_t const _index, T const &) const /* TODO: Doesn't use fallback. */
       { return m_values[_index].template as<T>(); }
 
       /* Named specialization. */
-      inline array_t& get_array(index_t _index)
+      inline array_t& get_array(index_t const _index)
       { return m_values[_index].template as<array_t >(); }
-      inline array_t const & get_array(index_t _index) const 
+      inline array_t const & get_array(index_t const _index) const 
       { return m_values[_index].template as<array_t >(); }
 
-      inline map<value_t, parser_t>& get_map(index_t _index)
+      inline map<value_t, parser_t>& get_map(index_t const _index)
       { return m_values[_index].template as<map<value_t, parser_t> >(); }
-      inline map<value_t, parser_t> const & get_map(index_t _index) const
+      inline map<value_t, parser_t> const & get_map(index_t const _index) const
       { return m_values[_index].template as<map<value_t, parser_t> >(); }
 
       /* Searches for the specified value. */
       inline iterator find(value_t const &_val)
       {
-        for(typename array_t::iterator it(m_values.begin()); it != m_values.end(); ++it)
+        for(auto it(m_values.begin()); it != m_values.end(); ++it)
+        {
           if(*it == _val)
-            return it;
+          { return it; }
+        }
         return end();
       }
       inline const_iterator find(value_t const &_val) const
       {
-        for(typename array_t::const_iterator it(m_values.begin()); it != m_values.end(); ++it)
+        for(auto it(m_values.begin()); it != m_values.end(); ++it)
+        {
           if(*it == _val)
-            return it;
+          { return it; }
+        }
         return cend();
       }
 
@@ -118,9 +121,11 @@ namespace jeayeson
       template <typename T>
       inline index_t find(T const &_val) const
       {
-        for(index_t i(0); i < m_values.size(); ++i)
+        for(index_t i{}; i < m_values.size(); ++i)
+        {
           if(m_values[i] == _val)
-            return i;
+          { return i; }
+        }
         return npos;
       }
 
@@ -148,7 +153,7 @@ namespace jeayeson
       /* Stores the specified value at the specified index.
        * The specified index should already exist. */
       template <typename T>
-      inline void set(index_t _index, T const &_t)
+      inline void set(index_t const _index, T const &_t)
       { m_values[_index] = _t; }
 
       /* Specialized mutators. */
@@ -160,12 +165,12 @@ namespace jeayeson
       { m_values.push_back(Value(_t)); }
 
       /* Erases ONE value, starting at position _index_. */
-      inline void erase(index_t _index)
+      inline void erase(index_t const _index)
       { m_values.erase(m_values.begin() + _index); }
 
       /* Erases _amount_ number of objects from the starting
        * point _index_. This does no bounds checking. */
-      inline void erase(index_t _index, std::size_t _amount)
+      inline void erase(index_t const _index, size_t const _amount)
       { m_values.erase(m_values.begin() + _index, m_values.begin() + _index + _amount); }
 
       inline void clear()
@@ -173,24 +178,24 @@ namespace jeayeson
       inline void reset(std::string const &_json)
       { *this = load(_json); }
 
-      inline void reserve(std::size_t const _size)
+      inline void reserve(size_t const _size)
       { m_values.reserve(_size); }
 
       /* Loads the specified JSON string. */
       inline bool load(std::string const &_json)
-      { *this = Parser::template parse< array_t >(_json); return true; }
+      { *this = Parser::template parse<array_t>(_json); return true; }
       static inline array_t load_new(std::string const &_json)
-      { return Parser::template parse< array_t >(_json); }
+      { return Parser::template parse<array_t>(_json); }
 
       /* Loads the specified JSON file. */
       inline void load_file(std::string const &_json_file)
-      { *this = Parser::template parse_file< array_t >(_json_file); }
+      { *this = Parser::template parse_file<array_t>(_json_file); }
       static inline array_t load_new_file(std::string const &_json_file)
-      { return Parser::template parse_file< array_t >(_json_file); }
+      { return Parser::template parse_file<array_t>(_json_file); }
 
       /* Writes the JSON data to string form. */
       inline std::string to_string() const
-      { return Parser::template save< array_t >(*this); }
+      { return Parser::template save<array_t>(*this); }
 
       template <typename Stream_Value, typename Stream_Parser>
       friend std::ostream& operator <<(std::ostream &stream, array<Stream_Value, Stream_Parser> const &_arr);

@@ -70,7 +70,7 @@ namespace jeayeson
       inline value(value &_copy) : m_value(_copy.m_value)
       { }
       template <typename T>
-      inline value(T &_value) : m_value(null_t())
+      inline value(T const &_value) : m_value(null_t())
       { set(_value); }
       inline value(cstr_t _str) : m_value(std::string(_str))
       { }
@@ -143,7 +143,7 @@ namespace jeayeson
 #pragma mark - Members
       variant_t m_value;
 
-  }; /* Class value */
+  };
 
   typedef map<value, parser> map_t;
   typedef array<value, parser> array_t;
@@ -164,12 +164,12 @@ namespace jeayeson
   }
 
   template <typename Iter>
-  inline void streamjoin(Iter _begin, Iter _end, std::ostream &_stream, std::string const &_sep = ",")
+  inline void streamjoin(Iter _begin, Iter const _end, std::ostream &_stream, std::string const &_sep = ",")
   {
-    if (_begin != _end)
-      _stream << *_begin++;
+    if(_begin != _end)
+    { _stream << *_begin++; }
     while (_begin != _end)
-      _stream << _sep << *_begin++;
+    { _stream << _sep << *_begin++; }
   }
 
   template<>
@@ -182,9 +182,7 @@ namespace jeayeson
   }
 
   inline std::ostream& operator <<(std::ostream &_stream, map_t::internal_map_t::value_type const &_p)
-  {
-    return (_stream << "\"" << _p.first << "\":" << _p.second);
-  }
+  { return (_stream << "\"" << _p.first << "\":" << _p.second); }
 
   template<>
   inline std::ostream& operator <<(std::ostream &_stream, map_t const &_map)
@@ -194,11 +192,11 @@ namespace jeayeson
     _stream << _map.delim_close;
     return _stream;
   }
-} /* Namespace jeayeson */
+}
 
 typedef jeayeson::value json_value;
 typedef jeayeson::map_t json_map;
 typedef jeayeson::array_t json_array;
 
-#endif /* JEAYESON_JSONVALUE_H */
+#endif
 
