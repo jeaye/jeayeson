@@ -11,7 +11,7 @@ TESTS_OBJ=$(TESTS_SRC:.cpp=.o)
 OUT_DIR=bin
 
 # C++
-CXX=g++
+CXX=c++
 CXX_WARN_FLAGS=-Wall -Wextra -pedantic -Wno-unknown-pragmas
 CXX_DEBUG_FLAGS=-ggdb
 CXX_INCLUDE_FLAGS=-Isrc/ 
