@@ -1,5 +1,5 @@
 /*
-  Copyright © 2013 Jesse 'Jeaye' Wilkerson
+  Copyright © 2014 Jesse 'Jeaye' Wilkerson
   See licensing at:
     http://opensource.org/licenses/BSD-3-Clause
 
@@ -7,8 +7,7 @@
   Author: Jesse 'Jeaye' Wilkerson
 */
 
-#ifndef JEAYESON_JSONVALUE_H
-#define JEAYESON_JSONVALUE_H
+#pragma once
 
 #include <boost/variant.hpp>
 
@@ -21,34 +20,26 @@ namespace jeayeson
   class value
   {
     public:
-#pragma mark - Types
       /* Maps to the variant 1:1. */
       enum type_t
       {
         type_null,
-        type_int8,
-        type_uint8,
-        type_int16,
-        type_uint16,
-        type_int32,
-        type_uint32,
-        type_int64,
-        type_uint64,
-        type_int,
-        type_unsigned_int,
-        type_float,
-        type_double,
+        type_int8, type_uint8, type_int16, type_uint16,
+        type_int32, type_uint32, type_int64, type_uint64,
+        type_int, type_unsigned_int,
+        type_float, type_double,
         type_bool,
         type_string,
         type_map,
         type_array
       };
 
-      typedef map<value, parser> map_t;
-      typedef array<value, parser> array_t;
-      typedef struct{ } null_t;
+      using map_t = map<value, parser>;
+      using array_t = array<value, parser>;
+      using null_t = struct{ };
 
-      typedef boost::variant<
+      using variant_t = boost::variant
+      <
         null_t,                                 /* Null (empty) type. */
         int8_t, uint8_t, int16_t, uint16_t,     /* Integral types. */
         int32_t, uint32_t, int64_t, uint64_t,
@@ -58,145 +49,134 @@ namespace jeayeson
         std::string,                            /* String types. */
         map_t,                                  /* Map types. */
         array_t                                 /* Array types. */
-                            > variant_t;
-      typedef char const * const cstr_t;
+      >;
+      using cstr_t = char const * const;
 
-#pragma mark - Construction
-      /* TODO: Move semantics. */
-      inline value() : m_value(null_t())
+      value() : value_(null_t())
       { }
-      inline value(value const &_copy) : m_value(_copy.m_value)
+      value(value const &copy) : value_{ copy.value_ }
       { }
-      inline value(value &_copy) : m_value(_copy.m_value)
+      value(value &copy) : value_{ copy.value_ }
       { }
       template <typename T>
-      inline value(T const &_value) : m_value(null_t())
-      { set(_value); }
-      inline value(cstr_t _str) : m_value(std::string(_str))
+      value(T const &val) : value_{ null_t() }
+      { set(val); }
+      value(cstr_t const str) : value_{ std::string(str) }
       { }
 
-#pragma mark - Accessors
       template <typename T>
-      inline T& get()
-      { return boost::get<T&>(m_value); }
+      T& get()
+      { return boost::get<T&>(value_); }
       template <typename T>
-      inline T const& get() const
-      { return boost::get<T const&>(m_value); }
-
-#pragma mark - Type Checking / Conversion
-      template <typename T>
-      inline T& as()
-      { return boost::get<T&>(m_value); }
-      template <typename T>
-      inline T const& as() const
-      { return boost::get<T const&>(m_value); }
+      T const& get() const
+      { return boost::get<T const&>(value_); }
 
       template <typename T>
-      inline operator T() 
+      T& as()
+      { return boost::get<T&>(value_); }
+      template <typename T>
+      T const& as() const
+      { return boost::get<T const&>(value_); }
+
+      template <typename T>
+      operator T() 
       { return as<T&>(); }
       template <typename T>
-      inline operator T() const
+      operator T() const
       { return as<T const&>(); }
 
-      inline type_t get_type() const
-      { return static_cast<type_t>(m_value.which()); }
-      inline bool is(type_t const &type) const
+      type_t get_type() const
+      { return static_cast<type_t>(value_.which()); }
+      bool is(type_t const &type) const
       { return get_type() == type; }
 
       template <typename T>
-      inline bool operator ==(T const &_value) const
-      { return as<T>() == _value; }
-      inline bool operator ==(cstr_t _value) const
-      { return as<std::string>() == _value; }
+      bool operator ==(T const &val) const
+      { return as<T>() == val; }
+      bool operator ==(cstr_t const val) const
+      { return as<std::string>() == val; }
 
-      /* In parser.cpp */
-      friend std::ostream& operator <<(std::ostream &stream, value const &_value);
+      friend std::ostream& operator <<(std::ostream &stream, value const &val);
 
-#pragma mark - Mutators
       template <typename T>
-      inline void set(T const &_value)
-      { m_value = _value; }
+      void set(T const &val)
+      { value_ = val; }
 
       /* Treat string literals as standard strings. */
-      inline void set(cstr_t _value)
-      { m_value = static_cast<std::string>(_value); }
+      void set(cstr_t const val)
+      { value_ = static_cast<std::string>(val); }
 
       /* Shortcut add for arrays. */
       template <typename T>
-      inline void add(T const &_value)
-      { as<array_t>().add(_value); }
+      void add(T const &val)
+      { as<array_t>().add(val); }
 
       /* Shortcut add for maps. */
       template <typename T>
-      inline void add(std::string const &key, T const &_value)
-      { as<map_t>().set(key, _value); }
+      void add(std::string const &key, T const &val)
+      { as<map_t>().set(key, val); }
 
       template <typename T>
-      inline variant_t& operator =(T const &_value)
-      { set(_value); return m_value; }
-
-      /* Treat string literals as standard strings. */
-      inline variant_t& operator =(cstr_t _value)
-      { return (m_value = std::string(_value)); }
+      variant_t& operator =(T const &val)
+      { set(val); return value_; }
+      variant_t& operator =(cstr_t const val)
+      { return (value_ = std::string{ val }); }
 
     private:
-#pragma mark - Members
-      variant_t m_value;
-
+      variant_t value_;
   };
 
-  typedef map<value, parser> map_t;
-  typedef array<value, parser> array_t;
+  using map_t = map<value, parser>;
+  using array_t = array<value, parser>;
 
-  inline std::ostream& operator <<(std::ostream &stream, value const &_value)
+  inline std::ostream& operator <<(std::ostream &stream, value const &val)
   {
-    switch(_value.m_value.which())
+    switch(val.value_.which())
     {
       case value::type_null:
         return (stream << "null");
       case value::type_string:
-        return (stream << "\"" << _value.m_value << "\"");
+        return (stream << "\"" << val.value_ << "\"");
       case value::type_bool:
-        return (stream << (_value.as<bool>() ? "true" : "false"));
+        return (stream << (val.as<bool>() ? "true" : "false"));
       default:
-        return (stream << _value.m_value);
+        return (stream << val.value_);
     }
   }
 
   template <typename Iter>
-  inline void streamjoin(Iter _begin, Iter const _end, std::ostream &_stream, std::string const &_sep = ",")
+  inline void streamjoin(Iter begin, Iter const end, std::ostream &stream,
+                         std::string const &sep = ",")
   {
-    if(_begin != _end)
-    { _stream << *_begin++; }
-    while (_begin != _end)
-    { _stream << _sep << *_begin++; }
+    if(begin != end)
+    { stream << *begin++; }
+    while(begin != end)
+    { stream << sep << *begin++; }
   }
 
   template<>
-  inline std::ostream& operator <<(std::ostream &_stream, array_t const &_arr)
+  inline std::ostream& operator <<(std::ostream &stream, array_t const &arr)
   {
-    _stream << _arr.delim_open;
-    streamjoin(_arr.m_values.begin(), _arr.m_values.end(), _stream);
-    _stream << _arr.delim_close;
-    return _stream;
+    stream << arr.delim_open;
+    streamjoin(arr.values_.begin(), arr.values_.end(), stream);
+    stream << arr.delim_close;
+    return stream;
   }
 
-  inline std::ostream& operator <<(std::ostream &_stream, map_t::internal_map_t::value_type const &_p)
-  { return (_stream << "\"" << _p.first << "\":" << _p.second); }
+  inline std::ostream& operator <<(std::ostream &stream,
+                                   map_t::internal_map_t::value_type const &p)
+  { return (stream << "\"" << p.first << "\":" << p.second); }
 
   template<>
-  inline std::ostream& operator <<(std::ostream &_stream, map_t const &_map)
+  inline std::ostream& operator <<(std::ostream &stream, map_t const &m)
   {
-    _stream << _map.delim_open;
-    streamjoin(_map.m_values.begin(), _map.m_values.end(), _stream);
-    _stream << _map.delim_close;
-    return _stream;
+    stream << m.delim_open;
+    streamjoin(m.values_.begin(), m.values_.end(), stream);
+    stream << m.delim_close;
+    return stream;
   }
 }
 
-typedef jeayeson::value json_value;
-typedef jeayeson::map_t json_map;
-typedef jeayeson::array_t json_array;
-
-#endif
-
+using json_value = jeayeson::value;
+using json_map = jeayeson::map_t;
+using json_array = jeayeson::array_t;

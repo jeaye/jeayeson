@@ -10,6 +10,7 @@
 *.swp
 tags
 *~
+.ycm_extra_conf.pyc
 
 # Output directory
 bin/

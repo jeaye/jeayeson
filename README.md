@@ -71,9 +71,9 @@ And the following code to interact with the JSON:
 
   /* We can look at some specify top-level values with "get".
      Notice that "get" returns a reference to the object. */
-  std::string &str{ map.get<std::string>("str") }; /* Get "str" as a mutable string reference. */
+  std::string &str(map.get<std::string>("str")); /* Get "str" as a mutable string reference. */
   std::cout << "str = " << str << std::endl;
-  json_array &arr{ map.get_array("arr") }; /* get_array and get_map are convenience functions. */
+  json_array &arr(map.get_array("arr")); /* get_array and get_map are convenience functions. */
 
   /* A fallback value can also be specified with "get". It does two things:
        1. Helps deduce the type so that an explicit invocation is not needed

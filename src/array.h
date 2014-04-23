@@ -1,5 +1,5 @@
 /*
-  Copyright © 2013 Jesse 'Jeaye' Wilkerson
+  Copyright © 2014 Jesse 'Jeaye' Wilkerson
   See licensing at:
     http://opensource.org/licenses/BSD-3-Clause
 
@@ -7,12 +7,12 @@
   Author: Jesse 'Jeaye' Wilkerson
 */
 
-#ifndef JEAYESON_JSONARRAY_H
-#define JEAYESON_JSONARRAY_H
+#pragma once
 
 #include <vector>
 #include <string>
-#include <stdint.h>
+#include <cstdint>
+#include <utility>
 #include <algorithm>
 
 namespace jeayeson
@@ -27,186 +27,147 @@ namespace jeayeson
   class array
   {
     public:
-#pragma mark - Types
-      typedef map<Value, Parser> map_t;
-      typedef array<Value, Parser> array_t;
-      typedef Value value_t;
-      typedef Parser parser_t;
-      typedef uint32_t index_t;
-      typedef std::string key_t;
-      typedef char const * const cstr_t;
-      typedef std::vector<Value> internal_array_t;
-      typedef typename internal_array_t::iterator iterator;
-      typedef typename internal_array_t::const_iterator const_iterator;
+      using map_t = map<Value, Parser>;
+      using array_t = array<Value, Parser>;
+      using value_t = Value;
+      using parser_t = Parser;
+      using index_t = uint32_t;
+      using key_t = std::string;
+      using cstr_t = char const * const;
+      using internal_array_t = std::vector<Value>;
+      using iterator = typename internal_array_t::iterator;
+      using const_iterator = typename internal_array_t::const_iterator;
 
       static index_t const npos = 0xFFFFFFFF;
       static char const delim_open = '[';
       static char const delim_close = ']';
 
-#pragma mark - Construction
-      inline array() = default;
-      inline array(array const &_array) : m_values(_array.m_values)
-      { }
-      inline explicit array(std::string const &_json)
-      { load(_json); }
-      inline explicit array(value_t const &_val)
+      array() = default;
+      explicit array(std::string const &json)
+      { load(json); }
+      explicit array(value_t const &val)
       {
-        if(_val.get_type() == value_t::type_array)
-        { *this = _val.template as<array_t>(); }
+        if(val.get_type() == value_t::type_array)
+        { *this = val.template as<array_t>(); }
         else
         { throw std::runtime_error("Failed to construct array from non-array"); }
       }
       template <typename T>
-      inline explicit array(T const &_container)
+      explicit array(T const &container)
       {
-        reserve(_container.size());
-        for(auto const &it : _container)
-        { add(it); }
+        reserve(container.size());
+        std::copy(container.begin(), container.end(), std::back_inserter(*this));
       }
+      array(array const &arr) : values_(arr.values_)
+      { }
 
-#pragma mark - Accessors
       /* Access the internal variant type. */
-      inline value_t& get(index_t const _index)
-      { return m_values[_index]; }
-      inline value_t const& get(index_t const _index) const
-      { return m_values[_index]; }
+      value_t& get(index_t const index)
+      { return values_[index]; }
+      value_t const& get(index_t const index) const
+      { return values_[index]; }
 
       template <typename T>
-      inline T& get(index_t const _index) const
-      { return m_values[_index].template as<T>(); }
+      T& get(index_t const index) const
+      { return values_[index].template as<T>(); }
       template <typename T>
-      inline T& get(index_t const _index, T const &) const /* TODO: Doesn't use fallback. */
-      { return m_values[_index].template as<T>(); }
+      T& get(index_t const index, T const &) const /* TODO: Doesn't use fallback. */
+      { return values_[index].template as<T>(); }
 
       /* Named specialization. */
-      inline array_t& get_array(index_t const _index)
-      { return m_values[_index].template as<array_t >(); }
-      inline array_t const & get_array(index_t const _index) const 
-      { return m_values[_index].template as<array_t >(); }
+      array_t& get_array(index_t const index)
+      { return values_[index].template as<array_t>(); }
+      array_t const & get_array(index_t const index) const 
+      { return values_[index].template as<array_t>(); }
 
-      inline map<value_t, parser_t>& get_map(index_t const _index)
-      { return m_values[_index].template as<map<value_t, parser_t> >(); }
-      inline map<value_t, parser_t> const & get_map(index_t const _index) const
-      { return m_values[_index].template as<map<value_t, parser_t> >(); }
+      map<value_t, parser_t>& get_map(index_t const index)
+      { return values_[index].template as<map<value_t, parser_t>>(); }
+      map<value_t, parser_t> const & get_map(index_t const index) const
+      { return values_[index].template as<map<value_t, parser_t>>(); }
 
       /* Searches for the specified value. */
-      inline iterator find(value_t const &_val)
-      {
-        for(auto it(m_values.begin()); it != m_values.end(); ++it)
-        {
-          if(*it == _val)
-          { return it; }
-        }
-        return end();
-      }
-      inline const_iterator find(value_t const &_val) const
-      {
-        for(auto it(m_values.begin()); it != m_values.end(); ++it)
-        {
-          if(*it == _val)
-          { return it; }
-        }
-        return cend();
-      }
-
-#pragma mark - Array Subscript Operators
-      inline value_t& operator [](index_t const _index)
-      { return m_values[_index]; }
-      inline value_t const& operator [](index_t const _index) const
-      { return m_values[_index]; }
-
-#pragma mark - Searching
-      /* Finds the specified value and returns the index of it.
-       * If the value is not found, array::npos is returned. */
       template <typename T>
-      inline index_t find(T const &_val) const
-      {
-        for(index_t i{}; i < m_values.size(); ++i)
-        {
-          if(m_values[i] == _val)
-          { return i; }
-        }
-        return npos;
-      }
+      iterator find(T const &val)
+      { return values_.find(val); }
+      template <typename T>
+      const_iterator find(T const &val) const
+      { return values_.find(val); }
 
-#pragma mark - Iterators
-      inline iterator begin()
-      { return m_values.begin(); }
-      inline const_iterator begin() const
-      { return m_values.begin(); }
-      inline const_iterator cbegin() const
-      { return m_values.begin(); }
+      value_t& operator [](index_t const index)
+      { return values_[index]; }
+      value_t const& operator [](index_t const index) const
+      { return values_[index]; }
 
-      inline iterator end()
-      { return m_values.end(); }
-      inline const_iterator end() const
-      { return m_values.end(); }
-      inline const_iterator cend() const
-      { return m_values.end(); }
+      iterator begin()
+      { return values_.begin(); }
+      const_iterator begin() const
+      { return values_.begin(); }
+      const_iterator cbegin() const
+      { return values_.begin(); }
 
-      inline size_t size() const
-      { return m_values.size(); }
-      inline bool empty() const
-      { return m_values.empty(); }
+      iterator end()
+      { return values_.end(); }
+      const_iterator end() const
+      { return values_.end(); }
+      const_iterator cend() const
+      { return values_.end(); }
 
-#pragma mark - Mutators
+      size_t size() const
+      { return values_.size(); }
+      bool empty() const
+      { return values_.empty(); }
+
       /* Stores the specified value at the specified index.
        * The specified index should already exist. */
       template <typename T>
-      inline void set(index_t const _index, T const &_t)
-      { m_values[_index] = _t; }
-
-      /* Specialized mutators. */
-      inline void set(index_t const &_index, cstr_t _value)
-      { m_values[_index] = static_cast<std::string>(_value); }
+      void set(index_t const index, T &&t)
+      { values_[index] = std::forward<T>(t); }
+      void set(index_t const &index, cstr_t const value)
+      { values_[index] = std::string{ value }; }
 
       template <typename T>
-      inline void add(T const &_t)
-      { m_values.push_back(Value(_t)); }
+      void add(T &&t)
+      { values_.push_back(Value{ std::forward<T>(t) }); }
+      template <typename T>
+      void push_back(T &&t)
+      { values_.push_back(Value{ std::forward<T>(t) }); }
 
       /* Erases ONE value, starting at position _index_. */
-      inline void erase(index_t const _index)
-      { m_values.erase(m_values.begin() + _index); }
+      void erase(index_t const index)
+      { values_.erase(values_.begin() + index); }
 
       /* Erases _amount_ number of objects from the starting
        * point _index_. This does no bounds checking. */
-      inline void erase(index_t const _index, size_t const _amount)
-      { m_values.erase(m_values.begin() + _index, m_values.begin() + _index + _amount); }
+      void erase(index_t const index, size_t const amount)
+      { values_.erase(values_.begin() + index, values_.begin() + index + amount); }
 
-      inline void clear()
-      { m_values.clear(); }
-      inline void reset(std::string const &_json)
-      { *this = load(_json); }
+      void clear()
+      { values_.clear(); }
+      void reset(std::string const &json)
+      { *this = load(json); }
 
-      inline void reserve(size_t const _size)
-      { m_values.reserve(_size); }
+      void reserve(size_t const size)
+      { values_.reserve(size); }
 
-      /* Loads the specified JSON string. */
-      inline bool load(std::string const &_json)
-      { *this = Parser::template parse<array_t>(_json); return true; }
-      static inline array_t load_new(std::string const &_json)
-      { return Parser::template parse<array_t>(_json); }
+      void load(std::string const &json)
+      { *this = Parser::template parse<array_t>(json); }
+      static array_t load_new(std::string const &json)
+      { return Parser::template parse<array_t>(json); }
 
-      /* Loads the specified JSON file. */
-      inline void load_file(std::string const &_json_file)
-      { *this = Parser::template parse_file<array_t>(_json_file); }
-      static inline array_t load_new_file(std::string const &_json_file)
-      { return Parser::template parse_file<array_t>(_json_file); }
+      void load_file(std::string const &json_file)
+      { *this = Parser::template parse_file<array_t>(json_file); }
+      static array_t load_new_file(std::string const &json_file)
+      { return Parser::template parse_file<array_t>(json_file); }
 
-      /* Writes the JSON data to string form. */
-      inline std::string to_string() const
+      std::string to_string() const
       { return Parser::template save<array_t>(*this); }
 
       template <typename Stream_Value, typename Stream_Parser>
-      friend std::ostream& operator <<(std::ostream &stream, array<Stream_Value, Stream_Parser> const &_arr);
+      friend std::ostream& operator <<(std::ostream &stream,
+                                       array<Stream_Value, Stream_Parser> const &arr);
 
     private:
-#pragma mark - Members
       /* Mutable for operator[] access. */
-      mutable internal_array_t m_values;
-
-  }; /* Class array */
-} /* Namespace jeayeson */
-
-#endif /* JEAYESON_JSONARRAY_H */
-
+      mutable internal_array_t values_;
+  };
+}

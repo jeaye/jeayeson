@@ -12,10 +12,10 @@ OUT_DIR=bin
 
 # C++
 CXX=c++
-CXX_WARN_FLAGS=-Wall -Wextra -pedantic -Wno-unknown-pragmas
+CXX_WARN_FLAGS=-Wall -Wextra -pedantic
 CXX_DEBUG_FLAGS=-ggdb
 CXX_INCLUDE_FLAGS=-Isrc/ 
-CXX_FLAGS=-std=c++11 $(CXX_INCLUDE_FLAGS) $(CXX_WARN_FLAGS) $(CXX_DEBUG_FLAGS)
+CXX_FLAGS=-std=c++11 -stdlib=libc++ $(CXX_INCLUDE_FLAGS) $(CXX_WARN_FLAGS) $(CXX_DEBUG_FLAGS)
 
 LD_FLAGS=
 
