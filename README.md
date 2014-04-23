@@ -17,7 +17,7 @@ Practice
 ----
 Assuming the JeayeSON headers are in your search path, simply  
 ```cpp
-#include <jeayeson.h>
+#include <jeayeson.hpp>
 ```
 This will give you access to `json_map`, `json_array`, and `json_value` which are the only three types you'll be interfacing with directly.
 
@@ -110,7 +110,7 @@ The tests should show (in src/main.cpp) how to use JeayeSON. Enjoy!
 Customization
 ---
 
-**NOTE**: These are all easily changed in src/defines.h
+**NOTE**: These are all easily changed in src/defines.hpp
 
 `#define JEAYESON_USE_STD_MAP`  
   *Use std::map (ideal in most cases)*  

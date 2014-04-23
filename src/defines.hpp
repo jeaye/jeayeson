@@ -3,7 +3,7 @@
   See licensing at:
     http://opensource.org/licenses/BSD-3-Clause
 
-  File: defines.h
+  File: defines.hpp
   Author: Jesse 'Jeaye' Wilkerson
 */
 
