@@ -10,7 +10,7 @@
 #include <iostream>
 #include <string>
 
-#include "jeayeson.h"
+#include "jeayeson.hpp"
 
 int main()
 {

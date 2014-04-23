@@ -10,8 +10,7 @@ it expects valid JSON all of the time.
 
   * Header only (easy to add to any project)
   * Small, consistent C++ API
-  * Successfully compiles
-
+  * Typesafe, C++11 interface
 
 Practice
 ----
@@ -26,7 +25,7 @@ Reading JSON
 ### Reading a JSON string
 ```cpp
 std::string json; // Acquired/initialized elsewhere
-json_array arr(json);
+json_array arr{ json };
 ```
 ### Reading a file
 ```cpp
@@ -99,13 +98,17 @@ library. This build process is simply for the tests.
 
 In the project directory, run:
 
-`$ ./build.sh`
+```bash
+$ make
+```
   
 Once built, you can run the tests by executing the produced binary:
 
-`$ ./bin/jeayeson`
+```bash
+$ ./bin/jeayeson
+```
   
-The tests should show (in src/main.cpp) how to use JeayeSON. Enjoy!
+The tests should show (in src/test/main.cpp) how to use JeayeSON. Enjoy!
 
 Customization
 ---

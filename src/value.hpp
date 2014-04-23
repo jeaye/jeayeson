@@ -11,9 +11,9 @@
 
 #include <boost/variant.hpp>
 
-#include "map.h"
-#include "array.h"
-#include "parser.h"
+#include "map.hpp"
+#include "array.hpp"
+#include "parser.hpp"
 
 namespace jeayeson
 {

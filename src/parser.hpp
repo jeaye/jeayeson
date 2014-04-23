@@ -14,9 +14,9 @@
 #include <fstream>
 #include <cstdlib>
 
-#include "defines.h"
-#include "map.h"
-#include "array.h"
+#include "defines.hpp"
+#include "map.hpp"
+#include "array.hpp"
 
 namespace jeayeson
 {

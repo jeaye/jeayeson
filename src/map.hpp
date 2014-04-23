@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "defines.h"
+#include "defines.hpp"
 
 #include <string>
 #include <vector>
