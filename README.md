@@ -97,18 +97,15 @@ Building
 library. This build process is simply for the tests.
 
 In the project directory, run:
-
 ```bash
 $ make
 ```
-  
-Once built, you can run the tests by executing the produced binary:
-
+Once built, you can run the tests:
 ```bash
-$ ./bin/jeayeson
+$ make test
 ```
-  
-The tests should show (in src/test/main.cpp) how to use JeayeSON. Enjoy!
+The tests (in src/tests/main.cpp and friends) can give more examples
+on how to use JeayeSON.
 
 Customization
 ---

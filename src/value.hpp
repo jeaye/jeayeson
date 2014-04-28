@@ -54,14 +54,12 @@ namespace jeayeson
 
       value() : value_(null_t())
       { }
-      value(value const &copy) : value_{ copy.value_ }
-      { }
-      value(value &copy) : value_{ copy.value_ }
-      { }
       template <typename T>
-      value(T const &val) : value_{ null_t() }
+      explicit value(T const &val) : value_{ null_t() }
       { set(val); }
-      value(cstr_t const str) : value_{ std::string(str) }
+      explicit value(cstr_t const str) : value_{ std::string(str) }
+      { }
+      value(value const &copy) : value_{ copy.value_ }
       { }
 
       template <typename T>
@@ -133,8 +131,6 @@ namespace jeayeson
   {
     switch(val.value_.which())
     {
-      case value::type_null:
-        return (stream << "null");
       case value::type_string:
         return (stream << "\"" << val.value_ << "\"");
       case value::type_bool:
@@ -153,6 +149,9 @@ namespace jeayeson
     while(begin != end)
     { stream << sep << *begin++; }
   }
+
+  inline std::ostream& operator <<(std::ostream &stream, value::null_t const &)
+  { return (stream << "null"); }
 
   template<>
   inline std::ostream& operator <<(std::ostream &stream, array_t const &arr)

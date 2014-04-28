@@ -22,21 +22,22 @@ LD_FLAGS=
 # Colors
 COLOR_OFF=$(shell tput sgr0)
 COLOR_GREEN=$(shell tput setaf 2)
-PREFIX=$(COLOR_GREEN)»»»$(COLOR_OFF)
 
 .SILENT:
 
 .PHONY: all test clean
 
 all: clean .build_tests
-	echo "${PREFIX} Finished \o/"
+	echo "Done"
 	
 .build_tests: .build_setup_tests ${TESTS_SRC}
-	echo "${PREFIX} Building tests"
-	$(foreach file, ${TESTS_SRC}, \
-		echo "  $(PREFIX) $(OUT_DIR)/$(basename $(notdir $(file)))" && \
-		$(CXX) $(CXX_FLAGS) $(LD_FLAGS) -o $(OUT_DIR)/$(basename $(notdir $(file))) $(file) \
-	 )
+	echo "Building tests"
+	for file in ${TESTS_SRC}; \
+	do \
+		out=$$(echo $(OUT_DIR)/$$(basename $$file) | sed 's/\..*$$//'); \
+		echo "  $$out"; \
+		$(CXX) $(CXX_FLAGS) $(LD_FLAGS) -o $$out $$file; \
+	done
 	touch .build_tests
 
 .build_setup_tests:
@@ -44,14 +45,17 @@ all: clean .build_tests
 	touch .build_setup_tests
 
 test:
-	$(foreach file, ${TESTS_SRC}, \
-		echo "$(PREFIX) Running $(OUT_DIR)/$(basename $(notdir $(file)))" && \
-		$(OUT_DIR)/$(basename $(notdir $(file))) > /dev/null || exit 1 \
-	 )
-	echo "$(PREFIX) Success! \o/"
+	echo "Running tests"
+	for file in ${TESTS_SRC}; \
+	do \
+		out=$$(echo $(OUT_DIR)/$$(basename $$file) | sed 's/\..*$$//'); \
+		echo "  $$out"; \
+		$$out > /dev/null || exit 1; \
+	done
+	echo "Done"
 
 clean:
 	find . -type f -name '.build_*' | xargs rm -f
 	rm -rf $(OUT_DIR)
-	echo "$(PREFIX) Cleaned"
+	echo "Cleaned"
 

@@ -1,9 +1,9 @@
 /*
-  Copyright © 2013 Jesse 'Jeaye' Wilkerson
+  Copyright © 2014 Jesse 'Jeaye' Wilkerson
   See licensing at:
     http://opensource.org/licenses/BSD-3-Clause
 
-  File: main.cpp
+  File: tests/main.cpp
   Author: Jesse 'Jeaye' Wilkerson
 */
 
@@ -16,7 +16,7 @@ int main()
 {
   /* To start with, create a map and load a file. */
   json_map map;
-  map.load_file("doc/getting_started/example.json");
+  map.load_file("src/tests/json/main.json");
 
   /* We can look at some specify top-level values with "get".
      Notice that "get" returns a reference to the object. */
@@ -40,4 +40,3 @@ int main()
   { std::cout << it.as<double>() << " "; }
   std::cout << std::endl;
 }
-

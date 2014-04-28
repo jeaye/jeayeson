@@ -166,7 +166,6 @@ namespace jeayeson
               /* Progress to the next element. */
               while(*it == '-' || *it == '.' || (*it >= '0' && *it <= '9'))
               { ++it; }
-              ++it;
             } break;
 
             /* Start of null, true, or false. */
@@ -175,16 +174,16 @@ namespace jeayeson
             case 'f':
             {
               if(*it == 'n' && *(it + 1) == 'u' && *(it + 2) == 'l' && *(it + 3) == 'l')
-              { state = add(container, name, typename Container::value_t()); }
+              { state = add(container, name, typename Container::value_t{}); }
               else if(*it == 't' && *(it + 1) == 'r' && *(it + 2) == 'u' && *(it + 3) == 'e')
               { state = add(container, name, true); }
               else
               { state = add(container, name, false); }
 
               /* Progress to the next element. */
-              while(*it != ',' && *it != json_map::delim_close)
+              while(*it != ',' && *it != json_map::delim_close
+                    && *it != json_array::delim_close)
               { ++it; }
-              ++it;
             } break;
 
             /* Whitespace or unimportant/unknown characters. */

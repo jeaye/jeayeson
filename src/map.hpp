@@ -71,7 +71,7 @@ namespace jeayeson
       static char const delim_open = '{';
       static char const delim_close = '}';
 
-      map() = default;
+      map(){} /* XXX: User-defined ctor required for variant. */
       explicit map(std::string const &_json)
       { load(_json); }
       explicit map(value_t const &val)
@@ -217,7 +217,7 @@ namespace jeayeson
       void clear()
       { values_.clear(); }
       void reset(std::string const &json)
-      { *this = load(json); }
+      { load(json); }
 
       /* Completely removes the specified key and destroys its data. */
       void erase(key_t const &key)
