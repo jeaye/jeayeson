@@ -21,6 +21,7 @@ namespace jeayeson
   {
     public:
       /* Maps to the variant 1:1. */
+      /* TODO: better integer support. */
       enum type_t
       {
         type_null,

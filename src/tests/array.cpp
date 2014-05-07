@@ -172,6 +172,19 @@ void test_clear()
     assert(arr.find("foo") != arr.end());
     arr.erase(0);
     assert(arr.find("foo") == arr.end());
+
+    arr.push_back(42.0f);
+    auto it(arr.find(42.0f));
+    assert(it != arr.end());
+    arr.erase(it);
+    assert(arr.find(42.0f) == arr.end());
+    assert(arr.size() == 1);
+
+    arr.push_back("bar");
+    assert(arr.size() == 2);
+    arr.erase(arr.begin(), arr.begin() + 1);
+    assert(arr.size() == 1);
+    assert(arr.get<std::string>(0) == "bar");
   }
   std::cout << "end test_clear" << std::endl;
 }

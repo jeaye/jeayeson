@@ -144,7 +144,10 @@ namespace jeayeson
       /* Erases ONE value, starting at position _index_. */
       void erase(index_t const index)
       { values_.erase(values_.begin() + index); }
-      /* TODO: erase with an iterator. */
+      iterator erase(const_iterator const it)
+      { return values_.erase(it); }
+      iterator erase(const_iterator const first, const_iterator const second)
+      { return values_.erase(first, second); }
 
       /* Erases _amount_ number of objects from the starting
        * point _index_. This does no bounds checking. */

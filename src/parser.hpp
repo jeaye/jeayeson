@@ -199,19 +199,19 @@ namespace jeayeson
       template <typename Container>
       static Container parse_file(std::string const &json_file)
       {
-        std::ifstream file(json_file.c_str());
-
-        if(!file.is_open())
-        { throw std::runtime_error("Failed to parse non-existent file."); }
-
-        file.seekg(0, std::ios_base::end);
-        int64_t const file_size{ file.tellg() };
-        file.seekg(0, std::ios_base::beg);
-
         std::string json;
-        json.reserve(file_size);
-        std::getline(file, json, static_cast<char>(-1)); /* EOF */
-        file.close();
+        {
+          std::ifstream file(json_file.c_str());
+          if(!file.is_open())
+          { throw std::runtime_error("Failed to parse non-existent file."); }
+
+          file.seekg(0, std::ios_base::end);
+          int64_t const file_size{ file.tellg() };
+          file.seekg(0, std::ios_base::beg);
+
+          json.reserve(file_size);
+          std::getline(file, json, static_cast<char>(-1)); /* EOF */
+        }
 
         return parse<Container>(json);
       }
@@ -248,7 +248,7 @@ namespace jeayeson
       }
 
       template <typename Container>
-      static inline std::string save(Container const &container)
+      static std::string save(Container const &container)
       {
         std::stringstream output;
         output << container;
