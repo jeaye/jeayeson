@@ -66,8 +66,8 @@ namespace jeayeson
       template <typename Container>
       static void parse(Container &container, str_citer &it)
       {
-        using json_map = map<typename Container::value_t, typename Container::parser_t>;
-        using json_array = array<typename Container::value_t, typename Container::parser_t>;
+        using json_map = map<typename Container::value_type, typename Container::parser_t>;
+        using json_array = array<typename Container::value_type, typename Container::parser_t>;
 
         std::string name;
         name.reserve(128);
@@ -174,7 +174,7 @@ namespace jeayeson
             case 'f':
             {
               if(*it == 'n' && *(it + 1) == 'u' && *(it + 2) == 'l' && *(it + 3) == 'l')
-              { state = add(container, name, typename Container::value_t{}); }
+              { state = add(container, name, typename Container::value_type{}); }
               else if(*it == 't' && *(it + 1) == 'r' && *(it + 2) == 'u' && *(it + 3) == 'e')
               { state = add(container, name, true); }
               else

@@ -29,7 +29,7 @@ namespace jeayeson
     public:
       using map_t = map<Value, Parser>;
       using array_t = array<Value, Parser>;
-      using value_t = Value;
+      using value_type = Value;
       using parser_t = Parser;
       using index_t = uint32_t;
       using key_t = std::string;
@@ -42,12 +42,14 @@ namespace jeayeson
       static char const delim_open = '[';
       static char const delim_close = ']';
 
-      array() = default;
+      array(){} /* XXX: User-defined ctor required for variant. */
       explicit array(std::string const &json)
       { load(json); }
-      explicit array(value_t const &val)
+      explicit array(char const * const json) /* XXX: Reduces ambiguity with T */
+      { load(json); }
+      explicit array(value_type const &val)
       {
-        if(val.get_type() == value_t::type_array)
+        if(val.get_type() == value_type::type_array)
         { *this = val.template as<array_t>(); }
         else
         { throw std::runtime_error("Failed to construct array from non-array"); }
@@ -56,23 +58,30 @@ namespace jeayeson
       explicit array(T const &container)
       {
         reserve(container.size());
-        std::copy(container.begin(), container.end(), std::back_inserter(*this));
+        for(auto const &v : container)
+        { push_back(v); }
       }
       array(array const &arr) : values_(arr.values_)
       { }
 
       /* Access the internal variant type. */
-      value_t& get(index_t const index)
+      value_type& get(index_t const index)
       { return values_[index]; }
-      value_t const& get(index_t const index) const
+      value_type const& get(index_t const index) const
       { return values_[index]; }
 
       template <typename T>
       T& get(index_t const index) const
       { return values_[index].template as<T>(); }
       template <typename T>
-      T& get(index_t const index, T const &) const /* TODO: Doesn't use fallback. */
-      { return values_[index].template as<T>(); }
+      T get(index_t const index, T const &fallback) const
+      {
+        if(index >= values_.size())
+        { return fallback; }
+        return values_[index].template as<T>();
+      }
+      std::string get(index_t const index, cstr_t const &fallback) const
+      { return get<std::string>(index, fallback); }
 
       /* Named specialization. */
       array_t& get_array(index_t const index)
@@ -80,22 +89,22 @@ namespace jeayeson
       array_t const & get_array(index_t const index) const 
       { return values_[index].template as<array_t>(); }
 
-      map<value_t, parser_t>& get_map(index_t const index)
-      { return values_[index].template as<map<value_t, parser_t>>(); }
-      map<value_t, parser_t> const & get_map(index_t const index) const
-      { return values_[index].template as<map<value_t, parser_t>>(); }
+      map<value_type, parser_t>& get_map(index_t const index)
+      { return values_[index].template as<map<value_type, parser_t>>(); }
+      map<value_type, parser_t> const & get_map(index_t const index) const
+      { return values_[index].template as<map<value_type, parser_t>>(); }
 
       /* Searches for the specified value. */
       template <typename T>
       iterator find(T const &val)
-      { return values_.find(val); }
+      { return std::find(values_.begin(), values_.end(), val); }
       template <typename T>
       const_iterator find(T const &val) const
-      { return values_.find(val); }
+      { return std::find(values_.begin(), values_.end(), val); }
 
-      value_t& operator [](index_t const index)
+      value_type& operator [](index_t const index)
       { return values_[index]; }
-      value_t const& operator [](index_t const index) const
+      value_type const& operator [](index_t const index) const
       { return values_[index]; }
 
       iterator begin()
@@ -135,6 +144,7 @@ namespace jeayeson
       /* Erases ONE value, starting at position _index_. */
       void erase(index_t const index)
       { values_.erase(values_.begin() + index); }
+      /* TODO: erase with an iterator. */
 
       /* Erases _amount_ number of objects from the starting
        * point _index_. This does no bounds checking. */
@@ -144,7 +154,7 @@ namespace jeayeson
       void clear()
       { values_.clear(); }
       void reset(std::string const &json)
-      { *this = load(json); }
+      { load(json); }
 
       void reserve(size_t const size)
       { values_.reserve(size); }
@@ -156,7 +166,7 @@ namespace jeayeson
 
       void load_file(std::string const &json_file)
       { *this = Parser::template parse_file<array_t>(json_file); }
-      static array_t load_new_file(std::string const &json_file)
+      static array_t load_file_new(std::string const &json_file)
       { return Parser::template parse_file<array_t>(json_file); }
 
       std::string to_string() const
@@ -165,9 +175,20 @@ namespace jeayeson
       template <typename Stream_Value, typename Stream_Parser>
       friend std::ostream& operator <<(std::ostream &stream,
                                        array<Stream_Value, Stream_Parser> const &arr);
+      template <typename V, typename P>
+      friend bool operator ==(array<V, P> const &lhs, array<V, P> const &rhs);
+      template <typename V, typename P>
+      friend bool operator !=(array<V, P> const &lhs, array<V, P> const &rhs);
 
     private:
       /* Mutable for operator[] access. */
       mutable internal_array_t values_;
   };
+
+  template <typename V, typename P>
+  bool operator ==(array<V, P> const &lhs, array<V, P> const &rhs)
+  { return lhs.values_ == rhs.values_; }
+  template <typename V, typename P>
+  bool operator !=(array<V, P> const &lhs, array<V, P> const &rhs)
+  { return !(lhs == rhs); }
 }

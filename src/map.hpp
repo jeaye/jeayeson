@@ -61,7 +61,7 @@ namespace jeayeson
       using map_t = map<Value, Parser>;
       using array_t = array<Value, Parser>;
       using key_t = std::string;
-      using value_t = Value;
+      using value_type = Value;
       using parser_t = Parser;
       using cstr_t = char const * const;
       using internal_map_t = JEAYESON_MAP_T<key_t, Value>;
@@ -74,9 +74,9 @@ namespace jeayeson
       map(){} /* XXX: User-defined ctor required for variant. */
       explicit map(std::string const &_json)
       { load(_json); }
-      explicit map(value_t const &val)
+      explicit map(value_type const &val)
       {
-        if(val.get_type() == value_t::type_map)
+        if(val.get_type() == value_type::type_map)
         { *this = val.template as<map_t>(); }
         else
         { throw std::runtime_error("Failed to construct map from non-map"); }
@@ -91,9 +91,9 @@ namespace jeayeson
       { }
 
       /* Access the internal variant type. */
-      value_t& get(key_t const &key)
+      value_type& get(key_t const &key)
       { return values_[key]; }
-      value_t const& get(key_t const &key) const
+      value_type const& get(key_t const &key) const
       { return values_[key]; }
 
       template <typename T>
@@ -244,6 +244,10 @@ namespace jeayeson
       template <typename Stream_Value, typename Stream_Parser>
       friend std::ostream& operator <<(std::ostream &stream,
                                        map<Stream_Value, Stream_Parser> const &m);
+      template <typename V, typename P>
+      friend bool operator ==(map<V, P> const &lhs, map<V, P> const &rhs);
+      template <typename V, typename P>
+      friend bool operator !=(map<V, P> const &lhs, map<V, P> const &rhs);
 
     private:
       mutable internal_map_t values_;
@@ -256,4 +260,11 @@ namespace jeayeson
     boost::algorithm::split(tokens, source, boost::is_any_of(delim));
     return tokens;
   }
+
+  template <typename V, typename P>
+  bool operator ==(map<V, P> const &lhs, map<V, P> const &rhs)
+  { return lhs.values_ == rhs.values_; }
+  template <typename V, typename P>
+  bool operator !=(map<V, P> const &lhs, map<V, P> const &rhs)
+  { return !(lhs == rhs); }
 }

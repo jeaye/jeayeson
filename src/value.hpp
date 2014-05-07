@@ -36,7 +36,13 @@ namespace jeayeson
 
       using map_t = map<value, parser>;
       using array_t = array<value, parser>;
-      using null_t = struct{ };
+      struct null_t
+      {
+        bool operator ==(null_t const &) const
+        { return true; }
+        bool operator !=(null_t const &) const
+        { return false; }
+      };
 
       using variant_t = boost::variant
       <
@@ -85,15 +91,24 @@ namespace jeayeson
 
       type_t get_type() const
       { return static_cast<type_t>(value_.which()); }
-      bool is(type_t const &type) const
+      bool is(type_t const type) const
       { return get_type() == type; }
 
+      friend bool operator ==(value const &jv, value const &val);
       template <typename T>
-      bool operator ==(T const &val) const
-      { return as<T>() == val; }
-      bool operator ==(cstr_t const val) const
-      { return as<std::string>() == val; }
+      friend bool operator ==(value const &jv, T const &val);
+      template <typename T>
+      friend bool operator ==(T const &val, value const &jv);
+      friend bool operator ==(value const &jv, cstr_t const val);
+      friend bool operator ==(cstr_t const val, value const &jv);
 
+      friend bool operator !=(value const &jv, value const &val);
+      template <typename T>
+      friend bool operator !=(value const &jv, T const &val);
+      template <typename T>
+      friend bool operator !=(T const &val, value const &jv);
+      friend bool operator !=(value const &jv, cstr_t const val);
+      friend bool operator !=(cstr_t const val, value const &jv);
       friend std::ostream& operator <<(std::ostream &stream, value const &val);
 
       template <typename T>
@@ -179,3 +194,35 @@ namespace jeayeson
 using json_value = jeayeson::value;
 using json_map = jeayeson::map_t;
 using json_array = jeayeson::array_t;
+using json_null = json_value::null_t;
+
+#include "traits.hpp"
+
+namespace jeayeson
+{
+    inline bool operator ==(json_value const &jv, json_value const &val)
+    { return jv.get_type() == val.get_type() && jv.value_ == val.value_; }
+    template <typename T>
+    bool operator ==(json_value const &jv, T const &val)
+    { return jv.get_type() == detail::to_value<T>::value && jv.as<T>() == val; }
+    template <typename T>
+    bool operator ==(T const &val, json_value const &jv)
+    { return jv == val; }
+    inline bool operator ==(json_value const &jv, value::cstr_t const val)
+    { return jv.get_type() == value::type_string && jv.as<std::string>() == val; }
+    inline bool operator ==(value::cstr_t const val, json_value const &jv)
+    { return jv == val; }
+
+    inline bool operator !=(json_value const &jv, json_value const &val)
+    { return !(jv == val); }
+    template <typename T>
+    bool operator !=(json_value const &jv, T const &val)
+    { return !(jv == val); }
+    template <typename T>
+    bool operator !=(T const &val, json_value const &jv)
+    { return !(jv == val); }
+    inline bool operator !=(json_value const &jv, value::cstr_t const val)
+    { return !(jv == val); }
+    inline bool operator !=(value::cstr_t const val, json_value const &jv)
+    { return !(jv == val); }
+}

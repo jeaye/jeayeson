@@ -109,7 +109,7 @@ void test_get()
 
 void test_size()
 {
-  std::cout << "test_get" << std::endl;
+  std::cout << "test_size" << std::endl;
   {
     json_map map{ "{\"foo\":{\"bar\":42,\"spam\":43},\"baz\":null}" };
     assert(map.size() == 2);
@@ -122,7 +122,7 @@ void test_size()
     assert(json_map{}.size() == 0);
     assert(json_map{}.empty());
   }
-  std::cout << "end test_get" << std::endl;
+  std::cout << "end test_size" << std::endl;
 }
 
 void test_find()
