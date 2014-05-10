@@ -17,18 +17,18 @@
 
 namespace jeayeson
 {
+  template <bool B, typename T = void>
+  using enable_if = typename std::enable_if<B, T>::type;
+
   class value
   {
     public:
       /* Maps to the variant 1:1. */
-      /* TODO: better integer support. */
       enum type_t
       {
         type_null,
-        type_int8, type_uint8, type_int16, type_uint16,
-        type_int32, type_uint32, type_int64, type_uint64,
-        type_int, type_unsigned_int,
-        type_float, type_double,
+        type_int64, 
+        type_double,
         type_bool,
         type_string,
         type_map,
@@ -44,20 +44,36 @@ namespace jeayeson
         bool operator !=(null_t const &) const
         { return false; }
       };
+      using int_t = int64_t;
+      using float_t = double;
 
       using variant_t = boost::variant
       <
-        null_t,                                 /* Null (empty) type. */
-        int8_t, uint8_t, int16_t, uint16_t,     /* Integral types. */
-        int32_t, uint32_t, int64_t, uint64_t,
-        int, unsigned int, 
-        float, double,                          /* Floating point types. */
-        bool,                                   /* Boolean types. */
-        std::string,                            /* String types. */
-        map_t,                                  /* Map types. */
-        array_t                                 /* Array types. */
+        null_t,
+        int64_t,
+        double,
+        bool,
+        std::string,
+        map_t,
+        array_t
       >;
       using cstr_t = char const * const;
+
+      /* Enum -> Type */
+      template <type_t T>
+      struct to_type;
+      /* Type -> Enum */
+      template <typename T>
+      struct to_value;
+
+      template <typename T, typename E = void>
+      struct normalize_impl
+      { using type = T; };
+      template <typename T>
+      using normalize = typename normalize_impl<T>::type;
+      template <typename T>
+      static constexpr bool should_normalize()
+      { return std::is_integral<T>::value; }
 
       value() : value_(null_t())
       { }
@@ -70,18 +86,18 @@ namespace jeayeson
       { }
 
       template <typename T>
-      T& get()
-      { return boost::get<T&>(value_); }
+      normalize<T>& get()
+      { return boost::get<normalize<T>&>(value_); }
       template <typename T>
-      T const& get() const
-      { return boost::get<T const&>(value_); }
+      normalize<T> const& get() const
+      { return boost::get<normalize<T> const&>(value_); }
 
       template <typename T>
-      T& as()
-      { return boost::get<T&>(value_); }
+      normalize<T>& as()
+      { return boost::get<normalize<T>&>(value_); }
       template <typename T>
-      T const& as() const
-      { return boost::get<T const&>(value_); }
+      normalize<T> const& as() const
+      { return boost::get<normalize<T> const&>(value_); }
 
       template <typename T>
       operator T() 
@@ -113,8 +129,11 @@ namespace jeayeson
       friend std::ostream& operator <<(std::ostream &stream, value const &val);
 
       template <typename T>
-      void set(T const &val)
+      enable_if<!should_normalize<T>()> set(T const &val)
       { value_ = val; }
+      template <typename T>
+      enable_if<should_normalize<T>()> set(T const &val)
+      { value_ = normalize<T>(val); }
 
       /* Treat string literals as standard strings. */
       void set(cstr_t const val)
@@ -190,40 +209,128 @@ namespace jeayeson
     stream << m.delim_close;
     return stream;
   }
+
+  template <>
+  value& value::get<value>()
+  { return *this; }
+  template <>
+  value const& value::get<value>() const
+  { return *this; }
+  template <>
+  value& value::as<value>()
+  { return *this; }
+  template <>
+  value const& value::as<value>() const
+  { return *this; }
+
+  template <>
+  struct value::to_type<value::type_null>
+  { using type = value::null_t; };
+  template <>
+  struct value::to_type<value::type_int64>
+  { using type = int_t; };
+  template <>
+  struct value::to_type<value::type_double>
+  { using type = double; };
+  template <>
+  struct value::to_type<value::type_bool>
+  { using type = bool; };
+  template <>
+  struct value::to_type<value::type_string>
+  { using type = std::string; };
+  template <>
+  struct value::to_type<value::type_map>
+  { using type = map_t; };
+  template <>
+  struct value::to_type<value::type_array>
+  { using type = array_t; };
+
+  template <>
+  struct value::to_value<value::null_t>
+  { static type_t constexpr const value{ value::type_null }; };
+  template <>
+  struct value::to_value<int8_t>
+  { static type_t constexpr const value{ value::type_int64 }; };
+  template <>
+  struct value::to_value<uint8_t>
+  { static type_t constexpr const value{ value::type_int64 }; };
+  template <>
+  struct value::to_value<int16_t>
+  { static type_t constexpr const value{ value::type_int64 }; };
+  template <>
+  struct value::to_value<uint16_t>
+  { static type_t constexpr const value{ value::type_int64 }; };
+  template <>
+  struct value::to_value<int32_t>
+  { static type_t constexpr const value{ value::type_int64 }; };
+  template <>
+  struct value::to_value<uint32_t>
+  { static type_t constexpr const value{ value::type_int64 }; };
+  template <>
+  struct value::to_value<value::int_t>
+  { static type_t constexpr const value{ value::type_int64 }; };
+  template <>
+  struct value::to_value<uint64_t>
+  { static type_t constexpr const value{ value::type_int64 }; };
+  template <>
+  struct value::to_value<float>
+  { static type_t constexpr const value{ value::type_double }; };
+  template <>
+  struct value::to_value<double>
+  { static type_t constexpr const value{ value::type_double }; };
+  template <>
+  struct value::to_value<bool>
+  { static type_t constexpr const value{ value::type_bool }; };
+  template <>
+  struct value::to_value<std::string>
+  { static type_t constexpr const value{ value::type_string }; };
+  template <>
+  struct value::to_value<map_t>
+  { static type_t constexpr const value{ value::type_map }; };
+  template <>
+  struct value::to_value<array_t>
+  { static type_t constexpr const value{ value::type_array }; };
+
+  template <typename T>
+  struct value::normalize_impl<T, enable_if<std::is_integral<T>::value>>
+  { using type = int_t; };
+  template <typename T>
+  struct value::normalize_impl<T, enable_if<std::is_floating_point<T>::value>>
+  { using type = float_t; };
 }
 
 using json_value = jeayeson::value;
 using json_map = jeayeson::map_t;
 using json_array = jeayeson::array_t;
 using json_null = json_value::null_t;
-
-#include "traits.hpp"
+using json_int = json_value::int_t;
+using json_float = json_value::float_t;
 
 namespace jeayeson
 {
-    inline bool operator ==(json_value const &jv, json_value const &val)
-    { return jv.get_type() == val.get_type() && jv.value_ == val.value_; }
-    template <typename T>
-    bool operator ==(json_value const &jv, T const &val)
-    { return jv.get_type() == detail::to_value<T>::value && jv.as<T>() == val; }
-    template <typename T>
-    bool operator ==(T const &val, json_value const &jv)
-    { return jv == val; }
-    inline bool operator ==(json_value const &jv, value::cstr_t const val)
-    { return jv.get_type() == value::type_string && jv.as<std::string>() == val; }
-    inline bool operator ==(value::cstr_t const val, json_value const &jv)
-    { return jv == val; }
+  inline bool operator ==(json_value const &jv, json_value const &val)
+  { return jv.get_type() == val.get_type() && jv.value_ == val.value_; }
+  template <typename T>
+  bool operator ==(json_value const &jv, T const &val)
+  { return jv.get_type() == value::to_value<T>::value && jv.as<T>() == val; }
+  template <typename T>
+  bool operator ==(T const &val, json_value const &jv)
+  { return jv == val; }
+  inline bool operator ==(json_value const &jv, value::cstr_t const val)
+  { return jv.get_type() == value::type_string && jv.as<std::string>() == val; }
+  inline bool operator ==(value::cstr_t const val, json_value const &jv)
+  { return jv == val; }
 
-    inline bool operator !=(json_value const &jv, json_value const &val)
-    { return !(jv == val); }
-    template <typename T>
-    bool operator !=(json_value const &jv, T const &val)
-    { return !(jv == val); }
-    template <typename T>
-    bool operator !=(T const &val, json_value const &jv)
-    { return !(jv == val); }
-    inline bool operator !=(json_value const &jv, value::cstr_t const val)
-    { return !(jv == val); }
-    inline bool operator !=(value::cstr_t const val, json_value const &jv)
-    { return !(jv == val); }
+  inline bool operator !=(json_value const &jv, json_value const &val)
+  { return !(jv == val); }
+  template <typename T>
+  bool operator !=(json_value const &jv, T const &val)
+  { return !(jv == val); }
+  template <typename T>
+  bool operator !=(T const &val, json_value const &jv)
+  { return !(jv == val); }
+  inline bool operator !=(json_value const &jv, value::cstr_t const val)
+  { return !(jv == val); }
+  inline bool operator !=(value::cstr_t const val, json_value const &jv)
+  { return !(jv == val); }
 }

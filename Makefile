@@ -13,9 +13,14 @@ OUT_DIR=bin
 # C++
 CXX=c++
 CXX_WARN_FLAGS=-Wall -Wextra -pedantic
-CXX_DEBUG_FLAGS=-ggdb
+CXX_DEBUG_FLAGS=
+CXX_OPTIM_FLAGS=-O3
 CXX_INCLUDE_FLAGS=-Isrc/ 
-CXX_FLAGS=-std=c++11 -stdlib=libc++ $(CXX_INCLUDE_FLAGS) $(CXX_WARN_FLAGS) $(CXX_DEBUG_FLAGS)
+CXX_FLAGS=-std=c++1y -stdlib=libc++ \
+					$(CXX_INCLUDE_FLAGS) \
+					$(CXX_WARN_FLAGS) \
+					$(CXX_DEBUG_FLAGS) \
+					$(CXX_OPTIM_FLAGS)
 
 LD_FLAGS=
 

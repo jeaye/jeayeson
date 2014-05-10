@@ -90,22 +90,16 @@ namespace jeayeson
       map(map const &m) : values_(m.values_)
       { }
 
-      /* Access the internal variant type. */
-      value_type& get(key_t const &key)
-      { return values_[key]; }
-      value_type const& get(key_t const &key) const
-      { return values_[key]; }
-
-      template <typename T>
-      T& get(key_t const &key)
+      template <typename T = Value>
+      auto& get(key_t const &key)
       { return values_[key].template as<T>(); } 
-      template <typename T>
-      T const& get(key_t const &key) const
+      template <typename T = Value>
+      auto const& get(key_t const &key) const
       { return values_[key].template as<T>(); } 
 
       /* Access with a fallback. */
-      template <typename T>
-      T get(key_t const &key, T &&fallback) const
+      template <typename T = Value>
+      auto get(key_t const &key, T &&fallback) const
       {
         auto const it(values_.find(key));
         if(it != values_.end())
@@ -131,7 +125,7 @@ namespace jeayeson
       size_t size() const
       { return values_.size(); }
 
-      template <typename T>
+      template <typename T = Value>
       T& get_for_path(std::string const &path) const
       {
         std::vector<std::string> const tokens(tokenize(path, "."));
@@ -144,7 +138,7 @@ namespace jeayeson
         return sub_map->get<T>(tokens[path_size]);
       }
 
-      template <typename T>
+      template <typename T = Value>
       T get_for_path(std::string const &path, T &&fallback) const
       {
         std::vector<std::string> const tokens(tokenize(path, "."));

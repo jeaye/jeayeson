@@ -83,12 +83,12 @@ void test_get()
     json_map map{ "{\"foo\":{\"bar\":42,\"spam\":null},\"arr\":[0,1,2]}" };
 
     json_map &foo{ map.get_map("foo") };
-    assert(foo.get<int>("bar") == 42); /* TODO: Should work on all int types. */
+    assert(foo.get<int>("bar") == 42);
 
     json_array &arr{ map.get_array("arr") };
     assert(arr.size() == 3);
     for(int i{}; i < 3; ++i)
-    { assert(arr[i].as<int>() == i); }
+    { assert(arr[i].as<int8_t>() == i); }
   }
   { /* Paths */
     std::cout << "test_get path" << std::endl;
@@ -97,12 +97,18 @@ void test_get()
     assert(map.get_for_path<double>("doesnotexist", 77.0) == 77.0);
     assert(map.get_for_path<std::string>("does.not.exist", "nope") == "nope");
 
-    assert(map.get_for_path<int>("person.inventory.coins") == 1136);
-    assert(map.get_for_path<int>("person.inventory.skooma") == 7);
-    assert(map.get_for_path<int>("person.inventory.zzz", 42) == 42);
-    assert(map.get_for_path<std::string>("person.name") == "Roger");
+    assert(map.get_for_path<json_int>("person.inventory.coins") == 1136);
+    assert(map.get_for_path("person.inventory.skooma") == 7);
+    assert(map.get_for_path<json_int>("person.inventory.zzz", 42) == 42);
+    assert(map.get_for_path("person.name") == "Roger");
     assert(map.get_for_path<std::string>("person.notname", "zzz") == "zzz");
     assert(map.get_for_path<json_array>("arr")[8].as<double>() == 9.9);
+  }
+  { /* Null */
+    std::cout << "test_get null" << std::endl;
+    auto const map(json_map::load_file_new("src/tests/json/map.json"));
+    assert(map.get("null") == json_null{});
+    assert(map.get("str") != json_null{});
   }
   std::cout << "end test_get" << std::endl;
 }
@@ -132,7 +138,7 @@ void test_find()
     json_map map{ "{\"foo\":{\"bar\":42,\"spam\":43},\"baz\":null}" };
     auto it(map.find("foo"));
     assert(it != map.end());
-    assert(it->second.as<json_map>().get<int>("bar") == 42);
+    assert(it->second.as<json_map>().get<uint32_t>("bar") == 42);
 
     it = map.find("doesnotexist");
     assert(it == map.end());
@@ -151,12 +157,12 @@ void test_set()
     json_map map{ "{\"foo\":{\"bar\":42,\"spam\":43},\"baz\":null}" };
 
     map.set("baz", 77);
-    assert(map.get<int>("baz") == 77);
+    assert(map.get<json_int>("baz") == 77);
     map.set("burp", "soda");
     assert(map.get<std::string>("burp") == "soda");
 
-    map.set<int>("map", { { "one", 1 } });
-    assert(map.get_map("map").get<int>("one") == 1);
+    map.set<json_int>("map", { { "one", 1 } });
+    assert(map.get_map("map").get<json_int>("one") == 1);
   }
   std::cout << "end test_set" << std::endl;
 }
@@ -172,12 +178,12 @@ void test_clear()
     map.reset("{\"foo\": \"bar\"}");
     assert(map.get<std::string>("foo") == "bar");
     map.reset("{\"foo\":{\"bar\":42,\"spam\":43},\"baz\":null}");
-    assert(map.get_for_path<int>("foo.spam") == 43);
+    assert(map.get_for_path<json_int>("foo.spam") == 43);
 
     assert(map.find("baz") != map.end());
     map.erase("baz");
     assert(map.find("baz") == map.end());
-    assert(map.get_for_path<int>("foo.spam") == 43);
+    assert(map.get_for_path<json_int>("foo.spam") == 43);
   }
   std::cout << "end test_clear" << std::endl;
 }

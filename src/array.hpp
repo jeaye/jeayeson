@@ -64,17 +64,11 @@ namespace jeayeson
       array(array const &arr) : values_(arr.values_)
       { }
 
-      /* Access the internal variant type. */
-      value_type& get(index_t const index)
-      { return values_[index]; }
-      value_type const& get(index_t const index) const
-      { return values_[index]; }
-
-      template <typename T>
-      T& get(index_t const index) const
+      template <typename T = Value>
+      auto& get(index_t const index) const
       { return values_[index].template as<T>(); }
-      template <typename T>
-      T get(index_t const index, T const &fallback) const
+      template <typename T = Value>
+      auto get(index_t const index, T const &fallback) const
       {
         if(index >= values_.size())
         { return fallback; }

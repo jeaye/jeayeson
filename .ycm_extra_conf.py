@@ -6,7 +6,7 @@ flags = [
 '-Wextra',
 '-Werror',
 '-pedantic',
-'-std=c++11',
+'-std=c++1y',
 #'-stdlib=libc++',
 '-x',
 'c++',

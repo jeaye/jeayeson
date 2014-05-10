@@ -85,11 +85,17 @@ void test_get()
     auto arr(json_array::load_file_new("src/tests/json/array.json"));
 
     json_map &foo{ arr.get_map(5) };
-    assert(foo.get<bool>("success") == true);
+    assert(foo.get("success") == true);
 
     assert(arr.size() == 8);
     assert(arr[1].as<int>() == 2);
-    assert(arr[3].as<int>() == 4);
+    assert(arr[3].as<int16_t>() == 4);
+  }
+  { /* Null */
+    std::cout << "test_get null" << std::endl;
+    auto arr(json_array::load_file_new("src/tests/json/array.json"));
+    assert(arr[6] != json_null{});
+    assert(arr[7] == json_null{});
   }
   std::cout << "end test_get" << std::endl;
 }
@@ -140,7 +146,7 @@ void test_set()
     arr.load_file("src/tests/json/array.json");
 
     arr.set(0, 77);
-    assert(arr.get<int>(0) == 77);
+    assert(arr.get<int64_t>(0) == 77);
     arr.set(0, "soda");
     assert(arr.get<std::string>(0) == "soda");
 
@@ -167,7 +173,7 @@ void test_clear()
     arr.reset("[\"foo\",\"bar\"]");
     assert(arr.get<std::string>(1) == "bar");
     arr.reset("[\"foo\",\"spam\"]");
-    assert(arr.get<std::string>(1) == "spam");
+    assert(arr.get(1) == "spam");
 
     assert(arr.find("foo") != arr.end());
     arr.erase(0);

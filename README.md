@@ -10,7 +10,7 @@ it expects valid JSON all of the time.
 
   * Header only (easy to add to any project)
   * Small, consistent C++ API
-  * Typesafe, C++11 interface
+  * Typesafe, C++1y interface
 
 Practice
 ----
@@ -18,7 +18,7 @@ Assuming the JeayeSON headers are in your search path, simply
 ```cpp
 #include <jeayeson.hpp>
 ```
-This will give you access to `json_map`, `json_array`, and `json_value` which are the only three types you'll be interfacing with directly.
+This will give you access to `json_map`, `json_array`, and `json_value` which are the three types you'll be interfacing with directly (though, ocassionally, `json_null` may be used).
 
 Reading JSON
 ----
@@ -39,7 +39,7 @@ Writing JSON
 ```cpp
 json_map map;
 map.load_file("my_file.json");
-std::cout << map.to_string() << std::endl;
+std::cout << map << std::endl;
 ```
 Interacting with JSON
 ----
@@ -52,7 +52,7 @@ Assume the JSON we're working with is as follows:
   "person":
   {
     "name": "Jeaye",
-    "age": 21,
+    "age": 22,
     "weapon": null,
     "inventory":
     {
@@ -81,8 +81,9 @@ And the following code to interact with the JSON:
   std::string const str_copy{ map.get("str", "Default awesomeness") }; // Second param is the default
 
   /* Delving into maps using dot-notated paths works, too.
-     The type can be explicitly specified, or implicit based on the provided fallback. */
-  std::cout << map.get_for_path<std::string>("person.name") << " has " // No fallback
+     The type can be explicitly specified, or implicit based on the provided fallback.
+     They default to json_value, which offers op==, op<<, et cetera. */
+  std::cout << map.get_for_path("person.name") << " has " // No fallback, returns json_value&
             << map.get_for_path("person.inventory.coins", 0) << " coins\n"; // Fallback is 0
 
   /* Iterators work as expected, based on the C++ stdlib. (const and non-const) */
@@ -131,4 +132,3 @@ Help/Contact
 If you have questions, first check the JeayeSON wiki: https://github.com/jeaye/jeayeson/wiki
 
 For any other bug reports, questions, comments, or suggestions, please [make an issue](https://github.com/jeaye/jeayeson/issues).
-

@@ -31,8 +31,9 @@ int main()
   std::string const str_copy{ map.get("str", "Default awesomeness") }; // Second param is the default
 
   /* Delving into maps using dot-notated paths works, too.
-     The type can be explicitly specified, or implicit based on the provided fallback. */
-  std::cout << map.get_for_path<std::string>("person.name") << " has " // No fallback
+     The type can be explicitly specified, or implicit based on the provided fallback.
+     They default to json_value, which offers op==, op<<, et cetera. */
+  std::cout << map.get_for_path("person.name") << " has " // No fallback, returns json_value&
             << map.get_for_path("person.inventory.coins", 0) << " coins\n"; // Fallback is 0
 
   /* Iterators work as expected, based on the C++ stdlib. (const and non-const) */
