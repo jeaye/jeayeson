@@ -18,7 +18,15 @@ Assuming the JeayeSON headers are in your search path, simply
 ```cpp
 #include <jeayeson.hpp>
 ```
-This will give you access to `json_map`, `json_array`, and `json_value` which are the three types you'll be interfacing with directly (though, ocassionally, `json_null` may be used).
+This will give you access to the following types:
+```cpp
+json_value    /* variant type */
+json_map      /* string->json_value map */
+json_array    /* contiguous array of json_values */
+json_null     /* json_value's default state */
+json_int      /* defaults to int64_t */
+json_float    /* defaults to double */
+```
 
 Reading JSON
 ----

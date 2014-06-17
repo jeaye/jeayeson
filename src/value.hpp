@@ -17,8 +17,37 @@
 
 namespace jeayeson
 {
-  template <bool B, typename T = void>
-  using enable_if = typename std::enable_if<B, T>::type;
+  namespace detail
+  {
+    using int_t = int64_t;
+    using float_t = double;
+
+    template <bool B, typename T = void>
+    using enable_if = typename std::enable_if<B, T>::type;
+
+    template <typename T, typename E = void>
+    struct normalize_impl
+    { using type = T; };
+    template <typename T>
+    struct normalize_impl<T, enable_if<std::is_integral<T>::value &&
+                                       !std::is_same<T, bool>::value>>
+    { using type = int_t; };
+    template <typename T>
+    struct normalize_impl<T, enable_if<std::is_same<T, bool>::value>>
+    { using type = bool; };
+    template <typename T>
+    struct normalize_impl<T, enable_if<std::is_floating_point<T>::value>>
+    { using type = float_t; };
+    template <typename T>
+    using normalize = typename normalize_impl<T>::type;
+    template <typename T>
+    static constexpr bool should_normalize()
+    {
+      return !std::is_same<T, bool>::value &&
+             (std::is_integral<T>::value ||
+              std::is_floating_point<T>::value);
+    }
+  }
 
   class value
   {
@@ -44,8 +73,6 @@ namespace jeayeson
         bool operator !=(null_t const &) const
         { return false; }
       };
-      using int_t = int64_t;
-      using float_t = double;
 
       using variant_t = boost::variant
       <
@@ -66,15 +93,6 @@ namespace jeayeson
       template <typename T>
       struct to_value;
 
-      template <typename T, typename E = void>
-      struct normalize_impl
-      { using type = T; };
-      template <typename T>
-      using normalize = typename normalize_impl<T>::type;
-      template <typename T>
-      static constexpr bool should_normalize()
-      { return std::is_integral<T>::value; }
-
       value() : value_(null_t())
       { }
       template <typename T>
@@ -86,18 +104,18 @@ namespace jeayeson
       { }
 
       template <typename T>
-      normalize<T>& get()
-      { return boost::get<normalize<T>&>(value_); }
+      auto& get()
+      { return boost::get<detail::normalize<T>&>(value_); }
       template <typename T>
-      normalize<T> const& get() const
-      { return boost::get<normalize<T> const&>(value_); }
+      auto const& get() const
+      { return boost::get<detail::normalize<T> const&>(value_); }
 
       template <typename T>
-      normalize<T>& as()
-      { return boost::get<normalize<T>&>(value_); }
+      auto& as()
+      { return get<T>(); }
       template <typename T>
-      normalize<T> const& as() const
-      { return boost::get<normalize<T> const&>(value_); }
+      auto const& as() const
+      { return get<T>(); }
 
       template <typename T>
       operator T() 
@@ -128,16 +146,17 @@ namespace jeayeson
       friend bool operator !=(cstr_t const val, value const &jv);
       friend std::ostream& operator <<(std::ostream &stream, value const &val);
 
+      /* We can avoid superfluous copying by checking whether or not to normalize. */
       template <typename T>
-      enable_if<!should_normalize<T>()> set(T const &val)
+      detail::enable_if<!detail::should_normalize<T>()> set(T const &val)
       { value_ = val; }
       template <typename T>
-      enable_if<should_normalize<T>()> set(T const &val)
-      { value_ = normalize<T>(val); }
+      detail::enable_if<detail::should_normalize<T>()> set(T const &val)
+      { value_ = detail::normalize<T>(val); }
 
       /* Treat string literals as standard strings. */
       void set(cstr_t const val)
-      { value_ = static_cast<std::string>(val); }
+      { value_ = std::string{ val }; }
 
       /* Shortcut add for arrays. */
       template <typename T>
@@ -211,27 +230,27 @@ namespace jeayeson
   }
 
   template <>
-  value& value::get<value>()
+  auto& value::get<value>()
   { return *this; }
   template <>
-  value const& value::get<value>() const
+  auto const& value::get<value>() const
   { return *this; }
   template <>
-  value& value::as<value>()
-  { return *this; }
+  auto& value::as<value>()
+  { return get<value>(); }
   template <>
-  value const& value::as<value>() const
-  { return *this; }
+  auto const& value::as<value>() const
+  { return get<value>(); }
 
   template <>
   struct value::to_type<value::type_null>
   { using type = value::null_t; };
   template <>
   struct value::to_type<value::type_int64>
-  { using type = int_t; };
+  { using type = detail::int_t; };
   template <>
   struct value::to_type<value::type_double>
-  { using type = double; };
+  { using type = detail::float_t; };
   template <>
   struct value::to_type<value::type_bool>
   { using type = bool; };
@@ -267,7 +286,7 @@ namespace jeayeson
   struct value::to_value<uint32_t>
   { static type_t constexpr const value{ value::type_int64 }; };
   template <>
-  struct value::to_value<value::int_t>
+  struct value::to_value<detail::int_t>
   { static type_t constexpr const value{ value::type_int64 }; };
   template <>
   struct value::to_value<uint64_t>
@@ -291,20 +310,14 @@ namespace jeayeson
   struct value::to_value<array_t>
   { static type_t constexpr const value{ value::type_array }; };
 
-  template <typename T>
-  struct value::normalize_impl<T, enable_if<std::is_integral<T>::value>>
-  { using type = int_t; };
-  template <typename T>
-  struct value::normalize_impl<T, enable_if<std::is_floating_point<T>::value>>
-  { using type = float_t; };
 }
 
 using json_value = jeayeson::value;
 using json_map = jeayeson::map_t;
 using json_array = jeayeson::array_t;
 using json_null = json_value::null_t;
-using json_int = json_value::int_t;
-using json_float = json_value::float_t;
+using json_int = jeayeson::detail::int_t;
+using json_float = jeayeson::detail::float_t;
 
 namespace jeayeson
 {
