@@ -1,0 +1,87 @@
+# Copyright © 2013 Jesse 'Jeaye' Wilkerson
+# See licensing at:
+#   http://opensource.org/licenses/BSD-3-Clause
+
+# File: Makefile
+# Author: Jesse 'Jeaye' Wilkerson
+
+# Sources
+OUT_DIR=bin/
+SOURCES= \
+				 src/tests/main.cpp \
+				 src/tests/map.cpp \
+				 src/tests/array.cpp
+OBJECTS=$(SOURCES:.cpp=.cpp.o)
+TEST_OBJECTS=$(SOURCES:.cpp=.test)
+TESTS=$(foreach test,$(SOURCES), $(addprefix $(OUT_DIR), $(notdir $(test))))
+
+# Generation/Installation
+PREFIX=%PREFIX%
+DATAROOTDIR=%DATAROOTDIR%
+THREADS=%THREADS%
+
+# Compiler flags
+CXX=c++
+CXX_WARN_FLAGS=-Wall -Wextra -pedantic
+CXX_DEBUG_FLAGS=
+CXX_OPTIM_FLAGS=-O3
+CXX_INCLUDE_FLAGS=-Isrc/ 
+CXX_PLATFORM_FLAGS=%CXX_PLATFORM_FLAGS%
+CXX_FLAGS=-std=c++1y \
+					$(CXX_PLATFORM_FLAGS) \
+					$(CXX_INCLUDE_FLAGS) \
+					$(CXX_WARN_FLAGS) \
+					$(CXX_DEBUG_FLAGS) \
+					$(CXX_OPTIM_FLAGS)
+
+LD_PLATFORM_LIBS=%LD_PLATFORM_LIBS%
+LD_LIBS=$(LD_PLATFORM_LIBS)
+
+PROJECT=jeayeson
+
+.PHONY: all threaded setup clean jeayeson jeayeson_setup install uninstall test test_setup 
+
+.SILENT:
+
+all:
+	$(MAKE) -j $(THREADS) threaded
+	exit $$?
+
+threaded: jeayeson
+	echo "Success"
+
+setup: clean
+	echo "Preparing"
+	mkdir -p $(OUT_DIR)
+
+clean:
+	rm -rf $(OUT_DIR)
+	echo "Cleaned"
+
+jeayeson: jeayeson_setup $(OBJECTS)
+	echo "Done building jeayeson tests"
+
+jeayeson_setup: setup
+	echo "Building jeayeson tests"
+
+%.cpp.o: %.cpp jeayeson_setup
+	echo "  Compiling $<"
+	$(CXX) $(CXX_FLAGS) $< -o $(addprefix $(OUT_DIR), $(notdir $<))
+
+install:
+	export datarootdir=$(DATAROOTDIR) && \
+	./do_install safe
+
+uninstall:
+	export datarootdir=$(DATAROOTDIR) && \
+	./do_install undo
+
+test: test_setup $(TEST_OBJECTS)
+	echo "All tests complete"
+
+test_setup:
+	echo "Running all tests"
+
+%.test: test_setup
+	echo "  Testing $(notdir $(shell echo $@ | sed 's/\.test//'))"
+	$(OUT_DIR)/$(notdir $(shell echo $@ | sed 's/\.test//')).cpp 2>&1 > /dev/null
