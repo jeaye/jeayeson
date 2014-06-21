@@ -266,49 +266,49 @@ namespace jeayeson
 
   template <>
   struct value::to_value<value::null_t>
-  { static type_t constexpr const value{ value::type_null }; };
+  { static type_t constexpr const value{ ::jeayeson::value::type_null }; };
   template <>
   struct value::to_value<int8_t>
-  { static type_t constexpr const value{ value::type_int64 }; };
+  { static type_t constexpr const value{ ::jeayeson::value::type_int64 }; };
   template <>
   struct value::to_value<uint8_t>
-  { static type_t constexpr const value{ value::type_int64 }; };
+  { static type_t constexpr const value{ ::jeayeson::value::type_int64 }; };
   template <>
   struct value::to_value<int16_t>
-  { static type_t constexpr const value{ value::type_int64 }; };
+  { static type_t constexpr const value{ ::jeayeson::value::type_int64 }; };
   template <>
   struct value::to_value<uint16_t>
-  { static type_t constexpr const value{ value::type_int64 }; };
+  { static type_t constexpr const value{ ::jeayeson::value::type_int64 }; };
   template <>
   struct value::to_value<int32_t>
-  { static type_t constexpr const value{ value::type_int64 }; };
+  { static type_t constexpr const value{ ::jeayeson::value::type_int64 }; };
   template <>
   struct value::to_value<uint32_t>
-  { static type_t constexpr const value{ value::type_int64 }; };
+  { static type_t constexpr const value{ ::jeayeson::value::type_int64 }; };
   template <>
   struct value::to_value<detail::int_t>
-  { static type_t constexpr const value{ value::type_int64 }; };
+  { static type_t constexpr const value{ ::jeayeson::value::type_int64 }; };
   template <>
   struct value::to_value<uint64_t>
-  { static type_t constexpr const value{ value::type_int64 }; };
+  { static type_t constexpr const value{ ::jeayeson::value::type_int64 }; };
   template <>
   struct value::to_value<float>
-  { static type_t constexpr const value{ value::type_double }; };
+  { static type_t constexpr const value{ ::jeayeson::value::type_double }; };
   template <>
   struct value::to_value<double>
-  { static type_t constexpr const value{ value::type_double }; };
+  { static type_t constexpr const value{ ::jeayeson::value::type_double }; };
   template <>
   struct value::to_value<bool>
-  { static type_t constexpr const value{ value::type_bool }; };
+  { static type_t constexpr const value{ ::jeayeson::value::type_bool }; };
   template <>
   struct value::to_value<std::string>
-  { static type_t constexpr const value{ value::type_string }; };
+  { static type_t constexpr const value{ ::jeayeson::value::type_string }; };
   template <>
   struct value::to_value<map_t>
-  { static type_t constexpr const value{ value::type_map }; };
+  { static type_t constexpr const value{ ::jeayeson::value::type_map }; };
   template <>
   struct value::to_value<array_t>
-  { static type_t constexpr const value{ value::type_array }; };
+  { static type_t constexpr const value{ ::jeayeson::value::type_array }; };
 
 }
 
