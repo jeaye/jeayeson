@@ -84,7 +84,7 @@ void test_get()
     std::cout << "test_get named" << std::endl;
     auto arr(json_array::load_file_new("src/tests/json/array.json"));
 
-    json_map &foo{ arr.get_map(5) };
+    auto &foo(arr.get<json_map>(5));
     assert(foo.get("success") == true);
 
     assert(arr.size() == 8);
@@ -109,7 +109,7 @@ void test_size()
     assert(arr.size() == 8);
     assert(!arr.empty());
 
-    json_array subarr{ arr.get_array(6) };
+    auto subarr(arr.get<json_array>(6));
     assert(subarr.size() == 0);
     assert(subarr.empty());
 

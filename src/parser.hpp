@@ -45,22 +45,22 @@ namespace jeayeson
       template <typename Value, typename Parser>
       static inline map<Value, Parser>& get_map(map<Value, Parser> &m, std::string const &key,
                                                 typename array<Value, Parser>::index_t const)
-      { return m.get_map(key); }
+      { return m.template get<map<Value, Parser>>(key); }
 
       template <typename Value, typename Parser>
       static inline map<Value, Parser>& get_map(array<Value, Parser> &arr, std::string const &,
                                                 typename array<Value, Parser>::index_t const index)
-      { return arr.get_map(index); }
+      { return arr.template get<map<Value, Parser>>(index); }
 
       template <typename Value, typename Parser>
       static inline array<Value, Parser>& get_array(map<Value, Parser> &m, std::string const &key,
                                                     typename array<Value, Parser>::index_t const)
-      { return m.get_array(key); }
+      { return m.template get<array<Value, Parser>>(key); }
 
       template <typename Value, typename Parser>
       static inline array<Value, Parser>& get_array(array<Value, Parser> &arr, std::string const &,
                                                     typename array<Value, Parser>::index_t const index)
-      { return arr.get_array(index); }
+      { return arr.template get<array<Value, Parser>>(index); }
 /********************* Helper Accessors *********************/
 
       template <typename Container>

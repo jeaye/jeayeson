@@ -77,17 +77,6 @@ namespace jeayeson
       std::string get(index_t const index, cstr_t const &fallback) const
       { return get<std::string>(index, fallback); }
 
-      /* Named specialization. */
-      array_t& get_array(index_t const index)
-      { return values_[index].template as<array_t>(); }
-      array_t const & get_array(index_t const index) const 
-      { return values_[index].template as<array_t>(); }
-
-      map<value_type, parser_t>& get_map(index_t const index)
-      { return values_[index].template as<map<value_type, parser_t>>(); }
-      map<value_type, parser_t> const & get_map(index_t const index) const
-      { return values_[index].template as<map<value_type, parser_t>>(); }
-
       /* Searches for the specified value. */
       template <typename T>
       iterator find(T const &val)

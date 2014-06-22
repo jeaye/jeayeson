@@ -82,10 +82,10 @@ void test_get()
     std::cout << "test_get named" << std::endl;
     json_map map{ "{\"foo\":{\"bar\":42,\"spam\":null},\"arr\":[0,1,2]}" };
 
-    json_map &foo{ map.get_map("foo") };
+    auto &foo(map.get<json_map>("foo"));
     assert(foo.get<int>("bar") == 42);
 
-    json_array &arr{ map.get_array("arr") };
+    auto &arr(map.get<json_array>("arr"));
     assert(arr.size() == 3);
     for(int i{}; i < 3; ++i)
     { assert(arr[i].as<int8_t>() == i); }
@@ -121,7 +121,7 @@ void test_size()
     assert(map.size() == 2);
     assert(!map.empty());
 
-    json_map foo{ map.get_map("foo") };
+    auto foo(map.get<json_map>("foo"));
     assert(foo.size() == 2);
     assert(!foo.empty());
 
@@ -162,7 +162,7 @@ void test_set()
     assert(map.get<std::string>("burp") == "soda");
 
     map.set<json_int>("map", { { "one", 1 } });
-    assert(map.get_map("map").get<json_int>("one") == 1);
+    assert(map.get<json_map>("map").get<json_int>("one") == 1);
   }
   std::cout << "end test_set" << std::endl;
 }

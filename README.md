@@ -80,7 +80,7 @@ And the following code to interact with the JSON:
      Notice that "get" returns a reference to the object. */
   std::string &str(map.get<std::string>("str")); /* Get "str" as a mutable string reference. */
   std::cout << "str = " << str << std::endl;
-  json_array &arr(map.get_array("arr")); /* get_array and get_map are convenience functions. */
+  auto &arr(map.get<json_array>("arr"));
 
   /* A fallback value can also be specified with "get". It does two things:
        1. Helps deduce the type so that an explicit invocation is not needed
@@ -132,9 +132,6 @@ Customization
   *Specify a custom map to use with* `JEAYESON_OTHER_MAP`  
 `#define JEAYESON_OTHER_MAP MyMapType`  
   *Use the specified map type -- must be used in conjunction with* `JEAYESON_USE_OTHER_MAP`  
-
-`#define JEAYESON_STD_FSTREAM_LOAD {0-1} (default 1)`  
-  *Use std::ifstream instead of boost's memory mapping for normal (not streaming) file reading.*  
 
 Help/Contact
 ---

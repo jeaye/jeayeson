@@ -110,16 +110,6 @@ namespace jeayeson
       std::string get(key_t const &key, cstr_t const fallback) const
       { return get<std::string>(key, fallback); }
 
-      /* Named specializations. */
-      map_t& get_map(key_t const &key)
-      { return values_[key].template as<map_t>(); }
-      map_t const& get_map(key_t const &key) const
-      { return values_[key].template as<map_t>(); }
-      array_t& get_array(key_t const &key)
-      { return values_[key].template as<array_t>(); }
-      array_t const& get_array(key_t const &key) const
-      { return values_[key].template as<array_t>(); }
-
       bool empty() const
       { return values_.empty(); }
       size_t size() const
