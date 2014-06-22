@@ -72,8 +72,10 @@ namespace jeayeson
       static char const delim_close = '}';
 
       map(){} /* XXX: User-defined ctor required for variant. */
-      explicit map(std::string const &_json)
-      { load(_json); }
+      explicit map(std::string const &json)
+      { reset(json); }
+      explicit map(file const &f)
+      { reset(f); }
       explicit map(value_type const &val)
       {
         if(val.get_type() == value_type::type_map)
@@ -200,8 +202,6 @@ namespace jeayeson
       /* Completely wipes out all data in the map. */
       void clear()
       { values_.clear(); }
-      void reset(std::string const &json)
-      { load(json); }
 
       /* Completely removes the specified key and destroys its data. */
       void erase(key_t const &key)
@@ -211,15 +211,10 @@ namespace jeayeson
       void merge(map const &m)
       { values_.insert(m.values_.begin(), m.values_.end()); }
 
-      void load(std::string const &json)
+      void reset(std::string const &json)
       { *this = Parser::template parse<map_t>(json); }
-      static map_t load_new(std::string const &json)
-      { return Parser::template parse<map_t>(json); }
-
-      void load_file(std::string const &json_file)
-      { *this = Parser::template parse_file<map_t>(json_file); }
-      static map_t load_file_new(std::string const &json_file)
-      { return Parser::template parse_file<map_t>(json_file); }
+      void reset(file const &f)
+      { *this = Parser::template parse_file<map_t>(f.data); }
 
       /* Writes the JSON data to string form. */
       std::string to_string() const

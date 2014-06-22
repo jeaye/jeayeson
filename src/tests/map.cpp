@@ -92,7 +92,7 @@ void test_get()
   }
   { /* Paths */
     std::cout << "test_get path" << std::endl;
-    json_map map{ json_map::load_file_new("src/tests/json/map.json") };
+    json_map map{ json_file{ "src/tests/json/map.json" } };
 
     assert(map.get_for_path<double>("doesnotexist", 77.0) == 77.0);
     assert(map.get_for_path<std::string>("does.not.exist", "nope") == "nope");
@@ -106,7 +106,7 @@ void test_get()
   }
   { /* Null */
     std::cout << "test_get null" << std::endl;
-    auto const map(json_map::load_file_new("src/tests/json/map.json"));
+    auto const map(json_map{ json_file{ "src/tests/json/map.json" } });
     assert(map.get("null") == json_null{});
     assert(map.get("str") != json_null{});
   }
@@ -192,8 +192,7 @@ int main()
 {
   try
   {
-    json_map map;
-    map.load_file("src/tests/json/map.json");
+    json_map map{ json_file{ "src/tests/json/map.json" } };
 
     assert(json_map::delim_open == '{');
     assert(json_map::delim_close == '}');

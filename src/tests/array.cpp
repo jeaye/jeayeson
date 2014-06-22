@@ -32,7 +32,7 @@ void test_ctor()
   }
   { /* container ctor */
     std::vector<double> v{ 0.0, 1.0 };
-    json_array arr{ v };
+    json_array arr{ v.begin(), v.end() };
     assert(arr.size() == 2);
     assert(arr.get<double>(0) == 0.0);
     assert(arr.get<double>(1) == 1.0);
@@ -48,7 +48,7 @@ void test_get()
   { /* References */
     std::cout << "test_get ref" << std::endl;
     std::vector<double> v{ 0.0, 1.0 };
-    json_array arr{ v };
+    json_array arr{ v.begin(), v.end() };
     double &z(arr.get<double>(0));
     double &o(arr[1].as<double>());
     z = 42.0;
@@ -60,7 +60,7 @@ void test_get()
   { /* Fallbacks */
     std::cout << "test_get fall" << std::endl;
     std::vector<double> v{ 0.0, 1.0 };
-    json_array arr{ v };
+    json_array arr{ v.begin(), v.end() };
     double z(arr.get(0, 77.0));
     double o(arr.get(1, 77.0));
     double t(arr.get(2, 77.0));
@@ -75,14 +75,14 @@ void test_get()
     assert(arr.get<double>(1) == 1.0);
 
     std::vector<std::string> v2{ "foo", "test" };
-    json_array sarr{ v2 };
+    json_array sarr{ v2.begin(), v2.end() };
     assert(sarr.size() == 2);
     assert(sarr.get(1, "fallback") == "test");
     assert(sarr.get(5, "fallback") == "fallback");
   }
   { /* Named */
     std::cout << "test_get named" << std::endl;
-    auto arr(json_array::load_file_new("src/tests/json/array.json"));
+    auto arr(json_array{ json_file{ "src/tests/json/array.json" } });
 
     auto &foo(arr.get<json_map>(5));
     assert(foo.get("success") == true);
@@ -93,7 +93,7 @@ void test_get()
   }
   { /* Null */
     std::cout << "test_get null" << std::endl;
-    auto arr(json_array::load_file_new("src/tests/json/array.json"));
+    auto arr(json_array{ json_file{ "src/tests/json/array.json" } });
     assert(arr[6] != json_null{});
     assert(arr[7] == json_null{});
   }
@@ -104,8 +104,7 @@ void test_size()
 {
   std::cout << "test_size" << std::endl;
   {
-    json_array arr;
-    arr.load_file("src/tests/json/array.json");
+    json_array arr{ json_file{ "src/tests/json/array.json" } };
     assert(arr.size() == 8);
     assert(!arr.empty());
 
@@ -123,8 +122,7 @@ void test_find()
 {
   std::cout << "test_find" << std::endl;
   {
-    json_array arr;
-    arr.load_file("src/tests/json/array.json");
+    json_array arr{ json_file{ "src/tests/json/array.json" } };
     auto it(arr.find("five"));
     assert(it != arr.end());
     assert(it->as<std::string>() == "five");
@@ -142,8 +140,7 @@ void test_set()
 {
   std::cout << "test_set" << std::endl;
   {
-    json_array arr;
-    arr.load_file("src/tests/json/array.json");
+    json_array arr{ json_file{ "src/tests/json/array.json" } };
 
     arr.set(0, 77);
     assert(arr.get<int64_t>(0) == 77);
@@ -165,8 +162,7 @@ void test_clear()
 {
   std::cout << "test_clear" << std::endl;
   {
-    json_array arr;
-    arr.load_file("src/tests/json/array.json");
+    json_array arr{ json_file{ "src/tests/json/array.json" } };
     arr.clear();
     assert(arr.size() == 0);
     assert(arr.find(1) == arr.end());
@@ -199,8 +195,7 @@ int main()
 {
   try
   {
-    json_array arr;
-    arr.load_file("src/tests/json/array.json");
+    json_array arr{ json_file{ "src/tests/json/array.json" } };
 
     assert(json_array::delim_open == '[');
     assert(json_array::delim_close == ']');

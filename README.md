@@ -26,6 +26,7 @@ json_array    /* contiguous array of json_values */
 json_null     /* json_value's default state */
 json_int      /* defaults to int64_t */
 json_float    /* defaults to double */
+json_file     /* aggregate type representing a filename */
 ```
 
 Reading JSON
@@ -37,16 +38,14 @@ json_array arr{ json };
 ```
 ### Reading a file
 ```cpp
-json_map map;
-map.load_file("my_file.json");
+json_map map{ json_file{ "my_file.json" } };
 ```
 **NOTE:** Loading a file into a `json_map` must mean that the JSON begins with a map `{ }`. Furthermore, any JSON that begins with an array `[ ]` must be loaded into a `json_array`.
 
 Writing JSON
 ----
 ```cpp
-json_map map;
-map.load_file("my_file.json");
+json_map map{ json_file{ "my_file.json" } };
 std::cout << map << std::endl;
 ```
 Interacting with JSON
@@ -73,8 +72,7 @@ Assume the JSON we're working with is as follows:
 And the following code to interact with the JSON:
 ```cpp
   /* To start with, create a map and load a file. */
-  json_map map;
-  map.load_file("doc/getting_started/example.json");
+  json_map map{ json_file{ "doc/getting_started/example.json" } };
 
   /* We can look at some specify top-level values with "get".
      Notice that "get" returns a reference to the object. */

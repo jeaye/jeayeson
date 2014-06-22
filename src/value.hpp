@@ -11,6 +11,7 @@
 
 #include <boost/variant.hpp>
 
+#include "file.hpp"
 #include "map.hpp"
 #include "array.hpp"
 #include "parser.hpp"
@@ -318,6 +319,7 @@ using json_array = jeayeson::array_t;
 using json_null = json_value::null_t;
 using json_int = jeayeson::detail::int_t;
 using json_float = jeayeson::detail::float_t;
+using json_file = jeayeson::file;
 
 namespace jeayeson
 {

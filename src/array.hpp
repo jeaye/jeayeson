@@ -44,9 +44,9 @@ namespace jeayeson
 
       array(){} /* XXX: User-defined ctor required for variant. */
       explicit array(std::string const &json)
-      { load(json); }
-      explicit array(char const * const json) /* XXX: Reduces ambiguity with T */
-      { load(json); }
+      { reset(json); }
+      explicit array(file const &f)
+      { reset(f); }
       explicit array(value_type const &val)
       {
         if(val.get_type() == value_type::type_array)
@@ -54,12 +54,12 @@ namespace jeayeson
         else
         { throw std::runtime_error("Failed to construct array from non-array"); }
       }
-      template <typename T>
-      explicit array(T const &container)
+      template <typename It>
+      explicit array(It const &begin, It const &end)
       {
-        reserve(container.size());
-        for(auto const &v : container)
-        { push_back(v); }
+        reserve(std::distance(begin, end));
+        for(It it{ begin }; it != end; ++it)
+        { push_back(*it); }
       }
       array(array const &arr) : values_(arr.values_)
       { }
@@ -139,21 +139,14 @@ namespace jeayeson
 
       void clear()
       { values_.clear(); }
-      void reset(std::string const &json)
-      { load(json); }
 
       void reserve(size_t const size)
       { values_.reserve(size); }
 
-      void load(std::string const &json)
+      void reset(std::string const &json)
       { *this = Parser::template parse<array_t>(json); }
-      static array_t load_new(std::string const &json)
-      { return Parser::template parse<array_t>(json); }
-
-      void load_file(std::string const &json_file)
-      { *this = Parser::template parse_file<array_t>(json_file); }
-      static array_t load_file_new(std::string const &json_file)
-      { return Parser::template parse_file<array_t>(json_file); }
+      void reset(file const &f)
+      { *this = Parser::template parse_file<array_t>(f.data); }
 
       std::string to_string() const
       { return Parser::template save<array_t>(*this); }

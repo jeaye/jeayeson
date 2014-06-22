@@ -15,8 +15,7 @@
 int main()
 {
   /* To start with, create a map and load a file. */
-  json_map map;
-  map.load_file("src/tests/json/main.json");
+  json_map map{ json_file{ "src/tests/json/main.json" } };
 
   /* We can look at some specify top-level values with "get".
      Notice that "get" returns a reference to the object. */
