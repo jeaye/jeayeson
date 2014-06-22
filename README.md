@@ -103,10 +103,11 @@ And the following code to interact with the JSON:
 Building
 ---
 **NOTE:** You don't actually have to build JeayeSON, since it's a header-only
-library. This build process is simply for the tests.
+library. This build process is only for the tests.
 
 In the project directory, run:
 ```bash
+$ ./configure
 $ make
 ```
 Once built, you can run the tests:
