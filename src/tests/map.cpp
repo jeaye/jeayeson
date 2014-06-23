@@ -31,11 +31,11 @@ void test_ctor()
     assert(map.to_string() ==  "{\"foo\":\"bar\"}" );
   }
   { /* map ctor */
-    std::map<std::string, double> sm{ { "0", 0.0 }, { "1", 1.0 } };
+    std::map<std::string, json_float> sm{ { "0", 0.0 }, { "1", 1.0 } };
     json_map map{ sm };
     assert(map.size() == 2);
-    assert(map.get<double>("0") == 0.0);
-    assert(map.get<double>("1") == 1.0);
+    assert(map.get<json_float>("0") == 0.0);
+    assert(map.get<json_float>("1") == 1.0);
   }
   std::cout << "end test_ctor" << std::endl;
 }
@@ -45,23 +45,23 @@ void test_get()
   std::cout << "test_get" << std::endl;
   { /* References */
     std::cout << "test_get ref" << std::endl;
-    std::map<std::string, double> sm{ { "0", 0.0 }, { "1", 1.0 } };
+    std::map<std::string, json_float> sm{ { "0", 0.0 }, { "1", 1.0 } };
     json_map map{ sm };
-    double &z(map.get<double>("0"));
-    double &o(map.get<double>("1"));
+    json_float &z(map.get<json_float>("0"));
+    json_float &o(map.get<json_float>("1"));
     z = 42.0;
     o = -42.0;
     assert(map.size() == 2);
-    assert(map.get<double>("0") == 42.0);
-    assert(map.get<double>("1") == -42.0);
+    assert(map.get<json_float>("0") == 42.0);
+    assert(map.get<json_float>("1") == -42.0);
   }
   { /* Fallbacks */
     std::cout << "test_get fall" << std::endl;
-    std::map<std::string, double> sm{ { "0", 0.0 }, { "1", 1.0 } };
+    std::map<std::string, json_float> sm{ { "0", 0.0 }, { "1", 1.0 } };
     json_map map{ sm };
-    double z(map.get("0", 77.0));
-    double o(map.get("1", 77.0));
-    double t(map.get("2", 77.0));
+    json_float z(map.get("0", 77.0));
+    json_float o(map.get("1", 77.0));
+    json_float t(map.get("2", 77.0));
     assert(z == 0.0);
     assert(o == 1.0);
     assert(t == 77.0);
@@ -69,8 +69,8 @@ void test_get()
     z = 42.0;
     o = -42.0;
     assert(map.size() == 2);
-    assert(map.get<double>("0") == 0.0);
-    assert(map.get<double>("1") == 1.0);
+    assert(map.get<json_float>("0") == 0.0);
+    assert(map.get<json_float>("1") == 1.0);
 
     std::map<std::string, std::string> sm2{ { "foo", "test" } };
     json_map smap{ sm2 };
@@ -94,7 +94,7 @@ void test_get()
     std::cout << "test_get path" << std::endl;
     json_map map{ json_file{ "src/tests/json/map.json" } };
 
-    assert(map.get_for_path<double>("doesnotexist", 77.0) == 77.0);
+    assert(map.get_for_path<json_float>("doesnotexist", 77.0) == 77.0);
     assert(map.get_for_path<std::string>("does.not.exist", "nope") == "nope");
 
     assert(map.get_for_path<json_int>("person.inventory.coins") == 1136);
@@ -102,7 +102,7 @@ void test_get()
     assert(map.get_for_path<json_int>("person.inventory.zzz", 42) == 42);
     assert(map.get_for_path("person.name") == "Roger");
     assert(map.get_for_path<std::string>("person.notname", "zzz") == "zzz");
-    assert(map.get_for_path<json_array>("arr")[8].as<double>() == 9.9);
+    assert(map.get_for_path<json_array>("arr")[8].as<json_float>() == 9.9);
   }
   { /* Null */
     std::cout << "test_get null" << std::endl;

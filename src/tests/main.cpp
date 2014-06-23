@@ -37,6 +37,6 @@ int main()
 
   /* Iterators work as expected, based on the C++ stdlib. (const and non-const) */
   for(auto const &it : arr)
-  { std::cout << it.as<double>() << " "; }
+  { std::cout << it.as<json_float>() << " "; }
   std::cout << std::endl;
 }
