@@ -94,7 +94,7 @@ And the following code to interact with the JSON:
 
   /* Iterators work as expected, based on the C++ stdlib. (const and non-const) */
   for(auto const &it : arr)
-  { std::cout << it.as<double>() << " "; }
+  { std::cout << it.as<json_float>() << " "; }
   std::cout << std::endl;
 ```
 
@@ -128,8 +128,13 @@ Customization
   *Use boost::unordered_map*  
 `#define JEAYESON_USE_OTHER_MAP`  
   *Specify a custom map to use with* `JEAYESON_OTHER_MAP`  
-`#define JEAYESON_OTHER_MAP MyMapType`  
+`#define JEAYESON_OTHER_MAP my_map_type`  
   *Use the specified map type -- must be used in conjunction with* `JEAYESON_USE_OTHER_MAP`  
+
+`#define JEAYESON_FLOAT my_float_type`  
+  *Use the specified float type -- must be included before jeayeson if non-intrinsic*  
+`#define JEAYESON_INT my_int_type`  
+  *Use the specified int type -- must be included before jeayeson if non-intrinsic*
 
 Help/Contact
 ---
