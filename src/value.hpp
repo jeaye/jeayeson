@@ -87,11 +87,25 @@ namespace jeayeson
       auto const& as() const
       { return get<T>(); }
 
+      /* Convenient, but not as type-safe or performant. */
+      value& operator [](map_t::key_t const &key)
+      {
+        if(get_type() != type_map)
+        { throw std::runtime_error("invalid value type; required map"); }
+        return as<map_t>()[key];
+      }
+      value& operator [](array_t::index_t const &index)
+      {
+        if(get_type() != type_array)
+        { throw std::runtime_error("invalid value type; required array"); }
+        return as<array_t>()[index];
+      }
+
       template <typename T>
-      operator T() 
+      explicit operator T() 
       { return as<T&>(); }
       template <typename T>
-      operator T() const
+      explicit operator T() const
       { return as<T const&>(); }
 
       type_t get_type() const
@@ -279,7 +293,6 @@ namespace jeayeson
   template <>
   struct value::to_value<array_t>
   { static type_t constexpr const value{ ::jeayeson::value::type_array }; };
-
 }
 
 using json_value = jeayeson::value;

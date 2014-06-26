@@ -143,7 +143,7 @@ void test_find()
     it = map.find("doesnotexist");
     assert(it == map.end());
 
-    it = map.find(json_value{"baz"});
+    it = map.find("baz");
     assert(it != map.end());
     assert(it->first == "baz");
   }

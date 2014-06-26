@@ -34,13 +34,13 @@
 #elif defined JEAYESON_USE_OTHER_MAP
   /* Client is responsible for appropriate includes */
   #ifndef JEAYESON_OTHER_MAP
-    #error "JEAYESON_USE_OTHER_MAP specified but JEAYSON_OTHER_MAP is undefined."
+    #error "JEAYESON_USE_OTHER_MAP specified but JEAYSON_OTHER_MAP is undefined"
   #else
     #define JEAYESON_MAP_T JEAYESON_OTHER_MAP
   #endif
 
 #else
-  #error "No JEAYESON_USE_[map type] is defined."
+  #error "No JEAYESON_USE_[map type] is defined"
 
 #endif
 
@@ -111,6 +111,11 @@ namespace jeayeson
       }
       std::string get(key_t const &key, cstr_t const fallback) const
       { return get<std::string>(key, fallback); }
+
+      Value& operator [](key_t const &key)
+      { return get(key); }
+      Value const& operator [](key_t const &key) const
+      { return get(key); }
 
       bool empty() const
       { return values_.empty(); }
