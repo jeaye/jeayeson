@@ -133,6 +133,4 @@ Customization
 
 Help/Contact
 ---
-If you have questions, first check the JeayeSON wiki: https://github.com/jeaye/jeayeson/wiki
-
 For any other bug reports, questions, comments, or suggestions, please [make an issue](https://github.com/jeaye/jeayeson/issues).
