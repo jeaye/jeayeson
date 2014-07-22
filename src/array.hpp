@@ -15,6 +15,8 @@
 #include <utility>
 #include <algorithm>
 
+#include "traits.hpp"
+
 namespace jeayeson
 {
   template <typename Value, typename Parser>
@@ -71,7 +73,7 @@ namespace jeayeson
       auto get(index_t const index, T const &fallback) const
       {
         if(index >= values_.size())
-        { return fallback; }
+        { return static_cast<detail::normalize<T>>(fallback); }
         return values_[index].template as<T>();
       }
       std::string get(index_t const index, cstr_t const &fallback) const

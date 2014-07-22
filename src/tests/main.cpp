@@ -35,8 +35,13 @@ int main()
   std::cout << map.get_for_path("person.name") << " has " // No fallback, returns json_value&
             << map.get_for_path("person.inventory.coins", 0) << " coins\n"; // Fallback is 0
 
+  /* A less verbose way is to just use op[] on the json_values; this is more convenient,
+   * but it comes at the cost of less type-safety and more runtime checks. */
+  std::cout << map["person"]["inventory"]["coins"] << std::endl;
+  std::cout << map["arr"][1] << std::endl;
+
   /* Iterators work as expected, based on the C++ stdlib. (const and non-const) */
   for(auto const &it : arr)
-  { std::cout << it.as<double>() << " "; }
+  { std::cout << it.as<json_float>() << " "; }
   std::cout << std::endl;
 }

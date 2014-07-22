@@ -31,13 +31,13 @@ void test_ctor()
     assert(arry.to_string() ==  "[\"foo\",\"bar\"]" );
   }
   { /* container ctor */
-    std::vector<double> v{ 0.0, 1.0 };
+    std::vector<json_float> v{ 0.0, 1.0 };
     json_array arr{ v.begin(), v.end() };
     assert(arr.size() == 2);
-    assert(arr.get<double>(0) == 0.0);
-    assert(arr.get<double>(1) == 1.0);
-    assert(arr[0].as<double>() == 0.0);
-    assert(arr[1].as<double>() == 1.0);
+    assert(arr.get<json_float>(0) == 0.0);
+    assert(arr.get<json_float>(1) == 1.0);
+    assert(arr[0].as<json_float>() == 0.0);
+    assert(arr[1].as<json_float>() == 1.0);
   }
   std::cout << "end test_ctor" << std::endl;
 }
@@ -47,23 +47,23 @@ void test_get()
   std::cout << "test_get" << std::endl;
   { /* References */
     std::cout << "test_get ref" << std::endl;
-    std::vector<double> v{ 0.0, 1.0 };
+    std::vector<json_float> v{ 0.0, 1.0 };
     json_array arr{ v.begin(), v.end() };
-    double &z(arr.get<double>(0));
-    double &o(arr[1].as<double>());
+    json_float &z(arr.get<json_float>(0));
+    json_float &o(arr[1].as<json_float>());
     z = 42.0;
     o = -42.0;
     assert(arr.size() == 2);
-    assert(arr[0].as<double>() == 42.0);
-    assert(arr.get<double>(1) == -42.0);
+    assert(arr[0].as<json_float>() == 42.0);
+    assert(arr.get<json_float>(1) == -42.0);
   }
   { /* Fallbacks */
     std::cout << "test_get fall" << std::endl;
-    std::vector<double> v{ 0.0, 1.0 };
+    std::vector<json_float> v{ 0.0, 1.0 };
     json_array arr{ v.begin(), v.end() };
-    double z(arr.get(0, 77.0));
-    double o(arr.get(1, 77.0));
-    double t(arr.get(2, 77.0));
+    json_float z(arr.get(0, 77.0));
+    json_float o(arr.get(1, 77.0));
+    json_float t(arr.get(2, 77.0));
     assert(z == 0.0);
     assert(o == 1.0);
     assert(t == 77.0);
@@ -71,8 +71,8 @@ void test_get()
     z = 42.0;
     o = -42.0;
     assert(arr.size() == 2);
-    assert(arr.get<double>(0) == 0.0);
-    assert(arr.get<double>(1) == 1.0);
+    assert(arr.get<json_float>(0) == 0.0);
+    assert(arr.get<json_float>(1) == 1.0);
 
     std::vector<std::string> v2{ "foo", "test" };
     json_array sarr{ v2.begin(), v2.end() };

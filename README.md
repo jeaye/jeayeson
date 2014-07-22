@@ -72,7 +72,7 @@ Assume the JSON we're working with is as follows:
 And the following code to interact with the JSON:
 ```cpp
   /* To start with, create a map and load a file. */
-  json_map map{ json_file{ "doc/getting_started/example.json" } };
+  json_map map{ json_file{ "src/tests/json/main.json" } };
 
   /* We can look at some specify top-level values with "get".
      Notice that "get" returns a reference to the object. */
@@ -92,9 +92,14 @@ And the following code to interact with the JSON:
   std::cout << map.get_for_path("person.name") << " has " // No fallback, returns json_value&
             << map.get_for_path("person.inventory.coins", 0) << " coins\n"; // Fallback is 0
 
+  /* A less verbose way is to just use op[] on the json_values; this is more convenient,
+   * but it comes at the cost of less type-safety and more runtime checks. */
+  std::cout << map["person"]["inventory"]["coins"] << std::endl;
+  std::cout << map["arr"][1] << std::endl;
+
   /* Iterators work as expected, based on the C++ stdlib. (const and non-const) */
   for(auto const &it : arr)
-  { std::cout << it.as<double>() << " "; }
+  { std::cout << it.as<json_float>() << " "; }
   std::cout << std::endl;
 ```
 
@@ -118,7 +123,7 @@ on how to use JeayeSON.
 Customization
 ---
 
-**NOTE**: These are all easily changed in src/defines.hpp
+**NOTE**: These are all easily changed in `src/defines.hpp`
 
 `#define JEAYESON_USE_STD_MAP`  
   *Use std::map (ideal in most cases)*  
@@ -128,8 +133,13 @@ Customization
   *Use boost::unordered_map*  
 `#define JEAYESON_USE_OTHER_MAP`  
   *Specify a custom map to use with* `JEAYESON_OTHER_MAP`  
-`#define JEAYESON_OTHER_MAP MyMapType`  
+`#define JEAYESON_OTHER_MAP my_map_type`  
   *Use the specified map type -- must be used in conjunction with* `JEAYESON_USE_OTHER_MAP`  
+
+`#define JEAYESON_FLOAT my_float_type`  
+  *Use the specified float type -- must be included before jeayeson if non-intrinsic*  
+`#define JEAYESON_INT my_int_type`  
+  *Use the specified int type -- must be included before jeayeson if non-intrinsic*
 
 Help/Contact
 ---

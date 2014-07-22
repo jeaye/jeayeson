@@ -11,6 +11,7 @@
 
 #include <boost/variant.hpp>
 
+#include "traits.hpp"
 #include "file.hpp"
 #include "map.hpp"
 #include "array.hpp"
@@ -18,38 +19,6 @@
 
 namespace jeayeson
 {
-  namespace detail
-  {
-    using int_t = int64_t;
-    using float_t = double;
-
-    template <bool B, typename T = void>
-    using enable_if = typename std::enable_if<B, T>::type;
-
-    template <typename T, typename E = void>
-    struct normalize_impl
-    { using type = T; };
-    template <typename T>
-    struct normalize_impl<T, enable_if<std::is_integral<T>::value &&
-                                       !std::is_same<T, bool>::value>>
-    { using type = int_t; };
-    template <typename T>
-    struct normalize_impl<T, enable_if<std::is_same<T, bool>::value>>
-    { using type = bool; };
-    template <typename T>
-    struct normalize_impl<T, enable_if<std::is_floating_point<T>::value>>
-    { using type = float_t; };
-    template <typename T>
-    using normalize = typename normalize_impl<T>::type;
-    template <typename T>
-    static constexpr bool should_normalize()
-    {
-      return !std::is_same<T, bool>::value &&
-             (std::is_integral<T>::value ||
-              std::is_floating_point<T>::value);
-    }
-  }
-
   class value
   {
     public:
@@ -57,8 +26,8 @@ namespace jeayeson
       enum type_t
       {
         type_null,
-        type_int64, 
-        type_double,
+        type_int, 
+        type_float,
         type_bool,
         type_string,
         type_map,
@@ -78,8 +47,8 @@ namespace jeayeson
       using variant_t = boost::variant
       <
         null_t,
-        int64_t,
-        double,
+        detail::int_t,
+        detail::float_t,
         bool,
         std::string,
         map_t,
@@ -118,11 +87,25 @@ namespace jeayeson
       auto const& as() const
       { return get<T>(); }
 
+      /* Convenient, but not as type-safe or performant. */
+      value& operator [](map_t::key_t const &key)
+      {
+        if(get_type() != type_map)
+        { throw std::runtime_error("invalid value type; required map"); }
+        return as<map_t>()[key];
+      }
+      value& operator [](array_t::index_t const &index)
+      {
+        if(get_type() != type_array)
+        { throw std::runtime_error("invalid value type; required array"); }
+        return as<array_t>()[index];
+      }
+
       template <typename T>
-      operator T() 
+      explicit operator T() 
       { return as<T&>(); }
       template <typename T>
-      operator T() const
+      explicit operator T() const
       { return as<T const&>(); }
 
       type_t get_type() const
@@ -247,10 +230,10 @@ namespace jeayeson
   struct value::to_type<value::type_null>
   { using type = value::null_t; };
   template <>
-  struct value::to_type<value::type_int64>
+  struct value::to_type<value::type_int>
   { using type = detail::int_t; };
   template <>
-  struct value::to_type<value::type_double>
+  struct value::to_type<value::type_float>
   { using type = detail::float_t; };
   template <>
   struct value::to_type<value::type_bool>
@@ -270,34 +253,34 @@ namespace jeayeson
   { static type_t constexpr const value{ ::jeayeson::value::type_null }; };
   template <>
   struct value::to_value<int8_t>
-  { static type_t constexpr const value{ ::jeayeson::value::type_int64 }; };
+  { static type_t constexpr const value{ ::jeayeson::value::type_int }; };
   template <>
   struct value::to_value<uint8_t>
-  { static type_t constexpr const value{ ::jeayeson::value::type_int64 }; };
+  { static type_t constexpr const value{ ::jeayeson::value::type_int }; };
   template <>
   struct value::to_value<int16_t>
-  { static type_t constexpr const value{ ::jeayeson::value::type_int64 }; };
+  { static type_t constexpr const value{ ::jeayeson::value::type_int }; };
   template <>
   struct value::to_value<uint16_t>
-  { static type_t constexpr const value{ ::jeayeson::value::type_int64 }; };
+  { static type_t constexpr const value{ ::jeayeson::value::type_int }; };
   template <>
   struct value::to_value<int32_t>
-  { static type_t constexpr const value{ ::jeayeson::value::type_int64 }; };
+  { static type_t constexpr const value{ ::jeayeson::value::type_int }; };
   template <>
   struct value::to_value<uint32_t>
-  { static type_t constexpr const value{ ::jeayeson::value::type_int64 }; };
+  { static type_t constexpr const value{ ::jeayeson::value::type_int }; };
   template <>
-  struct value::to_value<detail::int_t>
-  { static type_t constexpr const value{ ::jeayeson::value::type_int64 }; };
+  struct value::to_value<int64_t>
+  { static type_t constexpr const value{ ::jeayeson::value::type_int }; };
   template <>
   struct value::to_value<uint64_t>
-  { static type_t constexpr const value{ ::jeayeson::value::type_int64 }; };
+  { static type_t constexpr const value{ ::jeayeson::value::type_int }; };
   template <>
   struct value::to_value<float>
-  { static type_t constexpr const value{ ::jeayeson::value::type_double }; };
+  { static type_t constexpr const value{ ::jeayeson::value::type_float }; };
   template <>
   struct value::to_value<double>
-  { static type_t constexpr const value{ ::jeayeson::value::type_double }; };
+  { static type_t constexpr const value{ ::jeayeson::value::type_float }; };
   template <>
   struct value::to_value<bool>
   { static type_t constexpr const value{ ::jeayeson::value::type_bool }; };
@@ -310,7 +293,6 @@ namespace jeayeson
   template <>
   struct value::to_value<array_t>
   { static type_t constexpr const value{ ::jeayeson::value::type_array }; };
-
 }
 
 using json_value = jeayeson::value;
