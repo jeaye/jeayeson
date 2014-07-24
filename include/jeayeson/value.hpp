@@ -23,15 +23,15 @@ namespace jeayeson
   {
     public:
       /* Maps to the variant 1:1. */
-      enum type_t
+      enum class type
       {
-        type_null,
-        type_int, 
-        type_float,
-        type_bool,
-        type_string,
-        type_map,
-        type_array
+        null,
+        integer, 
+        real,
+        boolean,
+        string,
+        map,
+        array
       };
 
       using map_t = map<value, detail::parser>;
@@ -57,7 +57,7 @@ namespace jeayeson
       using cstr_t = char const * const;
 
       /* Enum -> Type */
-      template <type_t T>
+      template <type T>
       struct to_type;
       /* Type -> Enum */
       template <typename T>
@@ -90,13 +90,13 @@ namespace jeayeson
       /* Convenient, but not as type-safe or performant. */
       value& operator [](map_t::key_t const &key)
       {
-        if(get_type() != type_map)
+        if(get_type() != type::map)
         { throw std::runtime_error{ "invalid value type; required map" }; }
         return as<map_t>()[key];
       }
       value& operator [](array_t::index_t const &index)
       {
-        if(get_type() != type_array)
+        if(get_type() != type::array)
         { throw std::runtime_error{ "invalid value type; required array" }; }
         return as<array_t>()[index];
       }
@@ -108,10 +108,10 @@ namespace jeayeson
       explicit operator T() const
       { return as<T const&>(); }
 
-      type_t get_type() const
-      { return static_cast<type_t>(value_.which()); }
-      bool is(type_t const type) const
-      { return get_type() == type; }
+      type get_type() const
+      { return static_cast<type>(value_.which()); }
+      bool is(type const t) const
+      { return get_type() == t; }
 
       friend bool operator ==(value const &jv, value const &val);
       template <typename T>
@@ -167,11 +167,11 @@ namespace jeayeson
 
   inline std::ostream& operator <<(std::ostream &stream, value const &val)
   {
-    switch(val.value_.which())
+    switch(static_cast<value::type>(val.value_.which()))
     {
-      case value::type_string:
+      case value::type::string:
         return (stream << "\"" << val.value_ << "\"");
-      case value::type_bool:
+      case value::type::boolean:
         return (stream << (val.as<bool>() ? "true" : "false"));
       default:
         return (stream << val.value_);
@@ -227,72 +227,72 @@ namespace jeayeson
   { return get<value>(); }
 
   template <>
-  struct value::to_type<value::type_null>
+  struct value::to_type<value::type::null>
   { using type = value::null_t; };
   template <>
-  struct value::to_type<value::type_int>
+  struct value::to_type<value::type::integer>
   { using type = detail::int_t; };
   template <>
-  struct value::to_type<value::type_float>
+  struct value::to_type<value::type::real>
   { using type = detail::float_t; };
   template <>
-  struct value::to_type<value::type_bool>
+  struct value::to_type<value::type::boolean>
   { using type = bool; };
   template <>
-  struct value::to_type<value::type_string>
+  struct value::to_type<value::type::string>
   { using type = std::string; };
   template <>
-  struct value::to_type<value::type_map>
+  struct value::to_type<value::type::map>
   { using type = map_t; };
   template <>
-  struct value::to_type<value::type_array>
+  struct value::to_type<value::type::array>
   { using type = array_t; };
 
   template <>
   struct value::to_value<value::null_t>
-  { static type_t constexpr const value{ ::jeayeson::value::type_null }; };
+  { static type constexpr const value{ ::jeayeson::value::type::null }; };
   template <>
   struct value::to_value<int8_t>
-  { static type_t constexpr const value{ ::jeayeson::value::type_int }; };
+  { static type constexpr const value{ ::jeayeson::value::type::integer }; };
   template <>
   struct value::to_value<uint8_t>
-  { static type_t constexpr const value{ ::jeayeson::value::type_int }; };
+  { static type constexpr const value{ ::jeayeson::value::type::integer }; };
   template <>
   struct value::to_value<int16_t>
-  { static type_t constexpr const value{ ::jeayeson::value::type_int }; };
+  { static type constexpr const value{ ::jeayeson::value::type::integer }; };
   template <>
   struct value::to_value<uint16_t>
-  { static type_t constexpr const value{ ::jeayeson::value::type_int }; };
+  { static type constexpr const value{ ::jeayeson::value::type::integer }; };
   template <>
   struct value::to_value<int32_t>
-  { static type_t constexpr const value{ ::jeayeson::value::type_int }; };
+  { static type constexpr const value{ ::jeayeson::value::type::integer }; };
   template <>
   struct value::to_value<uint32_t>
-  { static type_t constexpr const value{ ::jeayeson::value::type_int }; };
+  { static type constexpr const value{ ::jeayeson::value::type::integer }; };
   template <>
   struct value::to_value<int64_t>
-  { static type_t constexpr const value{ ::jeayeson::value::type_int }; };
+  { static type constexpr const value{ ::jeayeson::value::type::integer }; };
   template <>
   struct value::to_value<uint64_t>
-  { static type_t constexpr const value{ ::jeayeson::value::type_int }; };
+  { static type constexpr const value{ ::jeayeson::value::type::integer }; };
   template <>
   struct value::to_value<float>
-  { static type_t constexpr const value{ ::jeayeson::value::type_float }; };
+  { static type constexpr const value{ ::jeayeson::value::type::real }; };
   template <>
   struct value::to_value<double>
-  { static type_t constexpr const value{ ::jeayeson::value::type_float }; };
+  { static type constexpr const value{ ::jeayeson::value::type::real }; };
   template <>
   struct value::to_value<bool>
-  { static type_t constexpr const value{ ::jeayeson::value::type_bool }; };
+  { static type constexpr const value{ ::jeayeson::value::type::boolean }; };
   template <>
   struct value::to_value<std::string>
-  { static type_t constexpr const value{ ::jeayeson::value::type_string }; };
+  { static type constexpr const value{ ::jeayeson::value::type::string }; };
   template <>
   struct value::to_value<map_t>
-  { static type_t constexpr const value{ ::jeayeson::value::type_map }; };
+  { static type constexpr const value{ ::jeayeson::value::type::map }; };
   template <>
   struct value::to_value<array_t>
-  { static type_t constexpr const value{ ::jeayeson::value::type_array }; };
+  { static type constexpr const value{ ::jeayeson::value::type::array }; };
 }
 
 using json_value = jeayeson::value;
@@ -314,7 +314,7 @@ namespace jeayeson
   bool operator ==(T const &val, json_value const &jv)
   { return jv == val; }
   inline bool operator ==(json_value const &jv, value::cstr_t const val)
-  { return jv.get_type() == value::type_string && jv.as<std::string>() == val; }
+  { return jv.get_type() == value::type::string && jv.as<std::string>() == val; }
   inline bool operator ==(value::cstr_t const val, json_value const &jv)
   { return jv == val; }
 
