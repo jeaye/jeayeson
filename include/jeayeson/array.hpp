@@ -15,7 +15,7 @@
 #include <utility>
 #include <algorithm>
 
-#include "traits.hpp"
+#include "detail/traits.hpp"
 
 namespace jeayeson
 {
@@ -54,7 +54,7 @@ namespace jeayeson
         if(val.get_type() == value_type::type_array)
         { *this = val.template as<array_t>(); }
         else
-        { throw std::runtime_error("Failed to construct array from non-array"); }
+        { throw std::runtime_error{ "failed to construct array from non-array" }; }
       }
       template <typename It>
       explicit array(It const &begin, It const &end)
@@ -148,7 +148,7 @@ namespace jeayeson
       void reset(std::string const &json)
       { *this = Parser::template parse<array_t>(json); }
       void reset(file const &f)
-      { *this = Parser::template parse_file<array_t>(f.data); }
+      { *this = Parser::template parse<array_t>(f); }
 
       std::string to_string() const
       { return Parser::template save<array_t>(*this); }

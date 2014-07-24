@@ -11,11 +11,11 @@
 
 #include <boost/variant.hpp>
 
-#include "traits.hpp"
+#include "detail/traits.hpp"
 #include "file.hpp"
 #include "map.hpp"
 #include "array.hpp"
-#include "parser.hpp"
+#include "detail/parser.hpp"
 
 namespace jeayeson
 {
@@ -34,8 +34,8 @@ namespace jeayeson
         type_array
       };
 
-      using map_t = map<value, parser>;
-      using array_t = array<value, parser>;
+      using map_t = map<value, detail::parser>;
+      using array_t = array<value, detail::parser>;
       struct null_t
       {
         bool operator ==(null_t const &) const
@@ -91,13 +91,13 @@ namespace jeayeson
       value& operator [](map_t::key_t const &key)
       {
         if(get_type() != type_map)
-        { throw std::runtime_error("invalid value type; required map"); }
+        { throw std::runtime_error{ "invalid value type; required map" }; }
         return as<map_t>()[key];
       }
       value& operator [](array_t::index_t const &index)
       {
         if(get_type() != type_array)
-        { throw std::runtime_error("invalid value type; required array"); }
+        { throw std::runtime_error{ "invalid value type; required array" }; }
         return as<array_t>()[index];
       }
 
@@ -162,8 +162,8 @@ namespace jeayeson
       variant_t value_;
   };
 
-  using map_t = map<value, parser>;
-  using array_t = array<value, parser>;
+  using map_t = map<value, detail::parser>;
+  using array_t = array<value, detail::parser>;
 
   inline std::ostream& operator <<(std::ostream &stream, value const &val)
   {

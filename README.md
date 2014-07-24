@@ -16,7 +16,7 @@ Practice
 ----
 Assuming the JeayeSON headers are in your search path, simply  
 ```cpp
-#include <jeayeson.hpp>
+#include <jeayeson/jeayeson.hpp>
 ```
 This will give you access to the following types:
 ```cpp
@@ -72,7 +72,7 @@ Assume the JSON we're working with is as follows:
 And the following code to interact with the JSON:
 ```cpp
   /* To start with, create a map and load a file. */
-  json_map map{ json_file{ "src/tests/json/main.json" } };
+  json_map map{ json_file{ "src/test/json/main.json" } };
 
   /* We can look at some specify top-level values with "get".
      Notice that "get" returns a reference to the object. */
@@ -117,13 +117,13 @@ Once built, you can run the tests:
 ```bash
 $ make test
 ```
-The tests (in src/tests/main.cpp and friends) can give more examples
+The tests (in src/test/main.cpp and friends) can give more examples
 on how to use JeayeSON.
 
 Customization
 ---
 
-**NOTE**: These are all easily changed in `src/defines.hpp`
+**NOTE**: These are all easily changed in `jeayeson/defines.hpp`
 
 `#define JEAYESON_USE_STD_MAP`  
   *Use std::map (ideal in most cases)*  

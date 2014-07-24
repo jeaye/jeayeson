@@ -3,7 +3,7 @@
   See licensing at:
     http://opensource.org/licenses/BSD-3-Clause
 
-  File: tests/array.cpp
+  File: test/array.cpp
   Author: Jesse 'Jeaye' Wilkerson
 */
 
@@ -11,7 +11,7 @@
 #include <string>
 #include <cassert>
 
-#include "jeayeson.hpp"
+#include <jeayeson/jeayeson.hpp>
 
 void test_ctor()
 {
@@ -82,7 +82,7 @@ void test_get()
   }
   { /* Named */
     std::cout << "test_get named" << std::endl;
-    auto arr(json_array{ json_file{ "src/tests/json/array.json" } });
+    auto arr(json_array{ json_file{ "src/test/json/array.json" } });
 
     auto &foo(arr.get<json_map>(5));
     assert(foo.get("success") == true);
@@ -93,7 +93,7 @@ void test_get()
   }
   { /* Null */
     std::cout << "test_get null" << std::endl;
-    auto arr(json_array{ json_file{ "src/tests/json/array.json" } });
+    auto arr(json_array{ json_file{ "src/test/json/array.json" } });
     assert(arr[6] != json_null{});
     assert(arr[7] == json_null{});
   }
@@ -104,7 +104,7 @@ void test_size()
 {
   std::cout << "test_size" << std::endl;
   {
-    json_array arr{ json_file{ "src/tests/json/array.json" } };
+    json_array arr{ json_file{ "src/test/json/array.json" } };
     assert(arr.size() == 8);
     assert(!arr.empty());
 
@@ -122,7 +122,7 @@ void test_find()
 {
   std::cout << "test_find" << std::endl;
   {
-    json_array arr{ json_file{ "src/tests/json/array.json" } };
+    json_array arr{ json_file{ "src/test/json/array.json" } };
     auto it(arr.find("five"));
     assert(it != arr.end());
     assert(it->as<std::string>() == "five");
@@ -140,7 +140,7 @@ void test_set()
 {
   std::cout << "test_set" << std::endl;
   {
-    json_array arr{ json_file{ "src/tests/json/array.json" } };
+    json_array arr{ json_file{ "src/test/json/array.json" } };
 
     arr.set(0, 77);
     assert(arr.get<int64_t>(0) == 77);
@@ -162,7 +162,7 @@ void test_clear()
 {
   std::cout << "test_clear" << std::endl;
   {
-    json_array arr{ json_file{ "src/tests/json/array.json" } };
+    json_array arr{ json_file{ "src/test/json/array.json" } };
     arr.clear();
     assert(arr.size() == 0);
     assert(arr.find(1) == arr.end());
@@ -195,7 +195,7 @@ int main()
 {
   try
   {
-    json_array arr{ json_file{ "src/tests/json/array.json" } };
+    json_array arr{ json_file{ "src/test/json/array.json" } };
 
     assert(json_array::delim_open == '[');
     assert(json_array::delim_close == ']');

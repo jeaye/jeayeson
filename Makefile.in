@@ -1,31 +1,24 @@
-# Copyright © 2013 Jesse 'Jeaye' Wilkerson
-# See licensing at:
-#   http://opensource.org/licenses/BSD-3-Clause
-
-# File: Makefile
-# Author: Jesse 'Jeaye' Wilkerson
-
 # Sources
 OUT_DIR=bin/
 SOURCES= \
-				 src/tests/main.cpp \
-				 src/tests/map.cpp \
-				 src/tests/array.cpp
+				 src/test/main.cpp \
+				 src/test/map.cpp \
+				 src/test/array.cpp
 OBJECTS=$(SOURCES:.cpp=.cpp.o)
 TEST_OBJECTS=$(SOURCES:.cpp=.test)
 TESTS=$(foreach test,$(SOURCES), $(addprefix $(OUT_DIR), $(notdir $(test))))
 
 # Generation/Installation
 PREFIX=%PREFIX%
-DATAROOTDIR=%DATAROOTDIR%
+INCLUDEDIR=%INCLUDEDIR%
 THREADS=%THREADS%
 
 # Compiler flags
 CXX=c++
-CXX_WARN_FLAGS=-Wall -Wextra -pedantic
+CXX_WARN_FLAGS=-Wall -Wextra -Werror -pedantic
 CXX_DEBUG_FLAGS=
 CXX_OPTIM_FLAGS=-O3
-CXX_INCLUDE_FLAGS=-Isrc/ 
+CXX_INCLUDE_FLAGS=-Iinclude/ 
 CXX_PLATFORM_FLAGS=%CXX_PLATFORM_FLAGS%
 CXX_FLAGS=-std=c++1y \
 					$(CXX_PLATFORM_FLAGS) \
@@ -37,9 +30,9 @@ CXX_FLAGS=-std=c++1y \
 LD_PLATFORM_LIBS=%LD_PLATFORM_LIBS%
 LD_LIBS=$(LD_PLATFORM_LIBS)
 
-PROJECT=jeayeson
+PROJECT=%PROJECT%
 
-.PHONY: all threaded setup clean jeayeson jeayeson_setup install uninstall test test_setup 
+.PHONY: all threaded setup clean ${PROJECT} ${PROJECT}_setup install uninstall test test_setup 
 
 .SILENT:
 
@@ -47,7 +40,7 @@ all:
 	$(MAKE) -j $(THREADS) threaded
 	exit $$?
 
-threaded: jeayeson
+threaded: ${PROJECT}
 	echo "Success"
 
 setup: clean
@@ -58,22 +51,24 @@ clean:
 	rm -rf $(OUT_DIR)
 	echo "Cleaned"
 
-jeayeson: jeayeson_setup $(OBJECTS)
-	echo "Done building jeayeson tests"
+${PROJECT}: ${PROJECT}_setup $(OBJECTS)
+	echo "Done building ${PROJECT} tests"
 
-jeayeson_setup: setup
-	echo "Building jeayeson tests"
+${PROJECT}_setup: setup
+	echo "Building ${PROJECT} tests"
 
-%.cpp.o: %.cpp jeayeson_setup
+%.cpp.o: %.cpp ${PROJECT}_setup
 	echo "  Compiling $<"
-	$(CXX) $(CXX_FLAGS) $< -o $(addprefix $(OUT_DIR), $(notdir $<))
+	$(CXX) $(CXX_FLAGS) $< $(LD_LIBS) -o $(addprefix $(OUT_DIR), $(notdir $<))
 
 install:
-	export datarootdir=$(DATAROOTDIR) && \
+	export installdir=$(DESTDIR)$(INCLUDEDIR) && \
+	export project=$(PROJECT) && \
 	./do_install safe
 
 uninstall:
-	export datarootdir=$(DATAROOTDIR) && \
+	export installdir=$(DESTDIR)$(INCLUDEDIR) && \
+	export project=$(PROJECT) && \
 	./do_install undo
 
 test: test_setup $(TEST_OBJECTS)
@@ -84,4 +79,4 @@ test_setup:
 
 %.test: test_setup
 	echo "  Testing $(notdir $(shell echo $@ | sed 's/\.test//'))"
-	$(OUT_DIR)/$(notdir $(shell echo $@ | sed 's/\.test//')).cpp 2>&1 > /dev/null
+	$(OUT_DIR)/$(notdir $(shell echo $@ | sed 's/\.test//')).cpp > /dev/null

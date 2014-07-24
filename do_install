@@ -10,6 +10,7 @@
 # XXX: Do not call this script directly: use `make install`
 set -o errexit
 set -o nounset
+shopt -s globstar
 
 if [[ $# == 0 ]];
 then
@@ -17,29 +18,30 @@ then
   exit 1
 fi
 
-UNINSTALL=0
+uninstall=0
 if [[ $# == 1 && "$1" = "undo" ]];
 then
-  UNINSTALL=1
-  echo "Uninstalling from $datarootdir"
+  uninstall=1
+  echo "Uninstalling from $installdir"
 else
-  echo "Installing from $PWD to $datarootdir"
+  echo "Installing from $PWD to $installdir"
 fi
 
-mkdir -p $datarootdir
-for file in "$PWD"/src/*.hpp ; do
-  out=$datarootdir/$(basename "$file");
+mkdir -p $installdir
+for file in "$PWD"/include/**/*.hpp ; do
+  out=$installdir/$project/$(echo "$file" | sed "s_^.*${project}/__");
 
-  if [ $UNINSTALL -eq 1 ];
+  if [ $uninstall -eq 1 ];
   then
     rm -f "$out";
   else
+    mkdir -p $(dirname "$out")
     install -m 0644 "$file" "$out";
   fi
 done
 
-if [ $UNINSTALL -eq 1 ];
+if [ $uninstall -eq 1 ];
 then
-  rmdir "$datarootdir"
+  rm -r "$installdir/$project" || true
 fi
 echo "Done"

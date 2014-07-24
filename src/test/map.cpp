@@ -3,7 +3,7 @@
   See licensing at:
     http://opensource.org/licenses/BSD-3-Clause
 
-  File: tests/map.cpp
+  File: test/map.cpp
   Author: Jesse 'Jeaye' Wilkerson
 */
 
@@ -11,7 +11,7 @@
 #include <string>
 #include <cassert>
 
-#include "jeayeson.hpp"
+#include <jeayeson/jeayeson.hpp>
 
 void test_ctor()
 {
@@ -92,7 +92,7 @@ void test_get()
   }
   { /* Paths */
     std::cout << "test_get path" << std::endl;
-    json_map map{ json_file{ "src/tests/json/map.json" } };
+    json_map map{ json_file{ "src/test/json/map.json" } };
 
     assert(map.get_for_path<json_float>("doesnotexist", 77.0) == 77.0);
     assert(map.get_for_path<std::string>("does.not.exist", "nope") == "nope");
@@ -106,7 +106,7 @@ void test_get()
   }
   { /* Null */
     std::cout << "test_get null" << std::endl;
-    auto const map(json_map{ json_file{ "src/tests/json/map.json" } });
+    auto const map(json_map{ json_file{ "src/test/json/map.json" } });
     assert(map.get("null") == json_null{});
     assert(map.get("str") != json_null{});
   }
@@ -192,7 +192,7 @@ int main()
 {
   try
   {
-    json_map map{ json_file{ "src/tests/json/map.json" } };
+    json_map map{ json_file{ "src/test/json/map.json" } };
 
     assert(json_map::delim_open == '{');
     assert(json_map::delim_close == '}');

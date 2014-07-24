@@ -3,19 +3,19 @@
   See licensing at:
     http://opensource.org/licenses/BSD-3-Clause
 
-  File: tests/main.cpp
+  File: test/main.cpp
   Author: Jesse 'Jeaye' Wilkerson
 */
 
 #include <iostream>
 #include <string>
 
-#include "jeayeson.hpp"
+#include <jeayeson/jeayeson.hpp>
 
 int main()
 {
   /* To start with, create a map and load a file. */
-  json_map map{ json_file{ "src/tests/json/main.json" } };
+  json_map map{ json_file{ "src/test/json/main.json" } };
 
   /* We can look at some specify top-level values with "get".
      Notice that "get" returns a reference to the object. */

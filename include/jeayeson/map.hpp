@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "traits.hpp"
+#include "detail/traits.hpp"
 
 #include <string>
 #include <vector>
@@ -81,7 +81,7 @@ namespace jeayeson
         if(val.get_type() == value_type::type_map)
         { *this = val.template as<map_t>(); }
         else
-        { throw std::runtime_error("Failed to construct map from non-map"); }
+        { throw std::runtime_error{ "failed to construct map from non-map" }; }
       }
       template <typename T>
       explicit map(std::map<key_t, T> const &container)
@@ -219,7 +219,7 @@ namespace jeayeson
       void reset(std::string const &json)
       { *this = Parser::template parse<map_t>(json); }
       void reset(file const &f)
-      { *this = Parser::template parse_file<map_t>(f.data); }
+      { *this = Parser::template parse<map_t>(f); }
 
       /* Writes the JSON data to string form. */
       std::string to_string() const
