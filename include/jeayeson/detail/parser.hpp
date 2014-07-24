@@ -112,8 +112,7 @@ namespace jeayeson
               /* End of the current node. */
               case json_map::delim_close:
               case json_array::delim_close:
-                ++it;
-                return it; /* TODO */
+                return ++it;
 
               /* Start of a value (the key). */
               case '"':

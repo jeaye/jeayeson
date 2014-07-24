@@ -3,7 +3,7 @@
   See licensing at:
     http://opensource.org/licenses/BSD-3-Clause
 
-  File: traits.hpp
+  File: detail/traits.hpp
   Author: Jesse 'Jeaye' Wilkerson
 */
 

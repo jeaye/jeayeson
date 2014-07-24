@@ -66,11 +66,14 @@ namespace jeayeson
       value() : value_(null_t())
       { }
       template <typename T>
-      explicit value(T const &val) : value_{ null_t() }
+      explicit value(T const &val)
+        : value_{ null_t{} }
       { set(val); }
-      explicit value(cstr_t const str) : value_{ std::string(str) }
+      explicit value(cstr_t const str)
+        : value_{ std::string{ str } }
       { }
-      value(value const &copy) : value_{ copy.value_ }
+      value(value const &copy)
+        : value_{ copy.value_ }
       { }
 
       template <typename T>

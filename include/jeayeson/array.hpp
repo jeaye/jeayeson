@@ -14,8 +14,10 @@
 #include <cstdint>
 #include <utility>
 #include <algorithm>
+#include <stdexcept>
 
 #include "detail/traits.hpp"
+#include "file.hpp"
 
 namespace jeayeson
 {
@@ -63,7 +65,8 @@ namespace jeayeson
         for(It it{ begin }; it != end; ++it)
         { push_back(*it); }
       }
-      array(array const &arr) : values_(arr.values_)
+      array(array const &arr)
+        : values_{ arr.values_ }
       { }
 
       template <typename T = Value>
@@ -79,7 +82,6 @@ namespace jeayeson
       std::string get(index_t const index, cstr_t const &fallback) const
       { return get<std::string>(index, fallback); }
 
-      /* Searches for the specified value. */
       template <typename T>
       iterator find(T const &val)
       { return std::find(values_.begin(), values_.end(), val); }
@@ -111,8 +113,6 @@ namespace jeayeson
       bool empty() const
       { return values_.empty(); }
 
-      /* Stores the specified value at the specified index.
-       * The specified index should already exist. */
       template <typename T>
       void set(index_t const index, T &&t)
       { values_[index] = std::forward<T>(t); }
@@ -126,7 +126,6 @@ namespace jeayeson
       void push_back(T &&t)
       { values_.push_back(Value{ std::forward<T>(t) }); }
 
-      /* Erases ONE value, starting at position _index_. */
       void erase(index_t const index)
       { values_.erase(values_.begin() + index); }
       iterator erase(const_iterator const it)
@@ -134,8 +133,6 @@ namespace jeayeson
       iterator erase(const_iterator const first, const_iterator const second)
       { return values_.erase(first, second); }
 
-      /* Erases _amount_ number of objects from the starting
-       * point _index_. This does no bounds checking. */
       void erase(index_t const index, size_t const amount)
       { values_.erase(values_.begin() + index, values_.begin() + index + amount); }
 

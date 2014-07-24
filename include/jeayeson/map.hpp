@@ -89,7 +89,8 @@ namespace jeayeson
         for(auto const &it : container)
         { set(it.first, it.second); }
       }
-      map(map const &m) : values_(m.values_)
+      map(map const &m)
+        : values_{ m.values_ }
       { }
 
       template <typename T = Value>
@@ -99,7 +100,6 @@ namespace jeayeson
       auto const& get(key_t const &key) const
       { return values_[key].template as<T>(); } 
 
-      /* Access with a fallback. */
       template <typename T = Value>
       auto get(key_t const &key, T &&fallback) const
       {
@@ -175,7 +175,6 @@ namespace jeayeson
         return arr;
       }
 
-      /* Searches for an entry with the specified key. */
       iterator find(key_t const &key)
       { return values_.find(key); }
       const_iterator find(key_t const &key) const
@@ -204,15 +203,12 @@ namespace jeayeson
       void set(key_t const &key, std::map<key_t, T> const &data)
       { set(key, map{ data }); }
 
-      /* Completely wipes out all data in the map. */
       void clear()
       { values_.clear(); }
 
-      /* Completely removes the specified key and destroys its data. */
       void erase(key_t const &key)
       { values_.erase(key); }
 
-      /* Adds the specified map into this map. */
       void merge(map const &m)
       { values_.insert(m.values_.begin(), m.values_.end()); }
 
@@ -221,7 +217,6 @@ namespace jeayeson
       void reset(file const &f)
       { *this = Parser::template parse<map_t>(f); }
 
-      /* Writes the JSON data to string form. */
       std::string to_string() const
       { return Parser::template save<map_t>(*this); }
 
