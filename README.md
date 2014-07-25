@@ -106,23 +106,7 @@ And the following code to interact with the JSON:
 ### Installation
 Since JeayeSON is a header-only library, simply copy over the contents of `include` to your project, or, better yet, add JeayeSON as a submodule and introduce `jeayeson/include` to your header search paths.  
 
-Full installation can also be achieved by using `make install`. See the `configure` script for prefix options.  
-
-### Building
-**NOTE:** You don't actually have to build JeayeSON, since it's a header-only
-library. This build process is only for the tests.
-
-In the project directory, run:
-```bash
-$ ./configure
-$ make
-```
-Once built, you can run the tests:
-```bash
-$ make test
-```
-The tests (in src/test/main.cpp and friends) can give more examples
-on how to use JeayeSON.
+Full installation can also be achieved by using `./configure && make install`. See the `configure` script for prefix options.  
 
 Customization
 ---
@@ -145,6 +129,17 @@ Customization
 `#define JEAYESON_INT my_int_type`  
   *Use the specified int type -- must be included before jeayeson if non-intrinsic*
 
-Help/Contact
----
-For any other bug reports, questions, comments, or suggestions, please [make an issue](https://github.com/jeaye/jeayeson/issues).
+### Building tests
+**NOTE:** You don't actually have to build JeayeSON, since it's a header-only
+library. This build process is only for the tests.
+
+In the project directory, run:
+```bash
+$ ./configure && make
+```
+Once built, you can run the tests:
+```bash
+$ make test
+```
+The tests (in src/test/main.cpp and friends) can give more examples
+on how to use JeayeSON.
