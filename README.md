@@ -103,8 +103,12 @@ And the following code to interact with the JSON:
   std::cout << std::endl;
 ```
 
-Building
----
+### Installation
+Since JeayeSON is a header-only library, simply copy over the contents of `include` to your project, or, better yet, add JeayeSON as a submodule and introduce `jeayeson/include` to your header search paths.  
+
+Full installation can also be achieved by using `make install`. See the `configure` script for prefix options.  
+
+### Building
 **NOTE:** You don't actually have to build JeayeSON, since it's a header-only
 library. This build process is only for the tests.
 
