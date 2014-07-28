@@ -37,6 +37,12 @@ void test_ctor()
     assert(map.get<json_float>("0") == 0.0);
     assert(map.get<json_float>("1") == 1.0);
   }
+  { /* initializer_list ctor */
+    json_map map{ { "0", json_value{0.0} }, { "1", json_value{1.0} } };
+    assert(map.size() == 2);
+    assert(map.get<json_float>("0") == 0.0);
+    assert(map.get<json_float>("1") == 1.0);
+  }
   std::cout << "end test_ctor" << std::endl;
 }
 

@@ -15,6 +15,7 @@
 #include <utility>
 #include <algorithm>
 #include <stdexcept>
+#include <initializer_list>
 
 #include "detail/traits.hpp"
 #include "file.hpp"
@@ -58,13 +59,24 @@ namespace jeayeson
         else
         { throw std::runtime_error{ "failed to construct array from non-array" }; }
       }
-      template <typename It>
+
+      template <typename It, typename =
+        typename std::enable_if<
+          std::is_convertible<
+            typename std::iterator_traits<It>::iterator_category,
+            std::input_iterator_tag
+          >::value
+        >::type
+      >
       explicit array(It const &begin, It const &end)
       {
         reserve(std::distance(begin, end));
         for(It it{ begin }; it != end; ++it)
         { push_back(*it); }
       }
+      array(std::initializer_list<value_type> list)
+        : values_{list}
+      { }
       array(array const &arr)
         : values_{ arr.values_ }
       { }

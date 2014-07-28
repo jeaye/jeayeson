@@ -14,6 +14,7 @@
 #include <string>
 #include <vector>
 #include <utility>
+#include <initializer_list>
 #include <boost/algorithm/string.hpp>
 
 /* Decide underlying map type */
@@ -89,6 +90,9 @@ namespace jeayeson
         for(auto const &it : container)
         { set(it.first, it.second); }
       }
+      map(std::initializer_list<std::pair<key_t const, value_type>> list)
+        : values_{list}
+      { }
       map(map const &m)
         : values_{ m.values_ }
       { }

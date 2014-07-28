@@ -39,6 +39,14 @@ void test_ctor()
     assert(arr[0].as<json_float>() == 0.0);
     assert(arr[1].as<json_float>() == 1.0);
   }
+  { /* initializer_list ctor */
+    json_array arr{ json_value{0.0}, json_value{1.0} };
+    assert(arr.size() == 2);
+    assert(arr.get<json_float>(0) == 0.0);
+    assert(arr.get<json_float>(1) == 1.0);
+    assert(arr[0].as<json_float>() == 0.0);
+    assert(arr[1].as<json_float>() == 1.0);
+  }
   std::cout << "end test_ctor" << std::endl;
 }
 
