@@ -90,8 +90,8 @@ namespace jeayeson
         for(auto const &it : container)
         { set(it.first, it.second); }
       }
-      map(std::initializer_list<std::pair<key_t const, value_type>> list)
-        : values_{list}
+      map(std::initializer_list<std::pair<key_t const, value_type>> const &list)
+        : values_{ list }
       { }
       map(map const &m)
         : values_{ m.values_ }

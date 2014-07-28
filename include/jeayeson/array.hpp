@@ -61,12 +61,12 @@ namespace jeayeson
       }
 
       template <typename It, typename =
-        typename std::enable_if<
+        std::enable_if_t<
           std::is_convertible<
             typename std::iterator_traits<It>::iterator_category,
             std::input_iterator_tag
           >::value
-        >::type
+        >
       >
       explicit array(It const &begin, It const &end)
       {
@@ -74,8 +74,8 @@ namespace jeayeson
         for(It it{ begin }; it != end; ++it)
         { push_back(*it); }
       }
-      array(std::initializer_list<value_type> list)
-        : values_{list}
+      array(std::initializer_list<value_type> const &list)
+        : values_{ list }
       { }
       array(array const &arr)
         : values_{ arr.values_ }
