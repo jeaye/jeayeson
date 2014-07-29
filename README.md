@@ -73,7 +73,7 @@ Assume the JSON we're working with is as follows:
 And the following code to interact with the JSON:
 ```cpp
   /* To start with, create a map and load a file. */
-  json_map map{ json_file{ "src/test/json/main.json" } };
+  json_map map{ json_file{ "test/json/main.json" } };
 
   /* We can look at some specify top-level values with "get".
      Notice that "get" returns a reference to the object. */
@@ -85,7 +85,7 @@ And the following code to interact with the JSON:
        1. Helps deduce the type so that an explicit invocation is not needed
        2. Provides a default fallback value, should anything go wrong while accessing
      Note that these functions do NOT return references, due to incompatibilities with the fallback. */
-  std::string const str_copy{ map.get("str", "Default awesomeness") }; // Second param is the default
+  std::string const str_copy{ map.get("str", "Default meow") }; // Second param is the default
 
   /* Delving into maps using dot-notated paths works, too.
      The type can be explicitly specified, or implicit based on the provided fallback.
@@ -142,5 +142,5 @@ Once built, you can run the tests:
 ```bash
 $ make test
 ```
-The tests (in src/test/main.cpp and friends) can give more examples
+The tests (in `test/main.cpp` and `test/include`) can give more examples
 on how to use JeayeSON.
