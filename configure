@@ -129,6 +129,10 @@ log "Install include prefix: $includedir"
 log "Compilation threads: $threads"
 log
 
+log_start "Updating submodules..."
+log_start " jest" && git submodule update --init --recursive lib/jest 2>&1 > /dev/null || true
+log_end " done"
+
 # Configure the makefile
 log_start "Populating Makefile..."
 rm -f Makefile

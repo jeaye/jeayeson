@@ -10,7 +10,9 @@ flags = [
 #'-stdlib=libc++',
 '-x',
 'c++',
-'-Isrc',
+'-Iinclude',
+'-Itest/include',
+'-Ilib/jest/include',
 
 '-isystem',
 '../BoostParts',

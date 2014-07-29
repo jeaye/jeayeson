@@ -1,9 +1,7 @@
 # Sources
 OUT_DIR=bin/
 SOURCES= \
-				 src/test/main.cpp \
-				 src/test/map.cpp \
-				 src/test/array.cpp
+				 test/src/main.cpp
 OBJECTS=$(SOURCES:.cpp=.cpp.o)
 TEST_OBJECTS=$(SOURCES:.cpp=.test)
 TESTS=$(foreach test,$(SOURCES), $(addprefix $(OUT_DIR), $(notdir $(test))))
@@ -18,7 +16,7 @@ CXX=c++
 CXX_WARN_FLAGS=-Wall -Wextra -Werror -pedantic
 CXX_DEBUG_FLAGS=
 CXX_OPTIM_FLAGS=-O3
-CXX_INCLUDE_FLAGS=-Iinclude/ 
+CXX_INCLUDE_FLAGS=-Iinclude -Itest/include -Ilib/jest/include
 CXX_PLATFORM_FLAGS=%CXX_PLATFORM_FLAGS%
 CXX_FLAGS=-std=c++1y \
 					$(CXX_PLATFORM_FLAGS) \
@@ -59,7 +57,7 @@ ${PROJECT}_setup: setup
 
 %.cpp.o: %.cpp ${PROJECT}_setup
 	echo "  Compiling $<"
-	$(CXX) $(CXX_FLAGS) $< $(LD_LIBS) -o $(addprefix $(OUT_DIR), $(notdir $<))
+	$(CXX) $(CXX_FLAGS) $< $(LD_LIBS) -o $(addprefix $(OUT_DIR), $(notdir $(shell echo "$<" | sed 's/\.cpp//')))
 
 install:
 	export installdir=$(DESTDIR)$(INCLUDEDIR) && \
@@ -72,11 +70,8 @@ uninstall:
 	./do_install undo
 
 test: test_setup $(TEST_OBJECTS)
-	echo "All tests complete"
 
 test_setup:
-	echo "Running all tests"
 
 %.test: test_setup
-	echo "  Testing $(notdir $(shell echo $@ | sed 's/\.test//'))"
-	$(OUT_DIR)/$(notdir $(shell echo $@ | sed 's/\.test//')).cpp > /dev/null
+	$(OUT_DIR)/$(notdir $(shell echo $@ | sed 's/\.test//')) > /dev/null
