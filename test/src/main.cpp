@@ -28,6 +28,6 @@
 
 int main()
 {
-  jest::worker const j;
+  jest::worker const j{};
   return j();
 }
