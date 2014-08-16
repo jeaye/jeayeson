@@ -109,11 +109,11 @@ Full installation can also be achieved by using `./configure && make install`. S
 
 Customization
 ---
-**NOTE**: These are all easily changed in `jeayeson/config.hpp`, which is generated when you run `./configure` (and is not overwritten subsequently -- delete it to reset).
+**NOTE**: All configuration is easily done in `jeayeson/config.hpp`, which is generated when you run `./configure` (and is not overwritten subsequently -- delete it to reset).
 
-Customization can be achieved by specializing the `jeayeson::config` struct template. A specialization is already provided, but it commented out. Feel free to change the types to any other, still compatible, types.  
+Customization can be achieved by adjusting the types in the `jeayeson::config` struct template. A specialization is already provided, which contains the default types used by jeayeson. Feel free to change the types to any other, still compatible, types.  
 
-For example, you may want the json integer type to be 32bit instead of the default 64bit. Or, you may want to use std::unordered_map instead of std::map. Follow the sample provided in `jeayeson/config.hpp` and change what you like.
+For example, you may want the json integer type to be 32bit instead of the default 64bit. Or, you may want to use `std::unordered_map` instead of `std::map`.
 
 ### Building tests
 **NOTE:** You don't actually have to build JeayeSON, since it's a header-only
