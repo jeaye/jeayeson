@@ -10,40 +10,13 @@
 #pragma once
 
 #include "detail/traits.hpp"
+#include "detail/config.hpp"
 
 #include <string>
 #include <vector>
 #include <utility>
 #include <initializer_list>
 #include <boost/algorithm/string.hpp>
-
-/* Decide underlying map type */
-#undef JEAYESON_MAP_T
-
-#ifdef JEAYESON_USE_STD_MAP
-  #include <map>
-  #define JEAYESON_MAP_T std::map
-
-#elif defined JEAYESON_USE_STD_UNORD
-  #include <unordered_map>
-  #define JEAYESON_MAP_T std::unordered_map
-
-#elif defined JEAYESON_USE_BOOST_UNORD
-  #include <boost/unordered_map.hpp>
-  #define JEAYESON_MAP_T boost::unordered_map
-
-#elif defined JEAYESON_USE_OTHER_MAP
-  /* Client is responsible for appropriate includes */
-  #ifndef JEAYESON_OTHER_MAP
-    #error "JEAYESON_USE_OTHER_MAP specified but JEAYSON_OTHER_MAP is undefined"
-  #else
-    #define JEAYESON_MAP_T JEAYESON_OTHER_MAP
-  #endif
-
-#else
-  #error "No JEAYESON_USE_[map type] is defined"
-
-#endif
 
 namespace jeayeson
 {
@@ -65,7 +38,7 @@ namespace jeayeson
       using value_type = Value;
       using parser_t = Parser;
       using cstr_t = char const * const;
-      using internal_map_t = JEAYESON_MAP_T<key_t, Value>;
+      using internal_map_t = config<config_tag>::map_t<key_t, Value>;
       using iterator = typename internal_map_t::iterator;
       using const_iterator = typename internal_map_t::const_iterator;
 

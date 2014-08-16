@@ -11,14 +11,14 @@
 
 #include <type_traits>
 
-#include "../defines.hpp"
+#include "config.hpp"
 
 namespace jeayeson
 {
   namespace detail
   {
-    using int_t = JEAYESON_INT;
-    using float_t = JEAYESON_FLOAT;
+    using int_t = config<config_tag>::int_t;
+    using float_t = config<config_tag>::float_t;
 
     template <bool B, typename T = void>
     using enable_if = typename std::enable_if<B, T>::type;

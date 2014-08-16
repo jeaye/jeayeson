@@ -14,7 +14,6 @@
 #include <fstream>
 #include <cstdlib>
 
-#include "../defines.hpp"
 #include "../map.hpp"
 #include "../array.hpp"
 #include "../file.hpp"

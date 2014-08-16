@@ -11,6 +11,7 @@ it expects valid JSON all of the time.
   * Header only (easy to add to any project)
   * Small, consistent C++ API
   * Typesafe, C++1y interface
+  * Absolutely no macros needed or used
   * Extensive test suite (using [jest](https://github.com/jeaye/jest), a "sane and minimal C++14 unit test framework")
 
 Practice
@@ -72,11 +73,8 @@ Assume the JSON we're working with is as follows:
 ```
 And the following code to interact with the JSON:
 ```cpp
-/* To start with, create a map and load a file. */
 json_map map{ json_file{ "test/json/main.json" } };
 
-/* We can look at some specify top-level values with "get".
-   Notice that "get" returns a reference to the object. */
 std::string &str{ map.get<std::string>("str") };
 std::cout << "str = " << str << std::endl;
 auto &arr(map.get<json_array>("arr"));
@@ -86,7 +84,7 @@ auto &arr(map.get<json_array>("arr"));
      2. Provides a default fallback value, should anything go wrong while accessing
    Note that these functions do NOT return references, due to incompatibilities
    with the fallback. */
-std::string const str_copy{ map.get("str", "default meow") }; // Second param is the default
+std::string const str_copy{ map.get("str", "meow") }; // Second param is the default
 
 /* Delving into maps using dot-notated paths works, too.
    The type can be explicitly specified, or implicit based on the provided fallback.
@@ -99,7 +97,6 @@ std::cout << map.get_for_path("person.name") << " has " // No fallback, returns 
 std::cout << map["person"]["inventory"]["coins"] << std::endl;
 std::cout << map["arr"][1] << std::endl;
 
-/* Iterators work as expected, based on the C++ stdlib. (const and non-const) */
 for(auto const &it : arr)
 { std::cout << it.as<json_float>() << " "; }
 std::cout << std::endl;
@@ -112,24 +109,11 @@ Full installation can also be achieved by using `./configure && make install`. S
 
 Customization
 ---
+**NOTE**: These are all easily changed in `jeayeson/config.hpp`, which is generated when you run `./configure` (and is not overwritten subsequently -- delete it to reset).
 
-**NOTE**: These are all easily changed in `jeayeson/defines.hpp`
+Customization can be achieved by specializing the `jeayeson::config` struct template. A specialization is already provided, but it commented out. Feel free to change the types to any other, still compatible, types.  
 
-`#define JEAYESON_USE_STD_MAP`  
-  *Use std::map (ideal in most cases)*  
-`#define JEAYESON_USE_STD_UNORD`  
-  *Use std::unordered_map*  
-`#define JEAYESON_USE_BOOST_UNORD`  
-  *Use boost::unordered_map*  
-`#define JEAYESON_USE_OTHER_MAP`  
-  *Specify a custom map to use with* `JEAYESON_OTHER_MAP`  
-`#define JEAYESON_OTHER_MAP my_map_type`  
-  *Use the specified map type -- must be used in conjunction with* `JEAYESON_USE_OTHER_MAP`  
-
-`#define JEAYESON_FLOAT my_float_type`  
-  *Use the specified float type -- must be included before jeayeson if non-intrinsic*  
-`#define JEAYESON_INT my_int_type`  
-  *Use the specified int type -- must be included before jeayeson if non-intrinsic*
+For example, you may want the json integer type to be 32bit instead of the default 64bit. Or, you may want to use std::unordered_map instead of std::map. Follow the sample provided in `jeayeson/config.hpp` and change what you like.
 
 ### Building tests
 **NOTE:** You don't actually have to build JeayeSON, since it's a header-only

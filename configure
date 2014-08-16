@@ -133,7 +133,6 @@ log_start "Updating submodules..."
 log_start " jest" && git submodule update --init --recursive lib/jest 2>&1 > /dev/null || true
 log_end " done"
 
-# Configure the makefile
 log_start "Populating Makefile..."
 rm -f Makefile
 sed "s#%CXX_PLATFORM_FLAGS%#${cxx_platform_flags}#" ./Makefile.in |\
@@ -142,6 +141,29 @@ sed "s#%PREFIX%#${prefix}#" |\
 sed "s#%INCLUDEDIR%#${includedir}#" |\
 sed "s#%PROJECT%#${project}#" |\
 sed "s#%THREADS%#${threads}#" > Makefile
+log_end " done"
+
+log_start "Generating sources..."
+if [ ! -f include/jeayeson/config.hpp ];
+then
+cat <<EOF > include/jeayeson/config.hpp
+#pragma once
+
+namespace jeayeson
+{
+  /* To customize jeayeson internals, change these types
+   * to any other compatible types to suit your needs. */
+  template <>
+  struct config<config_tag>
+  {
+    using float_t = double;
+    using int_t = int64_t;
+    template <typename K, typename V>
+    using map_t = std::map<K, V>;
+  };
+}
+EOF
+fi
 log_end " done"
 
 log "Done configuring ${project}"
