@@ -83,14 +83,14 @@ auto &arr(map.get<json_array>("arr"));
      1. Helps deduce the type so that an explicit invocation is not needed
      2. Provides a default fallback value, should anything go wrong while accessing
    Note that these functions do NOT return references, due to incompatibilities
-   with the fallback. */
+   with the fallback (could be an rvalue). */
 std::string const str_copy{ map.get("str", "meow") }; // Second param is the default
 
 /* Delving into maps using dot-notated paths works, too.
    The type can be explicitly specified, or implicit based on the provided fallback.
    They default to json_value, which offers op==, op<<, et cetera. */
-std::cout << map.get_for_path("person.name") << " has " // No fallback, returns json_value&
-          << map.get_for_path("person.inventory.coins", 0) << " coins\n"; // Fallback is 0
+std::cout << map.get_for_path("person.name") << " has " // Returns json_value&
+          << map.get_for_path("person.inventory.coins", 0) << " coins\n";
 
 /* A less verbose way is to just use op[] on the json_values; this is more convenient,
  * but it comes at the cost of less type-safety and more runtime checks. */
