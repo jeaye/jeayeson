@@ -111,7 +111,7 @@ Customization
 ---
 **NOTE**: All configuration is easily done in `jeayeson/config.hpp`, which is generated when you run `./configure` (and is not overwritten subsequently -- delete it to reset).
 
-Customization can be achieved by adjusting the types in the `jeayeson::config` struct template. A specialization is already provided, which contains the default types used by jeayeson. Feel free to change the types to any other, still compatible, types.  
+Customization can be achieved by adjusting the types in the `jeayeson::config` struct template. A specialization is already provided, which contains the default types used by JeayeSON. Feel free to change the types to any other, still compatible, types.  
 
 For example, you may want the json integer type to be 32bit instead of the default 64bit. Or, you may want to use `std::unordered_map` instead of `std::map`.
 
