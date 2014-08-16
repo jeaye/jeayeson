@@ -14,7 +14,6 @@ tags
 
 # Output directory
 bin/
-jeayeson
 
 # Compiled Static libraries
 *.lai
@@ -24,3 +23,6 @@ jeayeson
 # Make
 .build_*
 Makefile
+
+# Generated files
+include/jeayeson/config.hpp
