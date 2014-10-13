@@ -1,41 +1,41 @@
 # Sources
-OUT_DIR=bin/
-SOURCES= \
+OUT_DIR = bin/
+SOURCES =  \
 				 test/src/main.cpp
-OBJECTS=$(SOURCES:.cpp=.cpp.o)
-TEST_OBJECTS=$(SOURCES:.cpp=.test)
-TESTS=$(foreach test,$(SOURCES), $(addprefix $(OUT_DIR), $(notdir $(test))))
+OBJECTS = ${SOURCES:.cpp=.cpp.o}
+TEST_OBJECTS = $(SOURCES:.cpp=.test)
+TESTS = $(foreach test,${SOURCES}, $(addprefix ${OUT_DIR}, $(notdir $(test))))
 
 # Generation/Installation
-PREFIX=%PREFIX%
-INCLUDEDIR=%INCLUDEDIR%
-THREADS=%THREADS%
+PREFIX = %PREFIX%
+INCLUDEDIR = %INCLUDEDIR%
+THREADS = %THREADS%
 
 # Compiler flags
-CXX=c++
-CXX_WARN_FLAGS=-Wall -Wextra -Werror -pedantic
-CXX_DEBUG_FLAGS=
-CXX_OPTIM_FLAGS=-O3
-CXX_INCLUDE_FLAGS=-Iinclude -Itest/include -Ilib/jest/include
-CXX_PLATFORM_FLAGS=%CXX_PLATFORM_FLAGS%
-CXX_FLAGS=-std=c++1y \
-					$(CXX_PLATFORM_FLAGS) \
-					$(CXX_INCLUDE_FLAGS) \
-					$(CXX_WARN_FLAGS) \
-					$(CXX_DEBUG_FLAGS) \
-					$(CXX_OPTIM_FLAGS)
+CXX ?= c++
+CXX_WARN_FLAGS = -Wall -Wextra -Werror -pedantic
+CXX_DEBUG_FLAGS = 
+CXX_OPTIM_FLAGS = -O3
+CXX_INCLUDE_FLAGS = -Iinclude -Itest/include -Ilib/jest/include
+CXX_PLATFORM_FLAGS = %CXX_PLATFORM_FLAGS%
+CXX_FLAGS = -std=c++1y \
+						${CXX_PLATFORM_FLAGS} \
+						${CXX_INCLUDE_FLAGS} \
+						${CXX_WARN_FLAGS} \
+						${CXX_DEBUG_FLAGS} \
+						${CXX_OPTIM_FLAGS}
 
-LD_PLATFORM_LIBS=%LD_PLATFORM_LIBS%
-LD_LIBS=$(LD_PLATFORM_LIBS)
+LD_PLATFORM_LIBS = %LD_PLATFORM_LIBS%
+LD_LIBS = ${LD_PLATFORM_LIBS}
 
-PROJECT=%PROJECT%
+PROJECT = %PROJECT%
 
 .PHONY: all threaded setup clean ${PROJECT} ${PROJECT}_setup install uninstall test test_setup 
 
 .SILENT:
 
 all:
-	$(MAKE) -j $(THREADS) threaded
+	${MAKE} -j ${THREADS} threaded
 	exit $$?
 
 threaded: ${PROJECT}
@@ -43,13 +43,13 @@ threaded: ${PROJECT}
 
 setup: clean
 	echo "Preparing"
-	mkdir -p $(OUT_DIR)
+	mkdir -p ${OUT_DIR}
 
 clean:
-	rm -rf $(OUT_DIR)
+	rm -rf ${OUT_DIR}
 	echo "Cleaned"
 
-${PROJECT}: ${PROJECT}_setup $(OBJECTS)
+${PROJECT}: ${PROJECT}_setup ${OBJECTS}
 	echo "Done building ${PROJECT} tests"
 
 ${PROJECT}_setup: setup
@@ -57,21 +57,21 @@ ${PROJECT}_setup: setup
 
 %.cpp.o: %.cpp ${PROJECT}_setup
 	echo "  Compiling $<"
-	$(CXX) $(CXX_FLAGS) $< $(LD_LIBS) -o $(addprefix $(OUT_DIR), $(notdir $(shell echo "$<" | sed 's/\.cpp//')))
+	${CXX} ${CXX_FLAGS} $< ${LD_LIBS} -o $(addprefix ${OUT_DIR}, $(notdir $(shell echo "$<" | sed 's/\.cpp//')))
 
 install:
-	export installdir=$(DESTDIR)$(INCLUDEDIR) && \
-	export project=$(PROJECT) && \
+	export installdir=${DESTDIR}${INCLUDEDIR} && \
+	export project=${PROJECT} && \
 	./do_install safe
 
 uninstall:
-	export installdir=$(DESTDIR)$(INCLUDEDIR) && \
-	export project=$(PROJECT) && \
+	export installdir=${DESTDIR}${INCLUDEDIR} && \
+	export project=${PROJECT} && \
 	./do_install undo
 
-test: test_setup $(TEST_OBJECTS)
+test: test_setup ${TEST_OBJECTS}
 
 test_setup:
 
 %.test: test_setup
-	$(OUT_DIR)/$(notdir $(shell echo $@ | sed 's/\.test//')) > /dev/null
+	${OUT_DIR}/$(notdir $(shell echo $@ | sed 's/\.test//')) > /dev/null

@@ -80,12 +80,12 @@ do
     --prefix)
       shift
       prefix="$1"
-      includedir=$PREFIX/include
+      includedir=$prefix/include
       shift
       ;;
     --prefix=*)
       prefix="${i#*=}"
-      includedir=$PREFIX/include
+      includedir=$prefix/include
       shift
       ;;
 

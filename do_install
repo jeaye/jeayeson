@@ -10,7 +10,6 @@
 # XXX: Do not call this script directly: use `make install`
 set -o errexit
 set -o nounset
-shopt -s globstar
 
 if [[ $# == 0 ]];
 then
