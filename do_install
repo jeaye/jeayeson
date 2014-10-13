@@ -27,7 +27,7 @@ else
 fi
 
 mkdir -p $installdir
-for file in "$PWD"/include/**/*.hpp ; do
+for file in $(find "$PWD"/include -name '*.hpp'); do
   out=$installdir/$project/$(echo "$file" | sed "s_^.*${project}/__");
 
   if [ $uninstall -eq 1 ];
