@@ -63,7 +63,7 @@ namespace jeayeson
       template <typename T>
       struct to_value;
 
-      value() : value_(null_t())
+      value() : value_(null_t{})
       { }
       template <typename T>
       explicit value(T const &val)

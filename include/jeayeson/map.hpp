@@ -11,6 +11,7 @@
 
 #include "detail/traits.hpp"
 #include "detail/config.hpp"
+#include "file.hpp"
 
 #include <string>
 #include <vector>
