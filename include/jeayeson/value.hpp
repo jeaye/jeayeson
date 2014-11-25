@@ -26,7 +26,7 @@ namespace jeayeson
       enum class type
       {
         null,
-        integer, 
+        integer,
         real,
         boolean,
         string,
@@ -105,7 +105,7 @@ namespace jeayeson
       }
 
       template <typename T>
-      explicit operator T() 
+      explicit operator T()
       { return as<T&>(); }
       template <typename T>
       explicit operator T() const
@@ -168,12 +168,23 @@ namespace jeayeson
   using map_t = map<value, detail::parser>;
   using array_t = array<value, detail::parser>;
 
+  inline std::string escape (const std::string& str)
+  {
+    std::string _str(str);
+    size_t start_pos = 0;
+    while((start_pos = _str.find("\"", start_pos)) != std::string::npos) {
+        _str.replace(start_pos, 1, "\\\"");
+        start_pos += 2;
+    }
+    return std::move(_str);
+  }
+
   inline std::ostream& operator <<(std::ostream &stream, value const &val)
   {
     switch(static_cast<value::type>(val.value_.which()))
     {
       case value::type::string:
-        return (stream << "\"" << val.value_ << "\"");
+        return (stream << "\"" << escape(val.as<std::string>()) << "\"");
       case value::type::boolean:
         return (stream << (val.as<bool>() ? "true" : "false"));
       default:
@@ -205,7 +216,7 @@ namespace jeayeson
 
   inline std::ostream& operator <<(std::ostream &stream,
                                    map_t::internal_map_t::value_type const &p)
-  { return (stream << "\"" << p.first << "\":" << p.second); }
+  { return (stream << "\"" << escape(p.first) << "\":" << p.second); }
 
   template<>
   inline std::ostream& operator <<(std::ostream &stream, map_t const &m)
