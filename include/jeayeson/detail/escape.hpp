@@ -32,9 +32,8 @@ namespace jeayeson
         if(found == str.end())
         { break; }
 
-        auto const dist(std::distance(str.begin(), found));
-        str.replace(dist, 1, "\\\"");
-        i = dist + 2;
+        str.replace(found, std::next(found), "\\\"");
+        i = std::distance(str.begin(), found) + 2;
       }
       return str;
     }
