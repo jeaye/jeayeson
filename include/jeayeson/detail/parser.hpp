@@ -14,9 +14,7 @@
 #include <fstream>
 #include <cstdlib>
 
-#include "../map.hpp"
-#include "../array.hpp"
-#include "../file.hpp"
+#include "parser_util.hpp"
 
 namespace jeayeson
 {
@@ -26,50 +24,6 @@ namespace jeayeson
     {
       private:
         using str_citer = std::string::const_iterator;
-
-        enum class state_t { parse_name, parse_value };
-
-  /********************* Helper Accessors *********************/
-        template <typename Value, typename Parser, typename T>
-        static inline state_t add(map<Value, Parser> &m, std::string const &key,
-                                  T const &t)
-        {
-          m.set(key, t);
-          return state_t::parse_name;
-        }
-
-        template <typename Value, typename Parser, typename T>
-        static inline state_t add(array<Value, Parser> &arr, std::string const &,
-                                  T const &t)
-        {
-          arr.add(t);
-          return state_t::parse_value;
-        }
-
-        template <typename Value, typename Parser>
-        static inline map<Value, Parser>& get_map(map<Value, Parser> &m,
-                                                  std::string const &key,
-                                                  typename array<Value, Parser>::index_t const)
-        { return m.template get<map<Value, Parser>>(key); }
-
-        template <typename Value, typename Parser>
-        static inline map<Value, Parser>& get_map(array<Value, Parser> &arr,
-                                                  std::string const &,
-                                                  typename array<Value, Parser>::index_t const index)
-        { return arr.template get<map<Value, Parser>>(index); }
-
-        template <typename Value, typename Parser>
-        static inline array<Value, Parser>& get_array(map<Value, Parser> &m,
-                                                      std::string const &key,
-                                                      typename array<Value, Parser>::index_t const)
-        { return m.template get<array<Value, Parser>>(key); }
-
-        template <typename Value, typename Parser>
-        static inline array<Value, Parser>& get_array(array<Value, Parser> &arr,
-                                                      std::string const &,
-                                                      typename array<Value, Parser>::index_t const index)
-        { return arr.template get<array<Value, Parser>>(index); }
-  /********************* Helper Accessors *********************/
 
         template <typename Container>
         static str_citer parse(Container &container, str_citer it)
@@ -113,7 +67,7 @@ namespace jeayeson
               case json_array::delim_close:
                 return ++it;
 
-              /* Start of a value (the key). */
+              /* Start of a value or key. */
               case '"':
               {
                 ++it;
@@ -123,8 +77,8 @@ namespace jeayeson
                   value.clear();
                   for( ; *it != '"'; ++it)
                   {
-                    if(*it == '\\' && *(it + 1) == '"')
-                    { value += *(++it); }
+                    if(*it == '\\')
+                    { value += escaped(*(++it)); }
                     else
                     { value += *it; }
                   }
@@ -136,8 +90,8 @@ namespace jeayeson
                   name.clear();
                   for( ; *it != '"'; ++it)
                   {
-                    if(*it == '\\' && *(it + 1) == '"')
-                    { name += *(++it); }
+                    if(*it == '\\')
+                    { name += escaped(*(++it)); }
                     else
                     { name += *it; }
                   }

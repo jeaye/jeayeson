@@ -59,11 +59,4 @@ namespace jest
     expect_equal(map.get<json_float>("0"), 0.0);
     expect_equal(map.get<json_float>("1"), 1.0);
   }
-
-  template <> template <>
-  void jeayeson::map_ctor_group::test<4>() /* json with escape characters*/
-  {
-    json_map map{ "{ \"foo\\\"\": \"bar\\\"\" }" };
-    expect_equal(map.to_string(), "{\"foo\\\"\":\"bar\\\"\"}" );
-  }
 }

@@ -61,11 +61,4 @@ namespace jest
     expect_equal(arr[0].as<json_float>(), 0.0);
     expect_equal(arr[1].as<json_float>(), 1.0);
   }
-
-  template <> template <>
-  void jeayeson::array_ctor_group::test<4>() /* json with escape characters*/
-  {
-    json_array arr{ "[ \"foo\\\"\", \"bar\\\"\" ]" };
-    expect_equal(arr.to_string(), "[\"foo\\\"\",\"bar\\\"\"]" );
-  }
 }

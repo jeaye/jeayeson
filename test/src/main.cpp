@@ -26,6 +26,8 @@
 #include "array/clear.hpp"
 #include "array/delim.hpp"
 
+#include "escape/escape.hpp"
+
 int main()
 {
   jest::worker const j{};
