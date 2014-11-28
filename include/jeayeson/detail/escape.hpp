@@ -16,24 +16,20 @@ namespace jeayeson
 {
   namespace detail
   {
-    inline bool should_escape(char const c)
-    {
-      return c == '\"' || c == '\\' || c == '/' ||
-             c == '\b' || c == '\f' || c == '\n' ||
-             c == '\r' || c == '\t';
-    }
+    char constexpr in[]
+    { '\"', '\\', '/', '\b', '\f', '\n', '\r', '\t' };
+    char constexpr const * const out[]
+    { "\\\"", "\\\\", "\\/", "\\\b", "\\\f", "\\\n", "\\\r", "\\\t" };
 
     inline std::string escape(std::string str)
     {
-      for(std::size_t i{}; i < str.size(); )
+      for(std::size_t i{}; i < str.size(); ++i)
       {
-        auto const found(std::find_if(std::next(str.begin(), i),
-                                      str.end(), &should_escape));
-        if(found == str.end())
-        { break; }
+        auto const found(std::find(std::begin(in), std::end(in), str[i]));
+        if(found == std::end(in))
+        { continue; }
 
-        str.replace(found, std::next(found), "\\\"");
-        i = std::distance(str.begin(), found) + 2;
+        str.replace(i++, 1, out[std::distance(std::begin(in), found)]);
       }
       return str;
     }
