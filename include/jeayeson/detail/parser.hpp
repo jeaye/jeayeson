@@ -28,8 +28,10 @@ namespace jeayeson
         template <typename Container>
         static str_citer parse(Container &container, str_citer it)
         {
-          using json_map = map<typename Container::value_type, typename Container::parser_t>;
-          using json_array = array<typename Container::value_type, typename Container::parser_t>;
+          using json_map = map<typename Container::value_type,
+                               typename Container::parser_t>;
+          using json_array = array<typename Container::value_type,
+                                   typename Container::parser_t>;
 
           std::string name;
           name.reserve(128);
@@ -120,7 +122,12 @@ namespace jeayeson
                 while(*is_int == '-' || (*is_int >= '0' && *is_int <= '9'))
                 { ++is_int; }
                 if(*is_int == '.' || *is_int == 'e' || *is_int == 'E')
-                { state = add(container, name, std::atof(&*it)); }
+                {
+                  char *end{};
+                  state = add(container, name, std::strtof(&*it, &end));
+                  std::advance(it,
+                               std::distance(&*it, const_cast<char const*>(end)));
+                }
                 else
                 { state = add(container, name, std::atoi(&*it)); }
 
