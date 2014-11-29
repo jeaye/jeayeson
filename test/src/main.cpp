@@ -26,7 +26,8 @@
 #include "array/clear.hpp"
 #include "array/delim.hpp"
 
-#include "escape/escape.hpp"
+#include "parser/escape.hpp"
+#include "parser/number.hpp"
 
 int main()
 {

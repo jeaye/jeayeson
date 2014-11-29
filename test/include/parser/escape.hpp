@@ -3,7 +3,7 @@
   See licensing at:
     http://opensource.org/licenses/BSD-3-Clause
 
-  File: test/include/escape/escape.hpp
+  File: test/include/parser/escape.hpp
   Author: Jesse 'Jeaye' Wilkerson
 */
 
@@ -84,7 +84,7 @@ namespace jest
   }
 
   template <> template <>
-  void jeayeson::escape_group::test<4>()
+  void jeayeson::escape_group::test<4>() /* \f */
   {
     json_map map{ "{ \"\ffoo\f\": \"\fbar\f\" }" };
     expect_equal(map.to_string(), R"raw({"\ffoo\f":"\fbar\f"})raw" );
@@ -100,7 +100,7 @@ namespace jest
   }
 
   template <> template <>
-  void jeayeson::escape_group::test<5>()
+  void jeayeson::escape_group::test<5>() /* \n */
   {
     json_map map{ "{ \"\nfoo\n\": \"\nbar\n\" }" };
     expect_equal(map.to_string(), R"raw({"\nfoo\n":"\nbar\n"})raw" );
@@ -116,7 +116,7 @@ namespace jest
   }
 
   template <> template <>
-  void jeayeson::escape_group::test<6>()
+  void jeayeson::escape_group::test<6>() /* \r */
   {
     json_map map{ "{ \"\rfoo\r\": \"\rbar\r\" }" };
     expect_equal(map.to_string(), R"raw({"\rfoo\r":"\rbar\r"})raw" );
@@ -132,7 +132,7 @@ namespace jest
   }
 
   template <> template <>
-  void jeayeson::escape_group::test<7>()
+  void jeayeson::escape_group::test<7>() /* \t */
   {
     json_map map{ "{ \"\tfoo\t\": \"\tbar\t\" }" };
     expect_equal(map.to_string(), R"raw({"\tfoo\t":"\tbar\t"})raw" );

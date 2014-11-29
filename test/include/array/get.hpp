@@ -29,8 +29,8 @@ namespace jest
     z = 42.0;
     o = -42.0;
     expect_equal(arr.size(), 2ul);
-    expect_equal(arr[0].as<json_float>(), 42.0);
-    expect_equal(arr.get<json_float>(1), -42.0);
+    expect_almost_equal(arr[0].as<json_float>(), 42.0);
+    expect_almost_equal(arr.get<json_float>(1), -42.0);
   }
 
   template <> template <>
@@ -41,15 +41,15 @@ namespace jest
     json_float z(arr.get(0, 77.0));
     json_float o(arr.get(1, 77.0));
     json_float t(arr.get(2, 77.0));
-    expect_equal(z, 0.0);
-    expect_equal(o, 1.0);
-    expect_equal(t, 77.0);
+    expect_almost_equal(z, 0.0);
+    expect_almost_equal(o, 1.0);
+    expect_almost_equal(t, 77.0);
 
     z = 42.0;
     o = -42.0;
     expect_equal(arr.size(), 2ul);
-    expect_equal(arr.get<json_float>(0), 0.0);
-    expect_equal(arr.get<json_float>(1), 1.0);
+    expect_almost_equal(arr.get<json_float>(0), 0.0);
+    expect_almost_equal(arr.get<json_float>(1), 1.0);
 
     std::vector<std::string> v2{ "foo", "test" };
     json_array sarr{ v2.begin(), v2.end() };

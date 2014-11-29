@@ -29,8 +29,8 @@ namespace jest
     z = 42.0;
     o = -42.0;
     expect_equal(map.size(), 2ul);
-    expect_equal(map.get<json_float>("0"), 42.0);
-    expect_equal(map.get<json_float>("1"), -42.0);
+    expect_almost_equal(map.get<json_float>("0"), 42.0);
+    expect_almost_equal(map.get<json_float>("1"), -42.0);
   }
 
   template <> template <>
@@ -41,15 +41,15 @@ namespace jest
     json_float z(map.get("0", 77.0));
     json_float o(map.get("1", 77.0));
     json_float t(map.get("2", 77.0));
-    expect_equal(z, 0.0);
-    expect_equal(o, 1.0);
-    expect_equal(t, 77.0);
+    expect_almost_equal(z, 0.0);
+    expect_almost_equal(o, 1.0);
+    expect_almost_equal(t, 77.0);
 
     z = 42.0;
     o = -42.0;
     expect_equal(map.size(), 2ul);
-    expect_equal(map.get<json_float>("0"), 0.0);
-    expect_equal(map.get<json_float>("1"), 1.0);
+    expect_almost_equal(map.get<json_float>("0"), 0.0);
+    expect_almost_equal(map.get<json_float>("1"), 1.0);
 
     std::map<std::string, std::string> sm2{ { "foo", "test" } };
     json_map smap{ sm2 };
@@ -77,7 +77,7 @@ namespace jest
   {
     json_map map{ json_file{ "test/json/map.json" } };
 
-    expect_equal(map.get_for_path<json_float>("doesnotexist", 77.0), 77.0);
+    expect_almost_equal(map.get_for_path<json_float>("doesnotexist", 77.0), 77.0);
     expect_equal(map.get_for_path<std::string>("does.not.exist", "nope"), "nope");
 
     expect_equal(map.get_for_path<json_int>("person.inventory.coins"), 1136);
@@ -85,7 +85,8 @@ namespace jest
     expect_equal(map.get_for_path<json_int>("person.inventory.zzz", 42), 42);
     expect_equal(map.get_for_path("person.name"), "Roger");
     expect_equal(map.get_for_path<std::string>("person.notname", "zzz"), "zzz");
-    expect_equal(map.get_for_path<json_array>("arr")[8].as<json_float>(), 9.9);
+    expect_almost_equal(map.get_for_path<json_array>("arr")[8].as<json_float>(),
+                        9.9);
   }
 
   template <> template <>

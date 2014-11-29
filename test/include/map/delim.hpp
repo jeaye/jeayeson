@@ -23,9 +23,9 @@ namespace jest
   void jeayeson::map_delim_group::test<0>()
   {
     json_map const map{ json_file{ "test/json/map.json" } };
-    expect(json_map::delim_open == '{');
-    expect(json_map::delim_close == '}');
-    expect(map.delim_open == '{');
-    expect(map.delim_close == '}');
+    expect_equal(json_map::delim_open, '{');
+    expect_equal(json_map::delim_close, '}');
+    expect_equal(map.delim_open, '{');
+    expect_equal(map.delim_close, '}');
   }
 }
