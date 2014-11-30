@@ -39,8 +39,8 @@ namespace jeayeson
           value.reserve(128);
 
           /* Maps start out parsing keys, arrays just want values. */
-          state_t state(container.delim_open == json_map::delim_open ?
-                        state_t::parse_name : state_t::parse_value);
+          state_t state{ container.delim_open == json_map::delim_open ?
+                         state_t::parse_name : state_t::parse_value };
 
           while(*it)
           {
@@ -125,8 +125,8 @@ namespace jeayeson
                 {
                   char *end{};
                   state = add(container, name, std::strtof(&*it, &end));
-                  std::advance(it,
-                               std::distance(&*it, const_cast<char const*>(end)));
+                  std::advance(it, std::distance(&*it,
+                                                 const_cast<char const*>(end)));
                 }
                 else
                 { state = add(container, name, std::atoi(&*it)); }
@@ -141,9 +141,12 @@ namespace jeayeson
               case 't':
               case 'f':
               {
-                if(*it == 'n' && *(it + 1) == 'u' && *(it + 2) == 'l' && *(it + 3) == 'l')
-                { state = add(container, name, typename Container::value_type{}); }
-                else if(*it == 't' && *(it + 1) == 'r' && *(it + 2) == 'u' && *(it + 3) == 'e')
+                if(std::equal(it, it + 3, "null"))
+                {
+                  state = add(container, name,
+                              typename Container::value_type{});
+                }
+                else if(std::equal(it, it + 3, "true"))
                 { state = add(container, name, true); }
                 else
                 { state = add(container, name, false); }
