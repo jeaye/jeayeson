@@ -24,9 +24,10 @@ namespace jest
   {
     json_array const arr{ json_file{ "test/json/array.json" } };
 
-    expect_equal(json_array::delim_open, '[');
-    expect_equal(json_array::delim_close, ']');
-    expect_equal(arr.delim_open, '[');
-    expect_equal(arr.delim_close, ']');
+    /* Not referencing as to be nice to the linker. */
+    expect(json_array::delim_open == '[');
+    expect(json_array::delim_close == ']');
+    expect(arr.delim_open == '[');
+    expect(arr.delim_close == ']');
   }
 }

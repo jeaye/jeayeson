@@ -28,6 +28,7 @@
 
 #include "parser/escape.hpp"
 #include "parser/number.hpp"
+#include "parser/utf.hpp"
 
 int main()
 {

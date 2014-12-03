@@ -23,8 +23,6 @@ namespace jeayeson
     class parser
     {
       private:
-        using str_citer = std::string::const_iterator;
-
         template <typename Container>
         static str_citer parse(Container &container, str_citer it)
         {
@@ -80,7 +78,16 @@ namespace jeayeson
                   for( ; *it != '"'; ++it)
                   {
                     if(*it == '\\')
-                    { value += escaped(*(++it)); }
+                    {
+                      if(*(it + 1) != 'u')
+                      { value += escaped(*(++it)); }
+                      else
+                      {
+                        std::string converted;
+                        std::tie(it, converted) = utf16(it);
+                        value += converted;
+                      }
+                    }
                     else
                     { value += *it; }
                   }
@@ -93,7 +100,16 @@ namespace jeayeson
                   for( ; *it != '"'; ++it)
                   {
                     if(*it == '\\')
-                    { name += escaped(*(++it)); }
+                    {
+                      if(*(it + 1) != 'u')
+                      { name += escaped(*(++it)); }
+                      else
+                      {
+                        std::string converted;
+                        std::tie(it, converted) = utf16(it);
+                        name += converted;
+                      }
+                    }
                     else
                     { name += *it; }
                   }
