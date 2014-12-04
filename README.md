@@ -11,7 +11,8 @@ it expects valid JSON all of the time.
   * Header only (easy to add to any project)
   * Small, consistent C++ API
   * Typesafe, C++14 interface
-  * Absolutely no macros needed or used
+  * Absolutely no macros needed nor used
+  * UTF-8 (with UTF-16 transcoding)
   * Extensive test suite (using [jest](https://github.com/jeaye/jest), a "sane and minimal C++14 unit test framework")
 
 Practice
