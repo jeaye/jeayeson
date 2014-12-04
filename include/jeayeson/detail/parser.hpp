@@ -84,7 +84,7 @@ namespace jeayeson
                       else
                       {
                         std::string converted;
-                        std::tie(it, converted) = utf16(it);
+                        std::tie(it, converted) = utf16_to_8(it);
                         value += converted;
                       }
                     }
@@ -106,7 +106,7 @@ namespace jeayeson
                       else
                       {
                         std::string converted;
-                        std::tie(it, converted) = utf16(it);
+                        std::tie(it, converted) = utf16_to_8(it);
                         name += converted;
                       }
                     }
