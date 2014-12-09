@@ -140,7 +140,7 @@ namespace jeayeson
       { value_ = val; }
       template <typename T>
       detail::enable_if<detail::should_normalize<T>()> set(T const &val)
-      { value_ = detail::normalize<T>(val); }
+      { value_ = detail::normalize<T>{ val }; }
 
       /* Treat string literals as standard strings. */
       void set(cstr_t const val)
@@ -195,7 +195,7 @@ namespace jeayeson
   inline std::ostream& operator <<(std::ostream &stream, value::null_t const &)
   { return (stream << "null"); }
 
-  template<>
+  template <>
   inline std::ostream& operator <<(std::ostream &stream, array_t const &arr)
   {
     stream << arr.delim_open;
@@ -208,7 +208,7 @@ namespace jeayeson
                                    map_t::internal_map_t::value_type const &p)
   { return (stream << "\"" << detail::escape(p.first) << "\":" << p.second); }
 
-  template<>
+  template <>
   inline std::ostream& operator <<(std::ostream &stream, map_t const &m)
   {
     stream << m.delim_open;
