@@ -106,9 +106,9 @@ std::cout << std::endl;
 ```
 
 ### Installation
-Since JeayeSON is a header-only library, simply copy over the contents of `include` to your project, or, better yet, add JeayeSON as a submodule and introduce `jeayeson/include` to your header search paths.  
+The `./configure` script must be used at least once to automagically generate `jeayeson/config.hpp` (see [Customization](https://github.com/jeaye/jeayeson#customization)). Since JeayeSON is a header-only library, simply copy over the contents of `include` to your project, or, better yet, add JeayeSON as a submodule and introduce `jeayeson/include` to your header search paths.  
 
-Full installation can also be achieved by using `./configure && make install`. See the `configure` script for prefix options.  
+A full installation can also be achieved by using `./configure && make install`. See the `./configure` script for prefix options.  
 
 Customization
 ---
