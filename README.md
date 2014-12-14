@@ -125,6 +125,10 @@ library. This build process is only for the tests.
 In the project directory, run:
 ```bash
 $ ./configure && make
+
+# Depending on your compiler setup (gcc or clang, linux or osx, etc)
+# you may need to specify some extra flags. An example case:
+$ LD_LIBS=-lc++abi make # allows clang & libc++ to work on Arch Linux
 ```
 Once built, you can run the tests:
 ```bash
