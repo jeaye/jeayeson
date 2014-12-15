@@ -140,7 +140,7 @@ namespace jeayeson
       { value_ = val; }
       template <typename T>
       detail::enable_if<detail::should_normalize<T>()> set(T const &val)
-      { value_ = detail::normalize<T>{ val }; }
+      { value_ = detail::normalize<T>(val); }
 
       /* Treat string literals as standard strings. */
       void set(cstr_t const val)
