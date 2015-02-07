@@ -1,4 +1,4 @@
-JeayeSON - a very sane (header only) C++ JSON library
+JeayeSON - a very sane C++14 JSON library
 ---
 
 JeayeSON was designed out of frustration that there aren't many
