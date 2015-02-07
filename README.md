@@ -1,8 +1,8 @@
 JeayeSON
 ---
 
-A very sane (header only) C++ JSON library. JeayeSON was designed out of 
-frustration that there aren't many templated approaches to handling JSON
+JeayeSON is a A very sane (header only) C++ JSON library. It was designed out of 
+frustration that there aren't many template-based approaches to handling JSON
 in C++. Given a very limited number of types (that JSON offers), functions
 can be written in a generic manner to provide the most consistent
 interface, no matter the type. JeayeSON is a non-validating JSON library;
