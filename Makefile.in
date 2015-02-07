@@ -12,7 +12,7 @@ INCLUDEDIR = %INCLUDEDIR%
 THREADS = %THREADS%
 
 # Compiler flags
-CXX = c++
+CXX ?= c++
 CXX_WARN_FLAGS = -Wall -Wextra -Werror -pedantic
 CXX_DEBUG_FLAGS = 
 CXX_OPTIM_FLAGS = -O3
