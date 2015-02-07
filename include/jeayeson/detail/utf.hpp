@@ -9,8 +9,7 @@
 
 #pragma once
 
-#include <codecvt>
-#include <locale>
+#include <boost/locale.hpp>
 
 namespace jeayeson
 {
@@ -29,7 +28,7 @@ namespace jeayeson
       return -1;
     }
 
-    inline std::tuple<str_citer, std::string> utf16_to_8(str_citer it)
+    inline auto utf16_to_8(str_citer it)
     {
       std::u16string u16;
       for( ; *it && std::equal(it, it + 2, "\\u");)
@@ -45,9 +44,12 @@ namespace jeayeson
         u16.push_back(ch);
       }
 
-      std::wstring_convert<std::codecvt_utf8_utf16<char16_t>,
-                                  char16_t> convert;
-      return { --it, convert.to_bytes(u16) };
+      /* XXX: Would be nice to use <codecvt> for this. */
+      return std::tuple<str_citer, std::string>
+      {
+        --it,
+        boost::locale::conv::utf_to_utf<char>(u16)
+      };
     }
   }
 }
