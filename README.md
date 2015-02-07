@@ -15,8 +15,6 @@ it expects valid JSON all of the time.
   * UTF-8 (with UTF-16 transcoding)
   * Extensive test suite (using [jest](https://github.com/jeaye/jest), a "sane and minimal C++14 unit test framework")
 
-**NOTE:** Due to the usage of C++11's \<codecvt\> for UTF-16 -> UTF-8 transcoding, the current GCC (4.9) is unable to compile JeayeSON. For now, I'm using clang while I consider alternatives.
-
 Practice
 ----
 Assuming the JeayeSON headers are in your search path, simply  
