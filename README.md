@@ -126,7 +126,8 @@ $ ./configure && make
 
 # Depending on your compiler setup (gcc or clang, linux or osx, etc)
 # you may need to specify some extra flags. An example case:
-$ LD_LIBS=-lc++abi make # allows clang & libc++ to work on Arch Linux
+# (allows clang & libc++ to work on Arch Linux)
+$ CXX_FLAGS=-stdlib=libc++ LD_LIBS=-lc++abi make 
 ```
 Once built, you can run the tests:
 ```bash
