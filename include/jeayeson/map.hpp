@@ -158,6 +158,24 @@ namespace jeayeson
       const_iterator find(key_t const &key) const
       { return values_.find(key); }
 
+      bool has(key_t const &key)
+      { return find(key) != end(); }
+      bool has(key_t const &key) const
+      { return find(key) != end(); }
+
+      template<typename VT>
+      bool has(key_t const &key)
+      {
+        auto it = find(key);
+        return it != end() && it->second.is(Value::template to_value<VT>::value);
+      }
+      template<typename VT>
+      bool has(key_t const &key) const
+      {
+        auto it = find(key);
+        return it != end() && it->second.is(Value::template to_value<VT>::value);
+      }
+
       iterator begin()
       { return values_.begin(); }
       const_iterator begin() const
