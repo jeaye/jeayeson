@@ -218,16 +218,16 @@ namespace jeayeson
   }
 
   template <>
-  auto& value::get<value>()
+  inline auto& value::get<value>()
   { return *this; }
   template <>
-  auto const& value::get<value>() const
+  inline auto const& value::get<value>() const
   { return *this; }
   template <>
-  auto& value::as<value>()
+  inline auto& value::as<value>()
   { return get<value>(); }
   template <>
-  auto const& value::as<value>() const
+  inline auto const& value::as<value>() const
   { return get<value>(); }
 
   template <>
