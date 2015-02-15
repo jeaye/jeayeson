@@ -17,6 +17,7 @@
 #include "map/size.hpp"
 #include "map/clear.hpp"
 #include "map/delim.hpp"
+#include "map/has.hpp"
 
 #include "array/ctor.hpp"
 #include "array/get.hpp"
