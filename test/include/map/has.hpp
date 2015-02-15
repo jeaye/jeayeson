@@ -54,14 +54,11 @@ namespace jest
     json_map const map{ jeayeson::json };
 
     expect(map.has<json_map>("foo"));
-    expect(!map.has<json_int>("foo"));
 
     auto const &foo(map.get<json_map>("foo"));
     expect(foo.has<json_int>("bar"));
-    expect(!foo.has<json_float>("bar"));
 
     expect(map.has<json_array>("arr"));
-    expect(!map.has<json_map>("arr"));
   }
 
   template <> template <>
