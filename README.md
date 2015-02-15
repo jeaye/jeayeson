@@ -21,6 +21,10 @@ Assuming the JeayeSON headers are in your search path, simply
 ```cpp
 #include <jeayeson/jeayeson.hpp>
 ```
+**NOTE:** If you're on Windows and symbolic links don't work, use
+```cpp
+#include <jeayeson/value.hpp>
+```
 This will give you access to the following types:
 ```cpp
 json_value    /* variant type */
