@@ -166,13 +166,13 @@ namespace jeayeson
       template<typename VT>
       bool has(key_t const &key)
       {
-        auto it = find(key);
+        auto const it(find(key));
         return it != end() && it->second.is(Value::template to_value<VT>::value);
       }
       template<typename VT>
       bool has(key_t const &key) const
       {
-        auto it = find(key);
+        auto const it(find(key));
         return it != end() && it->second.is(Value::template to_value<VT>::value);
       }
 
