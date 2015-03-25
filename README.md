@@ -17,7 +17,7 @@ it expects valid JSON all of the time.
 
 Practice
 ----
-Assuming the JeayeSON headers are in your search path, simply  
+Assuming the JeayeSON headers are in your search path, simply
 ```cpp
 #include <jeayeson/jeayeson.hpp>
 ```
@@ -108,15 +108,15 @@ std::cout << std::endl;
 ```
 
 ### Installation
-The `./configure` script must be used at least once to automagically generate `jeayeson/config.hpp` (see [Customization](https://github.com/jeaye/jeayeson#customization)). Since JeayeSON is a header-only library, simply copy over the contents of `include` to your project, or, better yet, add JeayeSON as a submodule and introduce `jeayeson/include` to your header search paths.  
+The `./configure` script must be used at least once to automagically generate `jeayeson/config.hpp` (see [Customization](https://github.com/jeaye/jeayeson#customization)). Since JeayeSON is a header-only library, simply copy over the contents of `include` to your project, or, better yet, add JeayeSON as a submodule and introduce `jeayeson/include` to your header search paths
 
-A full installation can also be achieved by using `./configure && make install`. See the `./configure` script for prefix options.  
+A full installation can also be achieved by using `./configure && make install`. See the `./configure` script for prefix options.
 
 Customization
 ---
 **NOTE**: All configuration is easily done in `jeayeson/config.hpp`, which is generated when you run `./configure` (and is not overwritten subsequently -- delete it to reset).
 
-Customization can be achieved by adjusting the types in the `jeayeson::config` struct template. A specialization is already provided, which contains the default types used by JeayeSON. Feel free to change the types to any other, still compatible, types.  
+Customization can be achieved by adjusting the types in the `jeayeson::config` struct template. A specialization is already provided, which contains the default types used by JeayeSON. Feel free to change the types to any other, still compatible, types.
 
 For example, you may want the json integer type to be 32bit instead of the default 64bit. Or, you may want to use `std::unordered_map` instead of `std::map`.
 
@@ -131,7 +131,7 @@ $ ./configure && make
 # Depending on your compiler setup (gcc or clang, linux or osx, etc)
 # you may need to specify some extra flags. An example case:
 # (allows clang & libc++ to work on Arch Linux)
-$ CXX=clang++ CXX_FLAGS=-stdlib=libc++ LD_LIBS=-lc++abi make 
+$ CXX=clang++ CXX_FLAGS=-stdlib=libc++ LD_LIBS=-lc++abi make
 ```
 Once built, you can run the tests:
 ```bash

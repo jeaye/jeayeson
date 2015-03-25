@@ -3,7 +3,8 @@ OUT_DIR = bin/
 SOURCES =  \
 				 test/src/map/main.cpp \
 				 test/src/array/main.cpp \
-				 test/src/parser/main.cpp
+				 test/src/parser/main.cpp \
+				 test/src/odr/main.cpp
 OBJECTS = ${SOURCES:.cpp=.cpp.o}
 TEST_OBJECTS = $(SOURCES:.cpp=.test)
 TESTS = $(foreach test,${SOURCES}, $(addprefix ${OUT_DIR}, $(notdir $(test))))
@@ -61,6 +62,11 @@ ${PROJECT}_setup: setup
 	echo "  Compiling $<"
 	mkdir -p ${OUT_DIR}$(dir $(shell echo $< | sed 's_test/src/__')) > /dev/null
 	${CXX} ${CXX_FLAGS} $< ${LD_LIBS} -o ${OUT_DIR}$(shell echo "$(shell echo $< | sed 's/\.cpp//')" | sed 's_test/src/__') > /dev/null
+
+test/src/odr/main.cpp.o: ${PROJECT}_setup
+	echo "  Validating ODR"
+	mkdir -p ${OUT_DIR}$(dir $(shell echo test/src/odr/main.cpp | sed 's_test/src/__')) > /dev/null
+	${CXX} ${CXX_FLAGS} test/src/odr/main1.cpp test/src/odr/main2.cpp ${LD_LIBS} -o ${OUT_DIR}$(shell echo "$(shell echo test/src/odr/main.cpp | sed 's/\.cpp//')" | sed 's_test/src/__') > /dev/null
 
 install:
 	export installdir=${DESTDIR}${INCLUDEDIR} && \
