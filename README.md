@@ -137,5 +137,5 @@ Once built, you can run the tests:
 ```bash
 $ make test
 ```
-The tests (in `test/main.cpp` and `test/include`) can give more examples
+The tests (in `test/src` and `test/include`) can give more examples
 on how to use JeayeSON.
