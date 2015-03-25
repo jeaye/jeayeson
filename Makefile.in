@@ -1,7 +1,9 @@
 # Sources
 OUT_DIR = bin/
 SOURCES =  \
-				 test/src/main.cpp
+				 test/src/map/main.cpp \
+				 test/src/array/main.cpp \
+				 test/src/parser/main.cpp
 OBJECTS = ${SOURCES:.cpp=.cpp.o}
 TEST_OBJECTS = $(SOURCES:.cpp=.test)
 TESTS = $(foreach test,${SOURCES}, $(addprefix ${OUT_DIR}, $(notdir $(test))))
@@ -14,7 +16,7 @@ THREADS = %THREADS%
 # Compiler flags
 CXX ?= c++
 CXX_WARN_FLAGS = -Wall -Wextra -Werror -pedantic
-CXX_DEBUG_FLAGS = 
+CXX_DEBUG_FLAGS =
 CXX_OPTIM_FLAGS = -O3
 CXX_INCLUDE_FLAGS = -Iinclude -Itest/include -Ilib/jest/include
 CXX_PLATFORM_FLAGS = %CXX_PLATFORM_FLAGS%
@@ -30,7 +32,7 @@ LD_LIBS += ${LD_PLATFORM_LIBS}
 
 PROJECT = %PROJECT%
 
-.PHONY: all threaded setup clean ${PROJECT} ${PROJECT}_setup install uninstall test test_setup 
+.PHONY: all threaded setup clean ${PROJECT} ${PROJECT}_setup install uninstall test test_setup
 
 .SILENT:
 
@@ -57,7 +59,8 @@ ${PROJECT}_setup: setup
 
 %.cpp.o: %.cpp ${PROJECT}_setup
 	echo "  Compiling $<"
-	${CXX} ${CXX_FLAGS} $< ${LD_LIBS} -o $(addprefix ${OUT_DIR}, $(notdir $(shell echo "$<" | sed 's/\.cpp//')))
+	mkdir -p ${OUT_DIR}$(dir $(shell echo $< | sed 's_test/src/__')) > /dev/null
+	${CXX} ${CXX_FLAGS} $< ${LD_LIBS} -o ${OUT_DIR}$(shell echo "$(shell echo $< | sed 's/\.cpp//')" | sed 's_test/src/__') > /dev/null
 
 install:
 	export installdir=${DESTDIR}${INCLUDEDIR} && \
@@ -74,4 +77,6 @@ test: test_setup ${TEST_OBJECTS}
 test_setup:
 
 %.test: test_setup
-	${OUT_DIR}/$(notdir $(shell echo $@ | sed 's/\.test//')) > /dev/null
+	echo "******** ${OUT_DIR}$(shell echo "$(shell echo $@ | sed 's/\.test//')" | sed 's_test/src/__') ********"
+	${OUT_DIR}$(shell echo "$(shell echo $@ | sed 's/\.test//')" | sed 's_test/src/__') > /dev/null
+	echo

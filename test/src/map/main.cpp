@@ -3,7 +3,7 @@
   See licensing at:
     http://opensource.org/licenses/BSD-3-Clause
 
-  File: test/src/main.cpp
+  File: test/src/map/main.cpp
   Author: Jesse 'Jeaye' Wilkerson
 */
 
@@ -18,18 +18,6 @@
 #include "map/clear.hpp"
 #include "map/delim.hpp"
 #include "map/has.hpp"
-
-#include "array/ctor.hpp"
-#include "array/get.hpp"
-#include "array/set.hpp"
-#include "array/find.hpp"
-#include "array/size.hpp"
-#include "array/clear.hpp"
-#include "array/delim.hpp"
-
-#include "parser/escape.hpp"
-#include "parser/number.hpp"
-#include "parser/utf.hpp"
 
 int main()
 {
