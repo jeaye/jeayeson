@@ -79,10 +79,10 @@ namespace jeayeson
 
       template <typename T>
       auto& get()
-      { return boost::get<detail::normalize<T>&>(value_); }
+      { return boost::get<detail::normalize<T>>(value_); }
       template <typename T>
       auto const& get() const
-      { return boost::get<detail::normalize<T> const&>(value_); }
+      { return boost::get<detail::normalize<T>>(value_); }
 
       template <typename T>
       auto& as()
