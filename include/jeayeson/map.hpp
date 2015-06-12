@@ -55,7 +55,7 @@ namespace jeayeson
       {
         if(val.get_type() == value_type::type::map)
         { *this = val.template as<map_t>(); }
-        else
+        else /* TODO: Show the type. */
         { throw std::runtime_error{ "failed to construct map from non-map" }; }
       }
       template <typename T>

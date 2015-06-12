@@ -37,7 +37,7 @@ namespace jeayeson
 
       using map_t = map<value, detail::parser>;
       using array_t = array<value, detail::parser>;
-      struct null_t
+      struct null_t /* TODO: Allow nullptr. */
       {
         bool operator ==(null_t const &) const
         { return true; }
