@@ -20,6 +20,29 @@ namespace jeayeson
     using int_t = config<config_tag>::int_t;
     using float_t = config<config_tag>::float_t;
 
+    template <typename T, typename E = void>
+    struct is_convertible_impl
+    { static bool constexpr value{ false }; };
+    template <typename T>
+    struct is_convertible_impl
+    <
+      T,
+      std::enable_if_t
+      <
+        std::is_same<std::decay_t<T>, std::nullptr_t>::value ||
+        std::is_integral<std::decay_t<T>>::value ||
+        std::is_floating_point<std::decay_t<T>>::value ||
+        std::is_same<std::decay_t<T>, std::string>::value ||
+        std::is_same<std::decay_t<T>, char const*>::value
+      >
+    >
+    { static bool constexpr value{ true }; };
+
+    template <typename T>
+    bool constexpr is_convertible()
+    { return is_convertible_impl<T>::value; }
+
+    /* TODO: Remove. */
     template <bool B, typename T = void>
     using enable_if = typename std::enable_if<B, T>::type;
 

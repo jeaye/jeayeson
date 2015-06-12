@@ -64,26 +64,33 @@ namespace jeayeson
       template <typename T>
       struct to_value;
 
-      value() : value_(null_t{})
+      value()
+        : value_(null_t{})
       { }
-      template <typename T>
-      explicit value(T const &val)
+      value(value const &copy)
+        : value_{ copy.value_ }
+      { }
+      template <typename T, typename E = std::enable_if_t<detail::is_convertible<T>()>>
+      explicit value(T &&val)
         : value_{ null_t{} }
       { set(val); }
-      explicit value(cstr_t const str)
-        : value_{ std::string{ str } }
+      explicit value(null_t const)
+        : value_(null_t{})
       { }
-      template <typename T, typename... Ts>
-      value(std::pair<map_t::key_t const, T> const &val, Ts const &...args)
-        : value_{ map_t{ { val, args... } } }
+      explicit value(map_t const &map)
+        : value_{ map }
       { }
+      explicit value(array_t const &arr)
+        : value_{ arr }
+      { }
+      //template <typename T, typename... Ts>
+      //value(std::pair<map_t::key_t const, T> const &val, Ts const &...args)
+      //  : value_{ map_t{ { val, args... } } }
+      //{ }
       //template <typename T1, typename T2, typename... Ts>
       //value(T1 const &val1, T2 const &val2, Ts const &...args)
       //  : value_{ array_t{ { val1, val2, args... } } }
       //{ }
-      value(value const &copy)
-        : value_{ copy.value_ }
-      { }
 
       template <typename T>
       auto& get()
