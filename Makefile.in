@@ -1,3 +1,5 @@
+# TODO: Switch to cmake
+
 # Sources
 OUT_DIR = bin/
 SOURCES =  \
