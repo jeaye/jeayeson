@@ -97,9 +97,10 @@ namespace jeayeson
       auto const& as() const
       { return get<T>(); }
 
-      /* Convenient, but not as type-safe or performant. */
+      /* Convenient, but not as type-safe nor performant. */
       value& operator [](map_t::key_t const &key)
       {
+        /* TODO: Show the type in the error. */
         if(get_type() != type::map)
         { throw std::runtime_error{ "invalid value type; required map" }; }
         return as<map_t>()[key];
