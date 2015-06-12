@@ -53,7 +53,7 @@ namespace jeayeson
       { reset(f); }
       explicit map(value_type const &val)
       {
-        if(val.get_type() == value_type::type_map)
+        if(val.get_type() == value_type::type::map)
         { *this = val.template as<map_t>(); }
         else
         { throw std::runtime_error{ "failed to construct map from non-map" }; }
@@ -73,10 +73,10 @@ namespace jeayeson
 
       template <typename T = Value>
       auto& get(key_t const &key)
-      { return values_[key].template as<T>(); } 
+      { return values_[key].template as<T>(); }
       template <typename T = Value>
       auto const& get(key_t const &key) const
-      { return values_[key].template as<T>(); } 
+      { return values_[key].template as<T>(); }
 
       template <typename T = Value>
       auto get(key_t const &key, T &&fallback) const
