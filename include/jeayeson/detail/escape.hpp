@@ -17,9 +17,9 @@ namespace jeayeson
   namespace detail
   {
     char constexpr in[]
-    { '\"', '\\', '/', '\b', '\f', '\n', '\r', '\t' };
+    { '\"', '\\', '\b', '\f', '\n', '\r', '\t' };
     char constexpr const * const out[]
-    { "\\\"", "\\\\", "\\/", "\\b", "\\f", "\\n", "\\r", "\\t" };
+    { "\\\"", "\\\\", "\\b", "\\f", "\\n", "\\r", "\\t" };
 
     inline std::string escape(std::string str)
     {

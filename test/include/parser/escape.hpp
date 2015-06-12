@@ -51,20 +51,20 @@ namespace jest
     expect_equal(arr.to_string(), R"raw(["\\\\\\"])raw" );
   }
 
-  template <> template <>
+  template <> template <> /* XXX: No longer escaped. */
   void jeayeson::escape_group::test<2>() /* / */
   {
     json_map map{ R"raw({ "/foo/": "/bar/" })raw" };
-    expect_equal(map.to_string(), R"raw({"\/foo\/":"\/bar\/"})raw" );
+    expect_equal(map.to_string(), R"raw({"/foo/":"/bar/"})raw" );
     map.clear();
     map["spam"] = R"raw(///)raw";
-    expect_equal(map.to_string(), R"raw({"spam":"\/\/\/"})raw" );
+    expect_equal(map.to_string(), R"raw({"spam":"///"})raw" );
 
     json_array arr{ R"raw([ "/foo/", "/bar/" ])raw" };
-    expect_equal(arr.to_string(), R"raw(["\/foo\/","\/bar\/"])raw" );
+    expect_equal(arr.to_string(), R"raw(["/foo/","/bar/"])raw" );
     arr.clear();
     arr.push_back(R"raw(///)raw");
-    expect_equal(arr.to_string(), R"raw(["\/\/\/"])raw" );
+    expect_equal(arr.to_string(), R"raw(["///"])raw" );
   }
 
   template <> template <>
