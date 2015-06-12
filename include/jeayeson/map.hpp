@@ -47,11 +47,14 @@ namespace jeayeson
       static char const delim_close = '}';
 
       map(){} /* XXX: User-defined ctor required for variant. */
-      explicit map(std::string const &json)
+      map(map const &m)
+        : values_{ m.values_ }
+      { }
+      map(std::string const &json)
       { reset(json); }
-      explicit map(file const &f)
+      map(file const &f)
       { reset(f); }
-      explicit map(value_type const &val)
+      map(value_type const &val)
       {
         if(val.get_type() == value_type::type::map)
         { *this = val.template as<map_t>(); }
@@ -59,16 +62,13 @@ namespace jeayeson
         { throw std::runtime_error{ "failed to construct map from non-map" }; }
       }
       template <typename T>
-      explicit map(std::map<key_t, T> const &container)
+      map(std::map<key_t, T> const &container)
       {
         for(auto const &it : container)
         { set(it.first, it.second); }
       }
       map(std::initializer_list<std::pair<key_t const, value_type>> const &list)
         : values_{ list }
-      { }
-      map(map const &m)
-        : values_{ m.values_ }
       { }
 
       template <typename T = Value>

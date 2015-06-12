@@ -48,11 +48,14 @@ namespace jeayeson
       static char const delim_close = ']';
 
       array(){} /* XXX: User-defined ctor required for variant. */
-      explicit array(std::string const &json)
+      array(array const &arr)
+        : values_{ arr.values_ }
+      { }
+      array(std::string const &json)
       { reset(json); }
-      explicit array(file const &f)
+      array(file const &f)
       { reset(f); }
-      explicit array(value_type const &val)
+      array(value_type const &val)
       {
         if(val.get_type() == value_type::type_array)
         { *this = val.template as<array_t>(); }
@@ -60,15 +63,19 @@ namespace jeayeson
         { throw std::runtime_error{ "failed to construct array from non-array" }; }
       }
 
-      template <typename It, typename =
-        std::enable_if_t<
-          std::is_convertible<
+      template
+      <
+        typename It,
+        typename = std::enable_if_t
+        <
+          std::is_convertible
+          <
             typename std::iterator_traits<It>::iterator_category,
             std::input_iterator_tag
           >::value
         >
       >
-      explicit array(It const &begin, It const &end)
+      array(It const &begin, It const &end)
       {
         reserve(std::distance(begin, end));
         for(It it{ begin }; it != end; ++it)
@@ -76,9 +83,6 @@ namespace jeayeson
       }
       array(std::initializer_list<value_type> const &list)
         : values_{ list }
-      { }
-      array(array const &arr)
-        : values_{ arr.values_ }
       { }
 
       template <typename T = Value>
