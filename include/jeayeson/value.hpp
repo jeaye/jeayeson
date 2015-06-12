@@ -18,6 +18,7 @@
 #include "detail/parser.hpp"
 #include "detail/escape.hpp"
 
+/* TODO: optional_cast. */
 namespace jeayeson
 {
   class value
@@ -65,7 +66,7 @@ namespace jeayeson
       struct to_value;
 
       value()
-        : value_(null_t{})
+        : value_{ null_t{} }
       { }
       value(value const &copy)
         : value_{ copy.value_ }
