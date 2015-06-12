@@ -73,7 +73,7 @@ namespace jeayeson
       template <typename T, typename E = std::enable_if_t<detail::is_convertible<T>()>>
       explicit value(T &&val)
         : value_{ null_t{} }
-      { set(val); }
+      { set(std::forward<T>(val)); }
       explicit value(null_t const)
         : value_(null_t{})
       { }
