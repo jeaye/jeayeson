@@ -1,0 +1,4 @@
+-std=c++1y
+-Iinclude
+-Itest/include
+-Ilib/jest/include
