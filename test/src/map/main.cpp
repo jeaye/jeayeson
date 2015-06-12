@@ -44,8 +44,8 @@ int main()
 */
   json_map m
   {
-    { "str", "This is a str" },
-    //{ "str", json_value{ 42 } },
+    //{ "str", "This is a str" },
+    { "str", 42 },
     //{ { "arr", json_array{ json_value{ 1.1 }, json_value{ 2.2 }, json_value{ 3.3 } } } },
     //{
     //  "person",

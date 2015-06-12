@@ -13,6 +13,8 @@
 
 #include "config.hpp"
 
+
+/* TODO: rename to trait.hpp. */
 namespace jeayeson
 {
   namespace detail
@@ -20,27 +22,29 @@ namespace jeayeson
     using int_t = config<config_tag>::int_t;
     using float_t = config<config_tag>::float_t;
 
-    template <typename T, typename E = void>
+    template <typename T, typename V, typename E = void>
     struct is_convertible_impl
     { static bool constexpr value{ false }; };
-    template <typename T>
+    template <typename T, typename V>
     struct is_convertible_impl
     <
-      T,
+      T, V,
       std::enable_if_t
       <
-        std::is_same<std::decay_t<T>, std::nullptr_t>::value ||
+        std::is_same<std::decay_t<T>, typename V::null_t>::value ||
         std::is_integral<std::decay_t<T>>::value ||
         std::is_floating_point<std::decay_t<T>>::value ||
         std::is_same<std::decay_t<T>, std::string>::value ||
-        std::is_same<std::decay_t<T>, char const*>::value
+        std::is_same<std::decay_t<T>, char const*>::value ||
+        std::is_same<std::decay_t<T>, typename V::map_t>::value ||
+        std::is_same<std::decay_t<T>, typename V::array_t>::value
       >
     >
     { static bool constexpr value{ true }; };
 
-    template <typename T>
+    template <typename T, typename V>
     bool constexpr is_convertible()
-    { return is_convertible_impl<T>::value; }
+    { return is_convertible_impl<T, V>::value; }
 
     /* TODO: Remove. */
     template <bool B, typename T = void>
