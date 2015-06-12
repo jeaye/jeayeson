@@ -70,10 +70,16 @@ namespace jeayeson
       value(value const &copy)
         : value_{ copy.value_ }
       { }
-      template <typename T, typename E = std::enable_if_t<detail::is_convertible<T, value>()>>
+
+      template
+      <
+        typename T,
+        typename E = std::enable_if_t<detail::is_convertible<T, value>()>
+      >
       explicit value(T &&val)
         : value_{ null_t{} }
       { set(std::forward<T>(val)); }
+
       //template <typename T, typename... Ts>
       //value(std::pair<map_t::key_t const, T> const &val, Ts const &...args)
       //  : value_{ map_t{ { val, args... } } }
