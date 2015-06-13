@@ -77,9 +77,13 @@ namespace jeayeson
         typename T,
         typename E = std::enable_if_t<detail::is_convertible<T, value>()>
       >
-      explicit value(T &&val)
+      value(T &&val)
         : value_{ null_t{} }
       { set(std::forward<T>(val)); }
+
+      value(std::initializer_list<std::pair<typename map_t::key_t const, value>> const &list)
+        : value_{ null_t{} }
+      { set(map_t{ list }); }
 
       //template <typename T, typename... Ts>
       //value(std::pair<map_t::key_t const, T> const &val, Ts const &...args)

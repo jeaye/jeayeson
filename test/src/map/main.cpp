@@ -10,14 +10,14 @@
 #include <jeayeson/jeayeson.hpp>
 #include <jest/jest.hpp>
 
-#include "map/ctor.hpp"
-#include "map/get.hpp"
-#include "map/set.hpp"
-#include "map/find.hpp"
-#include "map/size.hpp"
-#include "map/clear.hpp"
-#include "map/delim.hpp"
-#include "map/has.hpp"
+//#include "map/ctor.hpp"
+//#include "map/get.hpp"
+//#include "map/set.hpp"
+//#include "map/find.hpp"
+//#include "map/size.hpp"
+//#include "map/clear.hpp"
+//#include "map/delim.hpp"
+//#include "map/has.hpp"
 
 int main()
 {
@@ -42,12 +42,24 @@ int main()
   }
 }
 */
+  json_value vm
+  {
+    { "foo", json_value{ 3 } },
+    { "foo", json_value{ 3 } },
+  };
+
   json_map m
   {
-    //{ "str", "This is a str" },
     {
+      { "str", "This is a str" },
       { "str", 42 },
-    },
+      { "str", json_null{} },
+      { "str", nullptr },
+    }
+    //{
+    //  std::make_pair( std::string{ "str" }, json_value{ 42 } ),
+    //  std::make_pair( "str", json_value{ 42 } ),
+    //},
     //{ { "arr", json_array{ json_value{ 1.1 }, json_value{ 2.2 }, json_value{ 3.3 } } } },
     //{
     //  "person",

@@ -32,6 +32,7 @@ namespace jeayeson
       std::enable_if_t
       <
         std::is_same<std::decay_t<T>, typename V::null_t>::value ||
+        std::is_same<std::decay_t<T>, std::nullptr_t>::value ||
         std::is_integral<std::decay_t<T>>::value ||
         std::is_floating_point<std::decay_t<T>>::value ||
         std::is_same<std::decay_t<T>, std::string>::value ||
