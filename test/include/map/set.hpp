@@ -28,8 +28,5 @@ namespace jest
     expect_equal(map.get<json_int>("baz"), 77);
     map.set("burp", "soda");
     expect_equal(map.get<std::string>("burp"), "soda");
-
-    map.set<json_int>("map", { { "one", 1 } });
-    expect_equal(map.get<json_map>("map").get<json_int>("one"), 1);
   }
 }

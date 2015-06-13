@@ -54,13 +54,13 @@ namespace jeayeson
       { reset(json); }
       map(file const &f)
       { reset(f); }
-      map(value_type const &val)
-      {
-        if(val.get_type() == value_type::type::map)
-        { *this = val.template as<map_t>(); }
-        else /* TODO: Show the type. */
-        { throw std::runtime_error{ "failed to construct map from non-map" }; }
-      }
+      //map(value_type const &val)
+      //{
+      //  if(val.get_type() == value_type::type::map)
+      //  { *this = val.template as<map_t>(); }
+      //  else /* TODO: Show the type. */
+      //  { throw std::runtime_error{ "failed to construct map from non-map" }; }
+      //}
       template <typename T>
       map(std::map<key_t, T> const &container)
       {
@@ -195,9 +195,6 @@ namespace jeayeson
       { values_[key] = std::forward<T>(value); }
       void set(key_t const &key, cstr_t const value)
       { values_[key] = static_cast<std::string>(value); }
-      //template <typename T>
-      //void set(key_t const &key, std::map<key_t, T> const &data)
-      //{ set(key, map{ data }); }
 
       void clear()
       { values_.clear(); }
