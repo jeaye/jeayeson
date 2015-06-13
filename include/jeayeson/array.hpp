@@ -84,10 +84,7 @@ namespace jeayeson
       template
       <
         typename T,
-        typename E = std::enable_if_t
-        <
-          detail::is_convertible<T, value_type>() //&& !detail::is_string<T>()
-        >
+        typename E = std::enable_if_t<detail::is_convertible<T, value_type>()>
       >
       array(std::initializer_list<T> const &list)
       {
@@ -147,10 +144,10 @@ namespace jeayeson
 
       template <typename T>
       void add(T &&t)
-      { values_.push_back(Value{ std::forward<T>(t) }); }
+      { values_.push_back(Value(std::forward<T>(t))); }
       template <typename T>
       void push_back(T &&t)
-      { values_.push_back(Value{ std::forward<T>(t) }); }
+      { values_.push_back(Value(std::forward<T>(t))); }
 
       void erase(index_t const index)
       { values_.erase(values_.begin() + index); }

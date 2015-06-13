@@ -62,20 +62,14 @@ namespace jest
   void jeayeson::map_get_group::test<2>() /* named */
   {
     json_map map{ "{\"foo\":{\"bar\":42,\"spam\":null},\"arr\":[0,1,2]}" };
-    std::cout << map << std::endl;
 
     auto &foo(map.get<json_map>("foo"));
-    std::cout << "checking bar" << std::endl;
     expect_equal(foo.get<json_int>("bar"), 42);
 
     auto &arr(map.get<json_array>("arr"));
-    std::cout << "checking arr.size" << std::endl;
     expect_equal(arr.size(), 3ul);
     for(int i{}; i < 3; ++i)
-    {
-    std::cout << "checking arr[" << i << "]" << std::endl;
-    std::cout << "type: " << (int)arr[i].get_type() << std::endl;
-      expect_equal(arr[i].as<json_int>(), i); }
+    { expect_equal(arr[i].as<json_int>(), i); }
   }
 
   template <> template <>
