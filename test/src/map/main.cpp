@@ -44,38 +44,46 @@ int main()
 */
   json_value vm
   {
-    { "foo", json_value{ 3 } },
-    { "foo", json_value{ 3 } },
-  };
-
-  json_map m
-  {
+    { "bool", true },
+    { "int", 3 },
+    { "real", 3.145 },
+    { "str", "This is a str" },
+    { "null", json_null{} },
     {
-      { "str", "This is a str" },
-      { "str", 42 },
-      { "str", json_null{} },
-      { "str", nullptr },
-    }
-    //{
-    //  std::make_pair( std::string{ "str" }, json_value{ 42 } ),
-    //  std::make_pair( "str", json_value{ 42 } ),
-    //},
-    //{ { "arr", json_array{ json_value{ 1.1 }, json_value{ 2.2 }, json_value{ 3.3 } } } },
-    //{
-    //  "person",
-    //  {
-    //    { "name", "Tom" },
-    //    { "age", json_value{ 36 } },
-    //    { "weapon", json_null{} },
-    //    {
-    //      "inventoy",
-    //      {
-    //        { "coins", json_value{ 1136 } },
-    //        { "skooma", json_value{ 7 } }
-    //      }
-    //    }
-    //  }
-    //}
+      "map",
+      {
+        { "sub", 42 },
+        { "arr_int", { 0, 1, 2, 3, 4 } },
+        { "arr_str", { "0", "1", "2", "3", "4" } },
+      }
+    },
   };
-  std::cout << m << std::endl;
+  std::cout << vm << std::endl;
+
+  //json_map m
+  //{
+  //  {
+  //    { "str", "This is a str" },
+  //    { "str", 42 },
+  //    { "str", 3.1415 },
+  //    { "str", json_null{} },
+  //  }
+  //  //{ { "arr", json_array{ json_value{ 1.1 }, json_value{ 2.2 }, json_value{ 3.3 } } } },
+  //  //{
+  //  //  "person",
+  //  //  {
+  //  //    { "name", "Tom" },
+  //  //    { "age", json_value{ 36 } },
+  //  //    { "weapon", json_null{} },
+  //  //    {
+  //  //      "inventoy",
+  //  //      {
+  //  //        { "coins", json_value{ 1136 } },
+  //  //        { "skooma", json_value{ 7 } }
+  //  //      }
+  //  //    }
+  //  //  }
+  //  //}
+  //};
+  //std::cout << m << std::endl;
 }

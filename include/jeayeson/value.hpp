@@ -85,14 +85,10 @@ namespace jeayeson
         : value_{ null_t{} }
       { set(map_t{ list }); }
 
-      //template <typename T, typename... Ts>
-      //value(std::pair<map_t::key_t const, T> const &val, Ts const &...args)
-      //  : value_{ map_t{ { val, args... } } }
-      //{ }
-      //template <typename T1, typename T2, typename... Ts>
-      //value(T1 const &val1, T2 const &val2, Ts const &...args)
-      //  : value_{ array_t{ { val1, val2, args... } } }
-      //{ }
+      template <typename T, typename E = std::enable_if_t<detail::is_convertible<T, value>()>>
+      value(std::initializer_list<T> const &list)
+        : value_{ null_t{} }
+      { set(array_t{ list }); }
 
       template <typename T>
       auto& get()

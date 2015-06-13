@@ -81,9 +81,13 @@ namespace jeayeson
         for(It it{ begin }; it != end; ++it)
         { push_back(*it); }
       }
-      array(std::initializer_list<value_type> const &list)
-        : values_{ list }
-      { }
+
+      template <typename T, typename E = std::enable_if_t<detail::is_convertible<T, value_type>()>>
+      array(std::initializer_list<T> const &list)
+      {
+        reserve(std::distance(list.begin(), list.end()));
+        std::copy(list.begin(), list.end(), std::back_inserter(*this));
+      }
 
       template <typename T = Value>
       auto& get(index_t const index) const
