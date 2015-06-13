@@ -56,7 +56,7 @@ namespace jeayeson
               {
                 ++it;
 
-                state = add(container, name, json_map{});
+                state = push_back(container, name, json_map{});
                 it = parse(get_map(container, name, container.size() - 1), it);
               } break;
 
@@ -65,7 +65,7 @@ namespace jeayeson
               {
                 ++it;
 
-                state = add(container, name, json_array{});
+                state = push_back(container, name, json_array{});
                 it = parse(get_array(container, name, container.size() - 1), it);
               } break;
 
@@ -99,7 +99,7 @@ namespace jeayeson
                     { value += *it; }
                   }
 
-                  state = add(container, name, value);
+                  state = push_back(container, name, value);
                 }
                 else /* Parsing a key/name. */
                 {
@@ -147,7 +147,7 @@ namespace jeayeson
                 if(*is_int == '.' || *is_int == 'e' || *is_int == 'E')
                 {
                   char *end{};
-                  state = add(container, name, std::strtof(&*it, &end));
+                  state = push_back(container, name, std::strtof(&*it, &end));
                   std::advance
                   (
                     it,
@@ -155,7 +155,7 @@ namespace jeayeson
                   );
                 }
                 else
-                { state = add(container, name, std::atoi(&*it)); }
+                { state = push_back(container, name, std::atoi(&*it)); }
 
                 /* Progress to the next element. */
                 while(*it == '-' || *it == '.' || (*it >= '0' && *it <= '9'))
@@ -169,16 +169,16 @@ namespace jeayeson
               {
                 if(std::equal(it, it + 3, "null"))
                 {
-                  state = add
+                  state = push_back
                   (
                     container, name,
                     typename Container::value_type{}
                   );
                 }
                 else if(std::equal(it, it + 3, "true"))
-                { state = add(container, name, true); }
+                { state = push_back(container, name, true); }
                 else
-                { state = add(container, name, false); }
+                { state = push_back(container, name, false); }
 
                 /* Progress to the next element. */
                 while

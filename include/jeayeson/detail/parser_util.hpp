@@ -26,7 +26,7 @@ namespace jeayeson
     enum class state_t{ parse_name, parse_value };
 
     template <typename Value, typename Parser, typename T>
-    state_t add
+    state_t push_back
     (
       map<Value, Parser> &m,
       std::string const &key,
@@ -38,14 +38,14 @@ namespace jeayeson
     }
 
     template <typename Value, typename Parser, typename T>
-    state_t add
+    state_t push_back
     (
       array<Value, Parser> &arr,
       std::string const &,
       T const &t
     )
     {
-      arr.add(t);
+      arr.push_back(t);
       return state_t::parse_value;
     }
 

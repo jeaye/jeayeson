@@ -21,8 +21,8 @@
 
 int main()
 {
-  //jest::worker const j{};
-  //return j();
+  jest::worker const j{};
+  return j();
 
   /* TODO: Make sure all this shit is tested. */
   json_value vm

@@ -138,9 +138,6 @@ namespace jeayeson
       { values_[index] = typename Value::null_t{}; }
 
       template <typename T>
-      void add(T &&t)
-      { values_.push_back(Value(std::forward<T>(t))); }
-      template <typename T>
       void push_back(T &&t)
       { values_.push_back(Value(std::forward<T>(t))); }
 

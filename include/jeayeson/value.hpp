@@ -174,19 +174,21 @@ namespace jeayeson
 
       /* Shortcut add for arrays. */
       template <typename T>
-      void add(T const &val)
-      { as<array_t>().add(val); }
+      void push_back(T const &val)
+      { as<array_t>().push_back(val); }
 
       /* Shortcut add for maps. */
       template <typename T>
-      void add(std::string const &key, T const &val)
+      void push_back(std::string const &key, T const &val)
       { as<map_t>().set(key, val); }
 
-      template <typename T>
+      template
+      <
+        typename T,
+        typename E = std::enable_if_t<detail::is_convertible<T, value>()>
+      >
       variant_t& operator =(T const &val)
       { set(val); return value_; }
-      variant_t& operator =(cstr_t const val)
-      { return (value_ = std::string{ val }); }
 
     private:
       variant_t value_;

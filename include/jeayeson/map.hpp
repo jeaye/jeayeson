@@ -144,7 +144,7 @@ namespace jeayeson
         array_t arr;
         arr.reserve(values_.size());
         for(auto const &it : values_)
-        { arr.add(it.second); }
+        { arr.push_back(it.second); }
         return arr;
       }
 
