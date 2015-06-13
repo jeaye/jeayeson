@@ -11,6 +11,7 @@
 
 #include "detail/trait.hpp"
 #include "detail/config.hpp"
+#include "detail/tokenize.hpp"
 #include "file.hpp"
 #include "data.hpp"
 
@@ -18,18 +19,11 @@
 #include <vector>
 #include <utility>
 #include <initializer_list>
-#include <boost/algorithm/string.hpp>
 
 namespace jeayeson
 {
   template <typename Value, typename Parser>
   class array;
-
-  namespace detail
-  {
-    std::vector<std::string> tokenize
-    (std::string const &source, std::string const &delim);
-  }
 
   /* Maps provide a wrapper for
    * string-indexed values, which
@@ -227,20 +221,6 @@ namespace jeayeson
     private:
       mutable internal_map_t values_;
   };
-
-  namespace detail
-  {
-    inline std::vector<std::string> tokenize
-    (
-      std::string const &source,
-      std::string const &delim
-    )
-    {
-      std::vector<std::string> tokens;
-      boost::algorithm::split(tokens, source, boost::is_any_of(delim));
-      return tokens;
-    }
-  }
 
   template <typename V, typename P>
   bool operator ==(map<V, P> const &lhs, map<V, P> const &rhs)
