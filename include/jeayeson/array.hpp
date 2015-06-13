@@ -167,6 +167,8 @@ namespace jeayeson
 
       void reset(data const &json)
       { *this = Parser::template parse<array_t>(json.data); }
+      void reset(std::string const &json)
+      { *this = Parser::template parse<array_t>(json); }
       void reset(file const &f)
       { *this = Parser::template parse<array_t>(f); }
 
