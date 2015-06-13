@@ -34,6 +34,7 @@ json_null     /* json_value's default state */
 json_int      /* defaults to int64_t */
 json_float    /* defaults to double */
 json_file     /* aggregate type representing a filename */
+json_data     /* aggregate type representing json data as a string */
 ```
 
 Reading JSON
