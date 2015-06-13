@@ -189,7 +189,9 @@ namespace jeayeson
       void set(key_t const &key, T &&value)
       { values_[key] = std::forward<T>(value); }
       void set(key_t const &key, cstr_t const value)
-      { values_[key] = static_cast<std::string>(value); }
+      { values_[key] = std::string{ value }; }
+      void set(key_t const &key, std::nullptr_t)
+      { values_[key] = typename Value::null_t{}; }
 
       void clear()
       { values_.clear(); }

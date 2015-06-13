@@ -134,6 +134,8 @@ namespace jeayeson
       { values_[index] = std::forward<T>(t); }
       void set(index_t const &index, cstr_t const value)
       { values_[index] = std::string{ value }; }
+      void set(index_t const &index, std::nullptr_t)
+      { values_[index] = typename Value::null_t{}; }
 
       template <typename T>
       void add(T &&t)

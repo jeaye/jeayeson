@@ -157,9 +157,10 @@ namespace jeayeson
       detail::enable_if<detail::should_normalize<T>()> set(T const &val)
       { value_ = detail::normalize<T>(val); }
 
-      /* Treat string literals as standard strings. */
       void set(cstr_t const val)
       { value_ = std::string{ val }; }
+      void set(std::nullptr_t)
+      { value_ = null_t{}; }
 
       /* Shortcut add for arrays. */
       template <typename T>

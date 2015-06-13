@@ -21,8 +21,8 @@
 
 int main()
 {
-  jest::worker const j{};
-  return j();
+  //jest::worker const j{};
+  //return j();
 
   /* TODO: Make sure all this shit is tested. */
   json_value vm
@@ -32,6 +32,7 @@ int main()
     { "real", 3.145 },
     { "str", "This is a str" },
     { "null", json_null{} },
+    { "nullptr", nullptr },
     {
       "map",
       {
