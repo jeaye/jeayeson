@@ -54,7 +54,7 @@ namespace jest
   template <> template <>
   void jeayeson::map_ctor_group::test<3>() /* initializer_list */
   {
-    json_map map{ { "0", json_value{0.0} }, { "1", json_value{1.0} } };
+    json_map map{ { "0", 0.0 }, { "1", 1.0 } };
     expect_equal(map.size(), 2ul);
     expect_almost_equal(map.get<json_float>("0"), 0.0);
     expect_almost_equal(map.get<json_float>("1"), 1.0);

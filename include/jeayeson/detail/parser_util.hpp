@@ -23,48 +23,69 @@ namespace jeayeson
 {
   namespace detail
   {
-    enum class state_t { parse_name, parse_value };
+    enum class state_t{ parse_name, parse_value };
 
     template <typename Value, typename Parser, typename T>
-    state_t add(map<Value, Parser> &m, std::string const &key,
-                T const &t)
+    state_t add
+    (
+      map<Value, Parser> &m,
+      std::string const &key,
+      T const &t
+    )
     {
       m.set(key, t);
       return state_t::parse_name;
     }
 
     template <typename Value, typename Parser, typename T>
-    state_t add(array<Value, Parser> &arr, std::string const &,
-                T const &t)
+    state_t add
+    (
+      array<Value, Parser> &arr,
+      std::string const &,
+      T const &t
+    )
     {
       arr.add(t);
       return state_t::parse_value;
     }
 
     template <typename Value, typename Parser>
-    map<Value, Parser>& get_map(map<Value, Parser> &m,
-                                std::string const &key,
-                       typename array<Value, Parser>::index_t const)
+    map<Value, Parser>& get_map
+    (
+      map<Value, Parser> &m,
+      std::string const &key,
+      typename array<Value, Parser>::index_t const
+    )
     { return m.template get<map<Value, Parser>>(key); }
 
     template <typename Value, typename Parser>
-    map<Value, Parser>& get_map(array<Value, Parser> &arr,
-                                std::string const &,
-                       typename array<Value, Parser>::index_t const index)
+    map<Value, Parser>& get_map
+    (
+      array<Value, Parser> &arr,
+      std::string const &,
+      typename array<Value, Parser>::index_t const index
+    )
     { return arr.template get<map<Value, Parser>>(index); }
 
     template <typename Value, typename Parser>
-    array<Value, Parser>& get_array(map<Value, Parser> &m,
-                                    std::string const &key,
-                           typename array<Value, Parser>::index_t const)
+    array<Value, Parser>& get_array
+    (
+      map<Value, Parser> &m,
+      std::string const &key,
+      typename array<Value, Parser>::index_t const
+    )
     { return m.template get<array<Value, Parser>>(key); }
 
     template <typename Value, typename Parser>
-    array<Value, Parser>& get_array(array<Value, Parser> &arr,
-                                    std::string const &,
-                           typename array<Value, Parser>::index_t const index)
+    array<Value, Parser>& get_array
+    (
+      array<Value, Parser> &arr,
+      std::string const &,
+      typename array<Value, Parser>::index_t const index
+    )
     { return arr.template get<array<Value, Parser>>(index); }
 
+    /* TODO: move to escape header. */
     inline char escaped(char const c)
     {
       switch(c)

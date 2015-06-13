@@ -55,13 +55,13 @@ namespace jeayeson
       { reset(json); }
       array(file const &f)
       { reset(f); }
-      array(value_type const &val)
-      {
-        if(val.get_type() == value_type::type_array)
-        { *this = val.template as<array_t>(); }
-        else
-        { throw std::runtime_error{ "failed to construct array from non-array" }; }
-      }
+      //array(value_type const &val)
+      //{
+      //  if(val.get_type() == value_type::type_array)
+      //  { *this = val.template as<array_t>(); }
+      //  else
+      //  { throw std::runtime_error{ "failed to construct array from non-array" }; }
+      //}
 
       template
       <
@@ -78,11 +78,18 @@ namespace jeayeson
       array(It const &begin, It const &end)
       {
         reserve(std::distance(begin, end));
-        for(It it{ begin }; it != end; ++it)
-        { push_back(*it); }
+        std::copy(begin, end, std::back_inserter(*this));
       }
 
-      template <typename T, typename E = std::enable_if_t<detail::is_convertible<T, value_type>()>>
+      template
+      <
+        typename T,
+        typename E = std::enable_if_t
+        <
+          detail::is_convertible<T, value_type>() &&
+          !detail::is_string<T>()
+        >
+      >
       array(std::initializer_list<T> const &list)
       {
         reserve(std::distance(list.begin(), list.end()));

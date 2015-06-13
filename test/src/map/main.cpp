@@ -21,8 +21,11 @@
 
 int main()
 {
-  jest::worker const j{};
-  return j();
+  json_array a{ "[0,1,2]" };
+  std::cout << a << std::endl;
+  return 0;
+  //jest::worker const j{};
+  //return j();
 
   json_value vm
   {

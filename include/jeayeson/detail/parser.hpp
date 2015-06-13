@@ -26,19 +26,26 @@ namespace jeayeson
         template <typename Container>
         static str_citer parse(Container &container, str_citer it)
         {
-          using json_map = map<typename Container::value_type,
-                               typename Container::parser_t>;
-          using json_array = array<typename Container::value_type,
-                                   typename Container::parser_t>;
+          using json_map = map
+          <
+            typename Container::value_type,
+            typename Container::parser_t
+          >;
+          using json_array = array
+          <
+            typename Container::value_type,
+            typename Container::parser_t
+          >;
 
           std::string name;
-          name.reserve(128);
           std::string value;
-          value.reserve(128);
 
           /* Maps start out parsing keys, arrays just want values. */
-          state_t state{ container.delim_open == json_map::delim_open ?
-                         state_t::parse_name : state_t::parse_value };
+          state_t state
+          {
+            container.delim_open == json_map::delim_open ?
+            state_t::parse_name : state_t::parse_value
+          };
 
           while(*it)
           {
@@ -49,7 +56,7 @@ namespace jeayeson
               {
                 ++it;
 
-                state = add(container, name, json_map());
+                state = add(container, name, json_map{});
                 it = parse(get_map(container, name, container.size() - 1), it);
               } break;
 
@@ -58,14 +65,14 @@ namespace jeayeson
               {
                 ++it;
 
-                state = add(container, name, json_array());
+                state = add(container, name, json_array{});
                 it = parse(get_array(container, name, container.size() - 1), it);
               } break;
 
               /* End of the current node. */
               case json_map::delim_close:
               case json_array::delim_close:
-                return ++it;
+              { return ++it; }
 
               /* Start of a value or key. */
               case '"':
@@ -141,8 +148,11 @@ namespace jeayeson
                 {
                   char *end{};
                   state = add(container, name, std::strtof(&*it, &end));
-                  std::advance(it, std::distance(&*it,
-                                                 const_cast<char const*>(end)));
+                  std::advance
+                  (
+                    it,
+                    std::distance(&*it, const_cast<char const*>(end))
+                  );
                 }
                 else
                 { state = add(container, name, std::atoi(&*it)); }
@@ -159,8 +169,11 @@ namespace jeayeson
               {
                 if(std::equal(it, it + 3, "null"))
                 {
-                  state = add(container, name,
-                              typename Container::value_type{});
+                  state = add
+                  (
+                    container, name,
+                    typename Container::value_type{}
+                  );
                 }
                 else if(std::equal(it, it + 3, "true"))
                 { state = add(container, name, true); }
@@ -168,15 +181,17 @@ namespace jeayeson
                 { state = add(container, name, false); }
 
                 /* Progress to the next element. */
-                while(*it != ',' && *it != json_map::delim_close
-                      && *it != json_array::delim_close)
+                while
+                (
+                  *it != ',' && *it != json_map::delim_close &&
+                  *it != json_array::delim_close
+                )
                 { ++it; }
               } break;
 
               /* Whitespace or unimportant/unknown characters. */
               default:
-                ++it;
-                break;
+              { ++it; } break;
             }
           }
 
@@ -184,18 +199,17 @@ namespace jeayeson
         }
 
       public:
-
         template <typename Container>
         static Container parse(file const &json_file)
         {
           std::string json;
           {
-            std::ifstream infile(json_file.data.c_str());
-            if(!infile.is_open())
+            std::ifstream infile{ json_file.data.c_str() };
+            if(!infile.is_open()) /* TODO: show file */
             { throw std::runtime_error{ "failed to parse non-existent file" }; }
 
             infile.seekg(0, std::ios_base::end);
-            int64_t const file_size{ infile.tellg() };
+            auto const file_size(infile.tellg());
             infile.seekg(0, std::ios_base::beg);
 
             json.reserve(file_size);
@@ -222,14 +236,11 @@ namespace jeayeson
                 Container c;
                 it = parse(c, it);
                 return c;
-
-              } break;
+              }
 
               /* Whitespace. */
               default:
-              {
-                ++it;
-              } break;
+              { ++it; } break;
             }
           }
 

@@ -22,6 +22,24 @@ namespace jeayeson
     using int_t = config<config_tag>::int_t;
     using float_t = config<config_tag>::float_t;
 
+    template <typename T, typename E = void>
+    struct is_string_impl
+    { static bool constexpr value{ false }; };
+    template <typename T>
+    struct is_string_impl
+    <
+      T,
+      std::enable_if_t
+      <
+        std::is_same<std::decay_t<T>, std::string>::value ||
+        std::is_same<std::decay_t<T>, char const*>::value
+      >
+    >
+    { static bool constexpr value{ true }; };
+    template <typename T>
+    bool constexpr is_string()
+    { return is_string_impl<T>::value; }
+
     template <typename T, typename V, typename E = void>
     struct is_convertible_impl
     { static bool constexpr value{ false }; };
@@ -35,8 +53,7 @@ namespace jeayeson
         std::is_same<std::decay_t<T>, std::nullptr_t>::value ||
         std::is_integral<std::decay_t<T>>::value ||
         std::is_floating_point<std::decay_t<T>>::value ||
-        std::is_same<std::decay_t<T>, std::string>::value ||
-        std::is_same<std::decay_t<T>, char const*>::value ||
+        is_string<T>() ||
         std::is_same<std::decay_t<T>, typename V::map_t>::value ||
         std::is_same<std::decay_t<T>, typename V::array_t>::value
       >
