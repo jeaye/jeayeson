@@ -55,13 +55,6 @@ namespace jeayeson
       { reset(json); }
       array(file const &f)
       { reset(f); }
-      //array(value_type const &val)
-      //{
-      //  if(val.get_type() == value_type::type_array)
-      //  { *this = val.template as<array_t>(); }
-      //  else
-      //  { throw std::runtime_error{ "failed to construct array from non-array" }; }
-      //}
 
       template
       <
