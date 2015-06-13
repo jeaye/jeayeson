@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "detail/traits.hpp"
+#include "detail/trait.hpp"
 #include "detail/config.hpp"
 #include "file.hpp"
 #include "data.hpp"

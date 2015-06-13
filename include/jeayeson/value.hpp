@@ -11,7 +11,7 @@
 
 #include <boost/variant.hpp>
 
-#include "detail/traits.hpp"
+#include "detail/trait.hpp"
 #include "file.hpp"
 #include "data.hpp"
 #include "map.hpp"
