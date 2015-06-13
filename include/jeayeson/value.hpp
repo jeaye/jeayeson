@@ -13,6 +13,7 @@
 
 #include "detail/traits.hpp"
 #include "file.hpp"
+#include "data.hpp"
 #include "map.hpp"
 #include "array.hpp"
 #include "detail/parser.hpp"
@@ -320,6 +321,7 @@ using json_null = json_value::null_t;
 using json_int = jeayeson::detail::int_t;
 using json_float = jeayeson::detail::float_t;
 using json_file = jeayeson::file;
+using json_data = jeayeson::data;
 
 namespace jeayeson
 {

@@ -51,7 +51,7 @@ namespace jeayeson
       array(array const &arr)
         : values_{ arr.values_ }
       { }
-      array(std::string const &json)
+      array(data const &json)
       { reset(json); }
       array(file const &f)
       { reset(f); }
@@ -86,8 +86,7 @@ namespace jeayeson
         typename T,
         typename E = std::enable_if_t
         <
-          detail::is_convertible<T, value_type>() &&
-          !detail::is_string<T>()
+          detail::is_convertible<T, value_type>() //&& !detail::is_string<T>()
         >
       >
       array(std::initializer_list<T> const &list)
@@ -169,8 +168,8 @@ namespace jeayeson
       void reserve(size_t const size)
       { values_.reserve(size); }
 
-      void reset(std::string const &json)
-      { *this = Parser::template parse<array_t>(json); }
+      void reset(data const &json)
+      { *this = Parser::template parse<array_t>(json.data); }
       void reset(file const &f)
       { *this = Parser::template parse<array_t>(f); }
 

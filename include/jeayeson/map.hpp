@@ -12,6 +12,7 @@
 #include "detail/traits.hpp"
 #include "detail/config.hpp"
 #include "file.hpp"
+#include "data.hpp"
 
 #include <string>
 #include <vector>
@@ -50,6 +51,8 @@ namespace jeayeson
       map(map const &m)
         : values_{ m.values_ }
       { }
+      map(data const &json)
+      { reset(json); }
       map(std::string const &json)
       { reset(json); }
       map(file const &f)
@@ -205,6 +208,8 @@ namespace jeayeson
       void merge(map const &m)
       { values_.insert(m.values_.begin(), m.values_.end()); }
 
+      void reset(data const &json)
+      { reset(json.data); }
       void reset(std::string const &json)
       { *this = Parser::template parse<map_t>(json); }
       void reset(file const &f)
