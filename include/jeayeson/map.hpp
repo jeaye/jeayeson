@@ -24,7 +24,12 @@ namespace jeayeson
 {
   template <typename Value, typename Parser>
   class array;
-  std::vector<std::string> tokenize(std::string const &source, std::string const &delim);
+
+  namespace detail
+  {
+    std::vector<std::string> tokenize
+    (std::string const &source, std::string const &delim);
+  }
 
   /* Maps provide a wrapper for
    * string-indexed values, which
@@ -99,7 +104,7 @@ namespace jeayeson
       template <typename T = Value>
       T& get_for_path(std::string const &path) const
       {
-        std::vector<std::string> const tokens(tokenize(path, "."));
+        std::vector<std::string> const tokens(detail::tokenize(path, "."));
         size_t const path_size(tokens.size() - 1);
 
         map_t *sub_map(const_cast<map_t*>(this));
@@ -112,7 +117,7 @@ namespace jeayeson
       template <typename T = Value>
       T get_for_path(std::string const &path, T &&fallback) const
       {
-        std::vector<std::string> const tokens(tokenize(path, "."));
+        std::vector<std::string> const tokens(detail::tokenize(path, "."));
         size_t const path_size(tokens.size() - 1);
 
         map_t *sub_map(const_cast<map_t*>(this));
@@ -223,12 +228,18 @@ namespace jeayeson
       mutable internal_map_t values_;
   };
 
-  inline std::vector<std::string> tokenize(std::string const &source,
-                                           std::string const &delim)
+  namespace detail
   {
-    std::vector<std::string> tokens;
-    boost::algorithm::split(tokens, source, boost::is_any_of(delim));
-    return tokens;
+    inline std::vector<std::string> tokenize
+    (
+      std::string const &source,
+      std::string const &delim
+    )
+    {
+      std::vector<std::string> tokens;
+      boost::algorithm::split(tokens, source, boost::is_any_of(delim));
+      return tokens;
+    }
   }
 
   template <typename V, typename P>
