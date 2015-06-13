@@ -28,7 +28,7 @@ namespace jest
     map["spam"] = R"raw(""")raw";
     expect_equal(map.to_string(), R"raw({"spam":"\"\"\""})raw" );
 
-    json_array arr{ R"raw([ "foo\"", "bar\"" ])raw" };
+    json_array arr{ json_data{ R"raw([ "foo\"", "bar\"" ])raw" } };
     expect_equal(arr.to_string(), R"raw(["foo\"","bar\""])raw" );
     arr.clear();
     arr.push_back(R"raw(""")raw");
@@ -44,7 +44,7 @@ namespace jest
     map["spam"] = R"raw(\\\)raw";
     expect_equal(map.to_string(), R"raw({"spam":"\\\\\\"})raw" );
 
-    json_array arr{ R"raw([ "foo\\", "bar\\" ])raw" };
+    json_array arr{ json_data{ R"raw([ "foo\\", "bar\\" ])raw" } };
     expect_equal(arr.to_string(), R"raw(["foo\\","bar\\"])raw" );
     arr.clear();
     arr.push_back(R"raw(\\\)raw");
@@ -60,7 +60,7 @@ namespace jest
     map["spam"] = R"raw(///)raw";
     expect_equal(map.to_string(), R"raw({"spam":"///"})raw" );
 
-    json_array arr{ R"raw([ "/foo/", "/bar/" ])raw" };
+    json_array arr{ json_data{ R"raw([ "/foo/", "/bar/" ])raw" } };
     expect_equal(arr.to_string(), R"raw(["/foo/","/bar/"])raw" );
     arr.clear();
     arr.push_back(R"raw(///)raw");
@@ -76,7 +76,7 @@ namespace jest
     map["spam"] = "\b\b\b";
     expect_equal(map.to_string(), R"raw({"spam":"\b\b\b"})raw" );
 
-    json_array arr{ "[ \"\bfoo\b\", \"\bbar\b\" ]" };
+    json_array arr{ json_data{ "[ \"\bfoo\b\", \"\bbar\b\" ]" } };
     expect_equal(arr.to_string(), R"raw(["\bfoo\b","\bbar\b"])raw" );
     arr.clear();
     arr.push_back("\b\b\b");
@@ -92,7 +92,7 @@ namespace jest
     map["spam"] = "\f\f\f";
     expect_equal(map.to_string(), R"raw({"spam":"\f\f\f"})raw" );
 
-    json_array arr{ "[ \"\ffoo\f\", \"\fbar\f\" ]" };
+    json_array arr{ json_data{ "[ \"\ffoo\f\", \"\fbar\f\" ]" } };
     expect_equal(arr.to_string(), R"raw(["\ffoo\f","\fbar\f"])raw" );
     arr.clear();
     arr.push_back("\f\f\f");
@@ -108,7 +108,7 @@ namespace jest
     map["spam"] = "\n\n\n";
     expect_equal(map.to_string(), R"raw({"spam":"\n\n\n"})raw" );
 
-    json_array arr{ "[ \"\nfoo\n\", \"\nbar\n\" ]" };
+    json_array arr{ json_data{ "[ \"\nfoo\n\", \"\nbar\n\" ]" } };
     expect_equal(arr.to_string(), R"raw(["\nfoo\n","\nbar\n"])raw" );
     arr.clear();
     arr.push_back("\n\n\n");
@@ -124,7 +124,7 @@ namespace jest
     map["spam"] = "\r\r\r";
     expect_equal(map.to_string(), R"raw({"spam":"\r\r\r"})raw" );
 
-    json_array arr{ "[ \"\rfoo\r\", \"\rbar\r\" ]" };
+    json_array arr{ json_data{ "[ \"\rfoo\r\", \"\rbar\r\" ]" } };
     expect_equal(arr.to_string(), R"raw(["\rfoo\r","\rbar\r"])raw" );
     arr.clear();
     arr.push_back("\r\r\r");
@@ -140,7 +140,7 @@ namespace jest
     map["spam"] = "\t\t\t";
     expect_equal(map.to_string(), R"raw({"spam":"\t\t\t"})raw" );
 
-    json_array arr{ "[ \"\tfoo\t\", \"\tbar\t\" ]" };
+    json_array arr{ json_data{ "[ \"\tfoo\t\", \"\tbar\t\" ]" } };
     expect_equal(arr.to_string(), R"raw(["\tfoo\t","\tbar\t"])raw" );
     arr.clear();
     arr.push_back("\t\t\t");
