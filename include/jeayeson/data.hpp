@@ -11,7 +11,6 @@
 
 #include <string>
 
-/* TODO: make sure it works on everything. ctors, set, reset, etc. */
 namespace jeayeson
 {
   struct data

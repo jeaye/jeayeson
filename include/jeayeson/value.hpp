@@ -82,11 +82,21 @@ namespace jeayeson
         : value_{ null_t{} }
       { set(std::forward<T>(val)); }
 
-      value(std::initializer_list<std::pair<typename map_t::key_t const, value>> const &list)
+      value
+      (
+        std::initializer_list
+        <
+          std::pair<typename map_t::key_t const, value>
+        > const &list
+      )
         : value_{ null_t{} }
       { set(map_t{ list }); }
 
-      template <typename T, typename E = std::enable_if_t<detail::is_convertible<T, value>()>>
+      template
+      <
+        typename T,
+        typename E = std::enable_if_t<detail::is_convertible<T, value>()>
+      >
       value(std::initializer_list<T> const &list)
         : value_{ null_t{} }
       { set(array_t{ list }); }
@@ -199,8 +209,11 @@ namespace jeayeson
   }
 
   template <typename Iter>
-  inline void streamjoin(Iter begin, Iter const end, std::ostream &stream,
-                         std::string const &sep = ",")
+  inline void streamjoin
+  (
+    Iter begin, Iter const end, std::ostream &stream,
+    std::string const &sep = ","
+  )
   {
     if(begin != end)
     { stream << *begin++; }
@@ -220,8 +233,11 @@ namespace jeayeson
     return stream;
   }
 
-  inline std::ostream& operator <<(std::ostream &stream,
-                                   map_t::internal_map_t::value_type const &p)
+  inline std::ostream& operator <<
+  (
+    std::ostream &stream,
+    map_t::internal_map_t::value_type const &p
+  )
   { return (stream << "\"" << detail::escape(p.first) << "\":" << p.second); }
 
   template <>
@@ -246,6 +262,7 @@ namespace jeayeson
   inline auto const& value::as<value>() const
   { return get<value>(); }
 
+  /* TODO: Move to trait header? */
   template <>
   struct value::to_type<value::type::null>
   { using type = value::null_t; };
