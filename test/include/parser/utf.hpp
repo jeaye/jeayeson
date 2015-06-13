@@ -28,7 +28,7 @@ namespace jest
     expect_equal(map["n"], "n");
 
     json_array const arr
-    { R"raw(["\u007B", "\u007b", "\u007e", "\u007E"])raw" };
+    { json_data{ R"raw(["\u007B", "\u007b", "\u007e", "\u007E"])raw" } };
     expect_equal(arr[0], arr[1], "{");
     expect_equal(arr[2], arr[3], "~");
   }
@@ -41,7 +41,7 @@ namespace jest
     expect_equal(map["0|"], "~");
 
     json_array const arr
-    { R"raw(["\u0030", "\u007C\u007B", "\u007E"])raw" };
+    { json_data{ R"raw(["\u0030", "\u007C\u007B", "\u007E"])raw" } };
     expect_equal(arr[0], "0");
     expect_equal(arr[1], "|{");
     expect_equal(arr[2], "~");
@@ -55,7 +55,7 @@ namespace jest
     expect_equal(map["Ŵų"], "ŦŘ");
 
     json_array const arr
-    { R"raw(["\u0174", "\u0173\u00A9", "\u0158"])raw" };
+    { json_data{ R"raw(["\u0174", "\u0173\u00A9", "\u0158"])raw" } };
     expect_equal(arr[0], "Ŵ");
     expect_equal(arr[1], "ų©");
     expect_equal(arr[2], "Ř");
@@ -69,7 +69,12 @@ namespace jest
     expect_equal(map["😊"], "😉😊");
 
     json_array const arr
-    { R"raw(["\uD83D\uDE0E", "\uD83D\uDE34\uD83D\uDE36", "\uD83D\uDE3A"])raw" };
+    {
+      json_data
+      {
+        R"raw(["\uD83D\uDE0E", "\uD83D\uDE34\uD83D\uDE36", "\uD83D\uDE3A"])raw"
+      }
+    };
     expect_equal(arr[0], "😎");
     expect_equal(arr[1], "😴😶");
     expect_equal(arr[2], "😺");
@@ -84,9 +89,12 @@ namespace jest
 
     json_array const arr
     {
-      R"raw(["\u00A9\uD83D\uDE0E",
-             "\uD83D\uDE34\u0174\uD83D\uDE36",
-             "\uD83D\uDE3A\u0166"])raw"
+      json_data
+      {
+        R"raw(["\u00A9\uD83D\uDE0E",
+               "\uD83D\uDE34\u0174\uD83D\uDE36",
+               "\uD83D\uDE3A\u0166"])raw"
+      }
     };
     expect_equal(arr[0], "©😎");
     expect_equal(arr[1], "😴Ŵ😶");
