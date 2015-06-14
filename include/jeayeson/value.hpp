@@ -57,13 +57,12 @@ namespace jeayeson
         map_t,
         array_t
       >;
-      using cstr_t = char const * const;
 
       /* Enum -> Type */
       template <type T>
       struct to_type;
       /* Type -> Enum */
-      template <typename T>
+      template <typename T, typename E = void>
       struct to_value;
 
       value()
@@ -147,16 +146,12 @@ namespace jeayeson
       friend bool operator ==(value const &jv, T const &val);
       template <typename T>
       friend bool operator ==(T const &val, value const &jv);
-      friend bool operator ==(value const &jv, cstr_t const val);
-      friend bool operator ==(cstr_t const val, value const &jv);
 
       friend bool operator !=(value const &jv, value const &val);
       template <typename T>
       friend bool operator !=(value const &jv, T const &val);
       template <typename T>
       friend bool operator !=(T const &val, value const &jv);
-      friend bool operator !=(value const &jv, cstr_t const val);
-      friend bool operator !=(cstr_t const val, value const &jv);
       friend std::ostream& operator <<(std::ostream &stream, value const &val);
 
       /* We can avoid superfluous copying by checking whether or not to normalize. */
@@ -288,41 +283,39 @@ namespace jeayeson
   template <>
   struct value::to_value<value::null_t>
   { static type constexpr const value{ ::jeayeson::value::type::null }; };
-  template <>
-  struct value::to_value<int8_t>
+  template <typename T>
+  struct value::to_value
+  <
+    T,
+    std::enable_if_t
+    <
+      std::is_integral<std::decay_t<T>>::value &&
+      !std::is_same<std::decay_t<T>, bool>::value
+    >
+  >
   { static type constexpr const value{ ::jeayeson::value::type::integer }; };
-  template <>
-  struct value::to_value<uint8_t>
-  { static type constexpr const value{ ::jeayeson::value::type::integer }; };
-  template <>
-  struct value::to_value<int16_t>
-  { static type constexpr const value{ ::jeayeson::value::type::integer }; };
-  template <>
-  struct value::to_value<uint16_t>
-  { static type constexpr const value{ ::jeayeson::value::type::integer }; };
-  template <>
-  struct value::to_value<int32_t>
-  { static type constexpr const value{ ::jeayeson::value::type::integer }; };
-  template <>
-  struct value::to_value<uint32_t>
-  { static type constexpr const value{ ::jeayeson::value::type::integer }; };
-  template <>
-  struct value::to_value<int64_t>
-  { static type constexpr const value{ ::jeayeson::value::type::integer }; };
-  template <>
-  struct value::to_value<uint64_t>
-  { static type constexpr const value{ ::jeayeson::value::type::integer }; };
-  template <>
-  struct value::to_value<float>
-  { static type constexpr const value{ ::jeayeson::value::type::real }; };
-  template <>
-  struct value::to_value<double>
+  template <typename T>
+  struct value::to_value
+  <
+    T,
+    std::enable_if_t
+    <
+      std::is_floating_point<std::decay_t<T>>::value
+    >
+  >
   { static type constexpr const value{ ::jeayeson::value::type::real }; };
   template <>
   struct value::to_value<bool>
   { static type constexpr const value{ ::jeayeson::value::type::boolean }; };
-  template <>
-  struct value::to_value<std::string>
+  template <typename T>
+  struct value::to_value
+  <
+    T,
+    std::enable_if_t
+    <
+      detail::is_string<std::decay_t<T>>()
+    >
+  >
   { static type constexpr const value{ ::jeayeson::value::type::string }; };
   template <>
   struct value::to_value<map_t>
@@ -351,10 +344,6 @@ namespace jeayeson
   template <typename T>
   bool operator ==(T const &val, json_value const &jv)
   { return jv == val; }
-  inline bool operator ==(json_value const &jv, value::cstr_t const val)
-  { return jv.get_type() == value::type::string && jv.as<std::string>() == val; }
-  inline bool operator ==(value::cstr_t const val, json_value const &jv)
-  { return jv == val; }
 
   inline bool operator !=(json_value const &jv, json_value const &val)
   { return !(jv == val); }
@@ -363,9 +352,5 @@ namespace jeayeson
   { return !(jv == val); }
   template <typename T>
   bool operator !=(T const &val, json_value const &jv)
-  { return !(jv == val); }
-  inline bool operator !=(json_value const &jv, value::cstr_t const val)
-  { return !(jv == val); }
-  inline bool operator !=(value::cstr_t const val, json_value const &jv)
   { return !(jv == val); }
 }

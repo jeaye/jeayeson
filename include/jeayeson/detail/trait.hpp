@@ -31,7 +31,8 @@ namespace jeayeson
       std::enable_if_t
       <
         std::is_same<std::decay_t<T>, std::string>::value ||
-        std::is_same<std::decay_t<T>, char const*>::value
+        std::is_same<std::decay_t<T>, char const*>::value ||
+        std::is_same<std::decay_t<T>, char*>::value
       >
     >
     { static bool constexpr value{ true }; };
