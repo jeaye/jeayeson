@@ -17,7 +17,7 @@
 #include <stdexcept>
 #include <initializer_list>
 
-#include "detail/trait.hpp"
+#include "detail/normalize.hpp"
 #include "file.hpp"
 
 namespace jeayeson

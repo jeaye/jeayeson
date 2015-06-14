@@ -3,7 +3,7 @@
   See licensing at:
     http://opensource.org/licenses/BSD-3-Clause
 
-  File: detail/trait.hpp
+  File: detail/normalize.hpp
   Author: Jesse 'Jeaye' Wilkerson
 */
 
@@ -13,7 +13,6 @@
 
 #include "config.hpp"
 
-/* TODO: rename to trait.hpp. */
 namespace jeayeson
 {
   namespace detail

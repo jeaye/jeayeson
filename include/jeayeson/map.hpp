@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "detail/trait.hpp"
+#include "detail/normalize.hpp"
 #include "detail/config.hpp"
 #include "detail/tokenize.hpp"
 #include "file.hpp"
