@@ -85,8 +85,9 @@ namespace jest
     expect_equal(map.get_for_path<json_int>("person.inventory.zzz", 42), 42);
     expect_equal(map.get_for_path("person.name"), "Roger");
     expect_equal(map.get_for_path<std::string>("person.notname", "zzz"), "zzz");
-    expect_almost_equal(map.get_for_path<json_array>("arr")[8].as<json_float>(),
-                        9.9);
+    expect_equal(map.get_for_path("ends.with.", 42), 42);
+    expect_almost_equal
+    (map.get_for_path<json_array>("arr")[8].as<json_float>(), 9.9);
   }
 
   template <> template <>
