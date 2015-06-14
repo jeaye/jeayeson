@@ -72,7 +72,7 @@ namespace jeayeson
       T,
       std::enable_if_t
       <
-        std::is_integral<T>::value &&
+        std::is_integral<std::decay_t<T>>::value &&
         !std::is_same<T, bool>::value
       >
     >
@@ -81,14 +81,16 @@ namespace jeayeson
     struct normalize_impl
     <
       T,
-      std::enable_if_t<std::is_same<T, bool>::value>
+      std::enable_if_t
+      <std::is_same<std::decay_t<T>, bool>::value>
     >
     { using type = bool; };
     template <typename T>
     struct normalize_impl
     <
       T,
-      std::enable_if_t<std::is_floating_point<T>::value>
+      std::enable_if_t
+      <std::is_floating_point<std::decay_t<T>>::value>
     >
     { using type = float_t; };
     template <typename T>

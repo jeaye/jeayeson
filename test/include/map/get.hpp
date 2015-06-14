@@ -98,5 +98,14 @@ namespace jest
     expect(map.get("str") != json_null{});
   }
 
-  /* TODO: type normalization. */
+  template <> template <>
+  void jeayeson::map_get_group::test<5>() /* normalization */
+  {
+    auto const map(json_map{ json_file{ "test/json/map.json" } });
+    expect_equal(map.get<int8_t>("age"), 22);
+    expect_equal(map.get<int16_t>("age"), 22);
+    expect_equal(map.get<uint64_t>("age"), 22);
+
+    //expect_equal(map.get<decltype("Roger")>("name"), "Roger");
+  }
 }
