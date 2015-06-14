@@ -167,8 +167,8 @@ namespace jeayeson
       detail::enable_if<detail::should_normalize<T>()> set(T const &val)
       { value_ = detail::normalize<T>(val); }
 
-      void set(cstr_t const val)
-      { value_ = std::string{ val }; }
+      //void set(cstr_t const val)
+      //{ value_ = std::string{ val }; }
       void set(std::nullptr_t)
       { value_ = null_t{}; }
 

@@ -13,7 +13,6 @@
 
 #include "config.hpp"
 
-
 /* TODO: rename to trait.hpp. */
 namespace jeayeson
 {
@@ -82,13 +81,28 @@ namespace jeayeson
     struct normalize_impl<T, enable_if<std::is_floating_point<T>::value>>
     { using type = float_t; };
     template <typename T>
+    struct normalize_impl
+    <
+      T,
+      enable_if<std::is_same<std::decay_t<T>, char const*>::value>
+    >
+    { using type = std::string; };
+    template <typename T>
     using normalize = typename normalize_impl<T>::type;
+
     template <typename T>
     bool constexpr should_normalize()
     {
-      return !std::is_same<T, bool>::value &&
-             (std::is_integral<T>::value ||
-              std::is_floating_point<T>::value);
+      using decayed = std::decay_t<T>;
+      return
+      (
+        (!std::is_same<decayed, bool>::value) &&
+        (
+          std::is_integral<decayed>::value ||
+          std::is_floating_point<decayed>::value ||
+          std::is_same<decayed, char const*>::value
+        )
+      );
     }
   }
 }

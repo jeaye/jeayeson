@@ -36,7 +36,7 @@ namespace jest
     expect(arr.find("foo") == arr.end());
 
     arr.push_back(42.0f);
-    auto it(arr.find(42.0f));
+    auto const it(arr.find(42.0f));
     expect(it != arr.end());
     arr.erase(it);
     expect(arr.find(42.0f) == arr.end());
