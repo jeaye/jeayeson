@@ -84,7 +84,11 @@ namespace jeayeson
     struct normalize_impl
     <
       T,
-      enable_if<std::is_same<std::decay_t<T>, char const*>::value>
+      enable_if
+      <
+        std::is_same<std::decay_t<T>, char const*>::value ||
+        std::is_same<std::decay_t<T>, char*>::value
+      >
     >
     { using type = std::string; };
     template <typename T>
@@ -100,7 +104,8 @@ namespace jeayeson
         (
           std::is_integral<decayed>::value ||
           std::is_floating_point<decayed>::value ||
-          std::is_same<decayed, char const*>::value
+          std::is_same<decayed, char const*>::value ||
+          std::is_same<decayed, char*>::value
         )
       );
     }

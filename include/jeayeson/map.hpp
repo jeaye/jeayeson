@@ -38,7 +38,6 @@ namespace jeayeson
       using key_t = std::string;
       using value_type = Value;
       using parser_t = Parser;
-      using cstr_t = char const * const;
       using internal_map_t = config<config_tag>::map_t<key_t, Value>;
       using iterator = typename internal_map_t::iterator;
       using const_iterator = typename internal_map_t::const_iterator;
@@ -82,8 +81,6 @@ namespace jeayeson
         else
         { return static_cast<detail::normalize<T>>(fallback); }
       }
-      std::string get(key_t const &key, cstr_t const fallback) const
-      { return get<std::string>(key, fallback); }
 
       Value& operator [](key_t const &key)
       { return get(key); }
@@ -188,8 +185,6 @@ namespace jeayeson
       template <typename T>
       void set(key_t const &key, T &&value)
       { values_[key] = std::forward<T>(value); }
-      void set(key_t const &key, cstr_t const value)
-      { values_[key] = std::string{ value }; }
       void set(key_t const &key, std::nullptr_t)
       { values_[key] = typename Value::null_t{}; }
 

@@ -38,7 +38,6 @@ namespace jeayeson
       using parser_t = Parser;
       using index_t = uint32_t;
       using key_t = std::string;
-      using cstr_t = char const * const;
       using internal_array_t = std::vector<Value>;
       using iterator = typename internal_array_t::iterator;
       using const_iterator = typename internal_array_t::const_iterator;
@@ -95,8 +94,6 @@ namespace jeayeson
         { return static_cast<detail::normalize<T>>(fallback); }
         return values_[index].template as<T>();
       }
-      std::string get(index_t const index, cstr_t const &fallback) const
-      { return get<std::string>(index, fallback); }
 
       template <typename T>
       iterator find(T const &val)
@@ -132,8 +129,6 @@ namespace jeayeson
       template <typename T>
       void set(index_t const index, T &&t)
       { values_[index] = std::forward<T>(t); }
-      void set(index_t const &index, cstr_t const value)
-      { values_[index] = std::string{ value }; }
       void set(index_t const &index, std::nullptr_t)
       { values_[index] = typename Value::null_t{}; }
 
