@@ -142,10 +142,10 @@ namespace jeayeson
 
       template <typename T>
       explicit operator T()
-      { return as<T&>(); }
+      { return as<T>(); }
       template <typename T>
       explicit operator T() const
-      { return as<T const&>(); }
+      { return as<T>(); }
 
       type get_type() const
       { return static_cast<type>(value_.which()); }
