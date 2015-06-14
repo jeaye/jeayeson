@@ -154,10 +154,10 @@ namespace jeayeson
 
       /* We can avoid superfluous copying by checking whether or not to normalize. */
       template <typename T>
-      detail::enable_if<!detail::should_normalize<T>()> set(T const &val)
+      std::enable_if_t<!detail::should_normalize<T>()> set(T const &val)
       { value_ = val; }
       template <typename T>
-      detail::enable_if<detail::should_normalize<T>()> set(T const &val)
+      std::enable_if_t<detail::should_normalize<T>()> set(T const &val)
       { value_ = detail::normalize<T>(val); }
 
       void set(std::nullptr_t)

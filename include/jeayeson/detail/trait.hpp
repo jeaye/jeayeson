@@ -64,28 +64,39 @@ namespace jeayeson
     bool constexpr is_convertible()
     { return is_convertible_impl<T, V>::value; }
 
-    /* TODO: Remove. */
-    template <bool B, typename T = void>
-    using enable_if = typename std::enable_if<B, T>::type;
-
     template <typename T, typename E = void>
     struct normalize_impl
     { using type = T; };
     template <typename T>
-    struct normalize_impl<T, enable_if<std::is_integral<T>::value &&
-                                       !std::is_same<T, bool>::value>>
+    struct normalize_impl
+    <
+      T,
+      std::enable_if_t
+      <
+        std::is_integral<T>::value &&
+        !std::is_same<T, bool>::value
+      >
+    >
     { using type = int_t; };
     template <typename T>
-    struct normalize_impl<T, enable_if<std::is_same<T, bool>::value>>
+    struct normalize_impl
+    <
+      T,
+      std::enable_if_t<std::is_same<T, bool>::value>
+    >
     { using type = bool; };
     template <typename T>
-    struct normalize_impl<T, enable_if<std::is_floating_point<T>::value>>
+    struct normalize_impl
+    <
+      T,
+      std::enable_if_t<std::is_floating_point<T>::value>
+    >
     { using type = float_t; };
     template <typename T>
     struct normalize_impl
     <
       T,
-      enable_if
+      std::enable_if_t
       <
         std::is_same<std::decay_t<T>, char const*>::value ||
         std::is_same<std::decay_t<T>, char*>::value
