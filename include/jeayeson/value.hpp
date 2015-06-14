@@ -115,15 +115,28 @@ namespace jeayeson
       /* Convenient, but not as type-safe nor performant. */
       value& operator [](map_t::key_t const &key)
       {
-        /* TODO: Show the type in the error. */
         if(get_type() != type::map)
-        { throw std::runtime_error{ "invalid value type; required map" }; }
+        {
+          throw std::runtime_error
+          {
+            "invalid value type (" +
+            std::to_string(value_.which()) +
+            "); required map"
+          };
+        }
         return as<map_t>()[key];
       }
       value& operator [](array_t::index_t const &index)
       {
         if(get_type() != type::array)
-        { throw std::runtime_error{ "invalid value type; required array" }; }
+        {
+          throw std::runtime_error
+          {
+            "invalid value type (" +
+            std::to_string(value_.which()) +
+            "); required array"
+          };
+        }
         return as<array_t>()[index];
       }
 

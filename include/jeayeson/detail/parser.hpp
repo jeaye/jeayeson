@@ -205,8 +205,11 @@ namespace jeayeson
           std::string json;
           {
             std::ifstream infile{ json_file.data.c_str() };
-            if(!infile.is_open()) /* TODO: show file */
-            { throw std::runtime_error{ "failed to parse non-existent file" }; }
+            if(!infile.is_open())
+            {
+              throw std::runtime_error
+              { "failed to parse non-existent file: " + json_file.data };
+            }
 
             infile.seekg(0, std::ios_base::end);
             auto const file_size(infile.tellg());
