@@ -23,7 +23,7 @@ namespace jest
   void jeayeson::array_size_group::test<0>()
   {
     json_array arr{ json_file{ "test/json/array.json" } };
-    expect_equal(arr.size(), 8ul);
+    expect_equal(arr.size(), 9ul);
     expect(!arr.empty());
 
     auto subarr(arr.get<json_array>(6));

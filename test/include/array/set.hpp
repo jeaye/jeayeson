@@ -29,12 +29,12 @@ namespace jest
     arr.set(0, "soda");
     expect_equal(arr.get<std::string>(0), "soda");
 
-    expect_equal(arr.size(), 8ul);
-    arr.push_back(3.14159f);
     expect_equal(arr.size(), 9ul);
+    arr.push_back(3.14159f);
+    expect_equal(arr.size(), 10ul);
     arr.push_back(json_null{});
     arr.push_back(json_map{"{ \"foo\": true }"});
-    expect_equal(arr.size(), 11ul);
+    expect_equal(arr.size(), 12ul);
     expect_equal(arr[arr.size() - 1].as<json_map>().get<bool>("foo"), true);
   }
 }

@@ -102,7 +102,6 @@ namespace jest
   void jeayeson::map_get_group::test<5>() /* normalization */
   {
     auto const map(json_map{ json_file{ "test/json/map.json" } });
-    std::cout << map << std::endl;
     expect_equal(map.get<int8_t>("num", 0), 5000);
     expect_equal(map.get<int16_t>("num", 0), 5000);
     expect_equal(map.get<uint64_t>("num", 0), 5000);

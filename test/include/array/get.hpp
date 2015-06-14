@@ -66,7 +66,7 @@ namespace jest
     auto &foo(arr.get<json_map>(5));
     expect_equal(foo.get("success"), true);
 
-    expect_equal(arr.size(), 8ul);
+    expect_equal(arr.size(), 9ul);
     expect_equal(arr[1].as<int>(), 2);
     expect_equal(arr[3].as<int16_t>(), 4);
   }
@@ -77,5 +77,19 @@ namespace jest
     auto arr(json_array{ json_file{ "test/json/array.json" } });
     expect(arr[6] != json_null{});
     expect(arr[7] == json_null{});
+  }
+
+  template <> template <>
+  void jeayeson::array_get_group::test<4>() /* normalization */
+  {
+    auto arr(json_array{ json_file{ "test/json/array.json" } });
+    expect_equal(arr[1].as<int8_t>(), 2);
+    expect_equal(arr[1].as<int16_t>(), 2);
+    expect_equal(arr[1].as<uint64_t>(), 2);
+
+    expect_almost_equal(arr[8].as<float>(), -4.8901);
+    expect_almost_equal(arr[8].as<double>(), -4.8901);
+
+    expect_equal(arr[4].as<decltype("five")>(), "five");
   }
 }
