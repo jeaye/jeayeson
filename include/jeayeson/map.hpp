@@ -111,7 +111,7 @@ namespace jeayeson
         std::vector<std::string> const tokens(detail::tokenize(path, "."));
         size_t const path_size(tokens.size() - 1);
 
-        map_t *sub_map(const_cast<map_t*>(this));
+        map_t const *sub_map(const_cast<map_t*>(this));
         for(size_t i{}; i < path_size; ++i)
         {
           auto const it(sub_map->find(tokens[i]));
@@ -208,8 +208,11 @@ namespace jeayeson
       { return Parser::template save<map_t>(*this); }
 
       template <typename Stream_Value, typename Stream_Parser>
-      friend std::ostream& operator <<(std::ostream &stream,
-                                       map<Stream_Value, Stream_Parser> const &m);
+      friend std::ostream& operator <<
+      (
+        std::ostream &stream,
+        map<Stream_Value, Stream_Parser> const &m
+      );
       template <typename V, typename P>
       friend bool operator ==(map<V, P> const &lhs, map<V, P> const &rhs);
       template <typename V, typename P>

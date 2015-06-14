@@ -58,10 +58,8 @@ namespace jeayeson
         array_t
       >;
 
-      /* Enum -> Type */
       template <type T>
       struct to_type;
-      /* Type -> Enum */
       template <typename T, typename E = void>
       struct to_value;
 
@@ -190,6 +188,7 @@ namespace jeayeson
   using map_t = map<value, detail::parser>;
   using array_t = array<value, detail::parser>;
 
+  /* TODO: Move to stream header. */
   inline std::ostream& operator <<(std::ostream &stream, value const &val)
   {
     switch(static_cast<value::type>(val.value_.which()))

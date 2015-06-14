@@ -163,8 +163,11 @@ namespace jeayeson
       { return Parser::template save<array_t>(*this); }
 
       template <typename Stream_Value, typename Stream_Parser>
-      friend std::ostream& operator <<(std::ostream &stream,
-                                       array<Stream_Value, Stream_Parser> const &arr);
+      friend std::ostream& operator <<
+      (
+        std::ostream &stream,
+        array<Stream_Value, Stream_Parser> const &arr
+      );
       template <typename V, typename P>
       friend bool operator ==(array<V, P> const &lhs, array<V, P> const &rhs);
       template <typename V, typename P>
