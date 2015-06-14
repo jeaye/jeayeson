@@ -54,7 +54,10 @@ namespace jest
   template <> template <>
   void jeayeson::array_ctor_group::test<3>() /* initializer_list */
   {
-    json_array arr{ 0.0, 1.0 };
+    json_array arr
+    {
+      0.0, 1.0,
+    };
     expect_equal(arr.size(), 2ul);
     expect_almost_equal(arr.get<json_float>(0), 0.0);
     expect_almost_equal(arr.get<json_float>(1), 1.0);

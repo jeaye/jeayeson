@@ -73,6 +73,7 @@ namespace jeayeson
         std::copy(begin, end, std::back_inserter(*this));
       }
 
+      /* TODO: Allow different types. */
       template
       <
         typename T,
