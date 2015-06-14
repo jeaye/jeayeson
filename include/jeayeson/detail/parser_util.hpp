@@ -84,31 +84,5 @@ namespace jeayeson
       typename array<Value, Parser>::index_t const index
     )
     { return arr.template get<array<Value, Parser>>(index); }
-
-    /* TODO: move to escape header. */
-    inline char escaped(char const c)
-    {
-      switch(c)
-      {
-        case '\"':
-          return '"';
-        case '\\':
-          return '\\';
-        case '/':
-          return '/';
-        case 'b':
-          return '\b';
-        case 'f':
-          return '\f';
-        case 'n':
-          return '\n';
-        case 'r':
-          return '\r';
-        case 't':
-          return '\t';
-        default:
-          return c; /* This is not well-defined. */
-      }
-    }
   }
 }

@@ -15,6 +15,7 @@
 #include <cstdlib>
 
 #include "parser_util.hpp"
+#include "escape.hpp"
 
 namespace jeayeson
 {
