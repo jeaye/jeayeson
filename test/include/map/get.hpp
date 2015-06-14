@@ -102,10 +102,14 @@ namespace jest
   void jeayeson::map_get_group::test<5>() /* normalization */
   {
     auto const map(json_map{ json_file{ "test/json/map.json" } });
-    expect_equal(map.get<int8_t>("age"), 22);
-    expect_equal(map.get<int16_t>("age"), 22);
-    expect_equal(map.get<uint64_t>("age"), 22);
+    std::cout << map << std::endl;
+    expect_equal(map.get<int8_t>("num", 0), 5000);
+    expect_equal(map.get<int16_t>("num", 0), 5000);
+    expect_equal(map.get<uint64_t>("num", 0), 5000);
 
-    //expect_equal(map.get<decltype("Roger")>("name"), "Roger");
+    expect_almost_equal(map.get<float>("real", 0.0f), -3.14159);
+    expect_almost_equal(map.get<double>("real", 0.0), -3.14159);
+
+    expect_equal(map.get<decltype("Roger")>("str"), "This \"is\" a str");
   }
 }
