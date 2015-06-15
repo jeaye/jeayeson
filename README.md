@@ -37,26 +37,7 @@ json_file     /* aggregate type representing a filename */
 json_data     /* aggregate type representing json data as a string */
 ```
 
-Reading JSON
-----
-### Reading a JSON string
-```cpp
-std::string json; // Acquired/initialized elsewhere
-json_array arr{ json_data{ json } };
-```
-### Reading a file
-```cpp
-json_map map{ json_file{ "my_file.json" } };
-```
-**NOTE:** Loading a file into a `json_map` must mean that the JSON begins with a map `{ }`. Furthermore, any JSON that begins with an array `[ ]` must be loaded into a `json_array`.
-
-Writing JSON
-----
-```cpp
-json_map map{ json_file{ "my_file.json" } };
-std::cout << map << std::endl;
-```
-Interacting with JSON
+Building JSON
 ----
 Assume we want to create this JSON:
 ```json
@@ -105,6 +86,49 @@ person["age"] = 36;
 person["weapon"] = nullptr;
 
 val["person"] = person; // now we can just put the person map into val
+```
+
+Reading JSON
+----
+### Reading a JSON string
+```cpp
+std::string json; // Acquired/initialized elsewhere
+json_array arr{ json_data{ json } }; // json_data is a simple aggregate for type-safety
+```
+### Reading a file
+```cpp
+json_map map{ json_file{ "my_file.json" } }; // json_file is a simple aggregate for type-safety
+```
+**NOTE:** Loading a file into a `json_map` must mean that the JSON begins with a map `{ }`. Furthermore, any JSON that begins with an array `[ ]` must be loaded into a `json_array`.
+
+Writing JSON
+----
+```cpp
+// maps, arrays, and values can all be used with streams
+json_map map{ json_file{ "my_file.json" } };
+std::cout << map << std::endl;
+
+// you can also just write them to a string
+std::string const json{ map.to_string() };
+```
+
+Feels like the C++ stdlib
+----
+You'll find all the normal stdlib-like functions, including iterator support.
+```cpp
+json_array json;
+json.push_back("string");
+json.push_back(3.14159);
+json.push_back(false);
+
+for(auto const &j : json) // has begin, end, cbegin, cend, etc
+{ std::cout << j << std::endl; }
+
+// works like an std::vector or std::map
+json.size();
+json.empty();
+json.clear();
+json.reserve(42);
 ```
 
 ### Installation
