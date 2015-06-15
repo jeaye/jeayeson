@@ -5,6 +5,7 @@ OUT_DIR = bin/
 SOURCES =  \
 				 test/src/map/main.cpp \
 				 test/src/array/main.cpp \
+				 test/src/value/main.cpp \
 				 test/src/parser/main.cpp \
 				 test/src/odr/main.cpp
 OBJECTS = ${SOURCES:.cpp=.cpp.o}

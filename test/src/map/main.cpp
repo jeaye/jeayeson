@@ -23,24 +23,4 @@ int main()
 {
   jest::worker const j{};
   return j();
-
-  /* TODO: Make sure all this shit is tested. */
-  json_value vm
-  {
-    { "bool", true },
-    { "int", 3 },
-    { "real", 3.145 },
-    { "str", "This is a str" },
-    { "null", json_null{} },
-    { "nullptr", nullptr },
-    {
-      "map",
-      {
-        { "sub", 42 },
-        { "arr_int", { 0, 1, 2, 3, 4 } },
-        { "arr_str", { "0", "1", "2", "3", "4" } },
-      }
-    },
-  };
-  std::cout << vm << std::endl;
 }
