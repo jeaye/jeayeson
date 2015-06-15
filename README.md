@@ -42,7 +42,7 @@ Reading JSON
 ### Reading a JSON string
 ```cpp
 std::string json; // Acquired/initialized elsewhere
-json_array arr{ json };
+json_array arr{ json_data{ json } };
 ```
 ### Reading a file
 ```cpp
@@ -58,54 +58,53 @@ std::cout << map << std::endl;
 ```
 Interacting with JSON
 ----
-Assume the JSON we're working with is as follows:
+Assume we want to create this JSON:
 ```json
 {
-  "str": "This is str",
+  "hello": "This is dog",
   "arr":
-  [ 1.1, 2.2, 3.3, 4.4, 5.5, 6.6, 7.7, 8.8, 9.9 ],
+  [ 1.1, 2.2, 3.3 ],
   "person":
   {
     "name": "Tom",
     "age": 36,
-    "weapon": null,
-    "inventory":
-    {
-      "coins": 1136,
-      "skooma": 7
-    }
+    "weapon": null
   }
 }
 ```
-And the following code to interact with the JSON:
+We can simply do:
 ```cpp
-json_map map{ json_file{ "test/json/main.json" } };
+json_value val // json_value can be any json type; here, it's a json_map
+{
+  { "hello", "This is dog" }, // nested pairs represent key/value
+  {
+    "arr",
+    { 1.1, 2.2, 3.3 } // arrays are easy
+  },
+  {
+    "person",
+    {
+      { "name", "Tom" },
+      { "age", 36 },
+      { "weapon", nullptr } // can also use json_null
+    }
+  }
+};
+```
+Or, if we wanted to build it piece by piece:
+```cpp
+json_map val; // explicitly make a map this time
 
-std::string &str{ map.get<std::string>("str") };
-std::cout << "str = " << str << std::endl;
-auto &arr(map.get<json_array>("arr"));
+val["hello"] = "This is dog"; // simple assignments work on all compatible types
 
-/* A fallback value can also be specified with "get". It does two things:
-     1. Helps deduce the type so that an explicit invocation is not needed
-     2. Provides a default fallback value, should anything go wrong while accessing
-   Note that these functions do NOT return references, due to incompatibilities
-   with the fallback (could be an rvalue). */
-std::string const str_copy{ map.get("str", "meow") }; // Second param is the default
+val["arr"] = { 1.1, 2.2, 3.3 }; // implicit array construction
 
-/* Delving into maps using dot-notated paths works, too.
-   The type can be explicitly specified, or implicit based on the provided fallback.
-   They default to json_value, which offers op==, op<<, et cetera. */
-std::cout << map.get_for_path("person.name") << " has " // Returns json_value&
-          << map.get_for_path("person.inventory.coins", 0) << " coins\n";
+json_map person; // we'll build the person separately, too
+person["name"] = "Tom";
+person["age"] = 36;
+person["weapon"] = nullptr;
 
-/* A less verbose way is to just use op[] on the json_values; this is more convenient,
- * but it comes at the cost of less type-safety and more runtime checks. */
-std::cout << map["person"]["inventory"]["coins"] << std::endl;
-std::cout << map["arr"][1] << std::endl;
-
-for(auto const &it : arr)
-{ std::cout << it.as<json_float>() << " "; }
-std::cout << std::endl;
+val["person"] = person; // now we can just put the person map into val
 ```
 
 ### Installation
