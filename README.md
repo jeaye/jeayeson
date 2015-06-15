@@ -86,23 +86,21 @@ person["age"] = 36;
 person["weapon"] = nullptr;
 
 val["person"] = person; // now we can just put the person map into val
+
+// we can even dig into nested maps and arrays using op[]
+val["person"]["name"] = "Susan";
 ```
 
-Reading JSON
-----
 ### Reading a JSON string
 ```cpp
 std::string json; // Acquired/initialized elsewhere
-json_array arr{ json_data{ json } }; // json_data is a simple aggregate for type-safety
+json_array arr{ json_data{ json } }; // simple aggregate for type-safety
 ```
 ### Reading a file
 ```cpp
-json_map map{ json_file{ "my_file.json" } }; // json_file is a simple aggregate for type-safety
+json_map map{ json_file{ "my_file.json" } }; // simple aggregate for type-safety
 ```
-**NOTE:** Loading a file into a `json_map` must mean that the JSON begins with a map `{ }`. Furthermore, any JSON that begins with an array `[ ]` must be loaded into a `json_array`.
-
-Writing JSON
-----
+### Writing JSON
 ```cpp
 // maps, arrays, and values can all be used with streams
 json_map map{ json_file{ "my_file.json" } };
@@ -129,6 +127,26 @@ json.size();
 json.empty();
 json.clear();
 json.reserve(42);
+```
+
+Type checking and casting
+----
+```cpp
+json_map json
+{
+  { "boolean", false },
+  { "str", "..." }
+};
+
+// check types with is<T>()
+json["boolean"].is<json_value::type::boolean>(); // true
+json["str"].is<json_value::type::string>(); // true
+
+// query the type enum
+auto const type(json["str"].get_type());
+
+// cast with as<T>() to get the complete type
+auto const str(json["str"].as<json_string>());
 ```
 
 ### Installation

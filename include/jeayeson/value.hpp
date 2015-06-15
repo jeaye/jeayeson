@@ -147,6 +147,7 @@ namespace jeayeson
       explicit operator T() const
       { return as<T>(); }
 
+      /* TODO: Rename to type() */
       type get_type() const
       { return static_cast<type>(value_.which()); }
       bool is(type const t) const
