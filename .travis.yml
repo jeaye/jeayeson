@@ -11,7 +11,7 @@ addons:
     packages:
       - g++-5
       - clang-3.6
-      - libboost-all-dev
+      - libboost1.49-dev
 
 before_install:
   - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 50
