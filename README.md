@@ -1,4 +1,4 @@
-JeayeSON - a very sane C++14 JSON library
+JeayeSON - a very sane C++14 JSON library [![Build Status](https://travis-ci.org/jeaye/jeayeson.svg?branch=master)](https://travis-ci.org/jeaye/jeayeson)
 ---
 
 JeayeSON was designed out of frustration that there aren't many
