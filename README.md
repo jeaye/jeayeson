@@ -42,7 +42,7 @@ Building JSON
 Assume we want to create this JSON:
 ```json
 {
-  "hello": "This is dog",
+  "hello": "world",
   "arr":
   [ 1.1, 2.2, 3.3 ],
   "person":
@@ -57,7 +57,7 @@ We can simply do:
 ```cpp
 json_value val // json_value can be any json type; here, it's a json_map
 {
-  { "hello", "This is dog" }, // nested pairs represent key/value
+  { "hello", "world" }, // nested pairs represent key/value
   {
     "arr",
     { 1.1, 2.2, 3.3 } // arrays are easy
@@ -76,7 +76,7 @@ Or, if we wanted to build it piece by piece:
 ```cpp
 json_map val; // explicitly make a map this time
 
-val["hello"] = "This is dog"; // simple assignments work on all compatible types
+val["hello"] = "world"; // simple assignments work on all compatible types
 
 val["arr"] = { 1.1, 2.2, 3.3 }; // implicit array construction
 
