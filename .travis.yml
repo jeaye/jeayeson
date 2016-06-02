@@ -13,8 +13,8 @@ addons:
     packages:
       - libstdc++-4.9-dev
       - libboost1.60-dev
-      - libboost1.60-system-dev
-      - libboost1.60-locale-dev
+      - libboost-system1.60-dev
+      - libboost-locale1.60-dev
       - g++-4.9
 #     - clang-3.8
 
