@@ -9,7 +9,7 @@ addons:
   apt:
     sources:
       - ubuntu-toolchain-r-test
-      - llvm-toolchain-precise-3.8
+#     - llvm-toolchain-precise-3.8
     packages:
       - libstdc++-4.9-dev
       - libboost-dev
