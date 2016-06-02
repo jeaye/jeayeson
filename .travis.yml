@@ -19,7 +19,7 @@ env:
   - COMPILER=g++-4.9 GCC_VERSION=4.9
 
 before_install:
-  - if [ "$CXX" == "g++"  ]; then export CXX="g++-${GCC_VERSION}"; fi
+  - if [ "$TRAVIS_OS_NAME" == "linux"  ]; then export CXX="g++-${GCC_VERSION}"; fi
 
 script:
   - ./configure && make && make test
