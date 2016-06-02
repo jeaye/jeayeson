@@ -12,6 +12,7 @@ addons:
 #     - llvm-toolchain-precise-3.8
     packages:
       - libstdc++-4.9-dev
+      - libboost1.60-dev
       - libboost1.60-system-dev
       - libboost1.60-locale-dev
       - g++-4.9
