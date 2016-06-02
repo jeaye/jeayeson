@@ -154,6 +154,11 @@ The `./configure` script must be used at least once to automagically generate `j
 
 A full installation can also be achieved by using `./configure && make install`. See the `./configure` script for prefix options.
 
+### Dependencies
+
+* A C++14 compiler (GCC 5.x or Clang 3.8+ recommended)
+* Boost (1.53.0+ recommended)
+
 Customization
 ---
 **NOTE**: All configuration is easily done in `jeayeson/config.hpp`, which is generated when you run `./configure` (and is not overwritten subsequently -- delete it to reset).
