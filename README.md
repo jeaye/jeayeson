@@ -157,7 +157,7 @@ A full installation can also be achieved by using `./configure && make install`.
 ### Dependencies
 
 * A C++14 compiler (GCC 5.x or Clang 3.8+ recommended)
-* Boost (1.53.0+ recommended)
+* Boost (1.55.0+ recommended)
 
 Customization
 ---
