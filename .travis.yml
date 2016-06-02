@@ -12,7 +12,7 @@ addons:
 #     - llvm-toolchain-precise-3.8
     packages:
       - libstdc++-4.9-dev
-      - libboost-all-dev
+      - libboost1.55-all-dev
       - g++-4.9
 #     - clang-3.8
 
