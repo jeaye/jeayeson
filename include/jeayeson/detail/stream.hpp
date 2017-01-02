@@ -40,6 +40,12 @@ namespace jeayeson
   inline std::ostream& operator <<(std::ostream &stream, value::null_t const &)
   { return (stream << "null"); }
 
+  template <typename Stream_Value, typename Stream_Parser>
+  std::ostream& operator <<
+  (
+    std::ostream &stream,
+    array<Stream_Value, Stream_Parser> const &arr
+  );
   template <>
   inline std::ostream& operator <<(std::ostream &stream, array_t const &arr)
   {
@@ -56,6 +62,12 @@ namespace jeayeson
   )
   { return (stream << "\"" << detail::escape(p.first) << "\":" << p.second); }
 
+  template <typename Stream_Value, typename Stream_Parser>
+  std::ostream& operator <<
+  (
+    std::ostream &stream,
+    map<Stream_Value, Stream_Parser> const &m
+  );
   template <>
   inline std::ostream& operator <<(std::ostream &stream, map_t const &m)
   {
